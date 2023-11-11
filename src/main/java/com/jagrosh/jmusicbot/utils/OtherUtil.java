@@ -36,10 +36,10 @@ import org.json.JSONTokener;
  */
 public class OtherUtil
 {
-    public final static String NEW_VERSION_AVAILABLE = "There is a new version of JMusicBot available!\n"
-                    + "Current version: %s\n"
-                    + "New Version: %s\n\n"
-                    + "Please visit https://github.com/jagrosh/MusicBot/releases/latest to get the latest release.";
+//    public final static String NEW_VERSION_AVAILABLE = "There is a new version of JMusicBot available!\n"
+//                    + "Current version: %s\n"
+//                    + "New Version: %s\n\n"
+//                    + "Please visit https://github.com/jagrosh/MusicBot/releases/latest to get the latest release.";
     private final static String WINDOWS_INVALID_PATH = "c:\\windows\\system32\\";
     
     /**
@@ -156,7 +156,8 @@ public class OtherUtil
             prompt.alert(Prompt.Level.WARNING, "Java Version", 
                     "It appears that you may not be using a supported Java version. Please use 64-bit java.");
     }
-    
+
+    /*
     public static void checkVersion(Prompt prompt)
     {
         // Get current version number
@@ -207,4 +208,5 @@ public class OtherUtil
             return null;
         }
     }
+    */
 }
