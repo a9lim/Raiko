@@ -31,7 +31,8 @@ public class SkipCmd extends MusicCommand
     {
         super(bot);
         this.name = "skip";
-        this.help = "skips the current song";
+        this.help = "skips songs";
+        this.arguments = "<position>";
         this.aliases = bot.getConfig().getAliases(this.name);
         this.bePlaying = true;
     }
@@ -39,10 +40,27 @@ public class SkipCmd extends MusicCommand
     @Override
     public void doCommand(CommandEvent event) 
     {
+        int index = 0;
         AudioHandler handler = (AudioHandler)event.getGuild().getAudioManager().getSendingHandler();
-        RequestMetadata rm = handler.getRequestMetadata();
-        event.reply(event.getClient().getSuccess()+" Skipped **"+handler.getPlayer().getPlayingTrack().getInfo().title
-                +"** "+(rm.getOwner() == 0L ? "(autoplay)" : "(requested by **" + rm.user.username + "**)"));
+        try
+        {
+            index = Integer.parseInt(event.getArgs());
+        }
+        catch(NumberFormatException e)
+        {
+            RequestMetadata rm = handler.getRequestMetadata();
+            event.reply(event.getClient().getSuccess()+" Skipped **"+handler.getPlayer().getPlayingTrack().getInfo().title
+                    +"** "+(rm.getOwner() == 0L ? "(autoplay)" : "(requested by **" + rm.user.username + "**)"));
+            handler.getPlayer().stopTrack();
+            return;
+        }
+        if(index<1 || index>handler.getQueue().size())
+        {
+            event.reply(event.getClient().getError()+" Position must be a valid integer between 1 and "+handler.getQueue().size()+"!");
+            return;
+        }
+        handler.getQueue().skip(index-1);
+        event.reply(event.getClient().getSuccess()+" Skipped to **"+handler.getQueue().get(0).getTrack().getInfo().title+"**");
         handler.getPlayer().stopTrack();
     }
 }
