@@ -13,34 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jagrosh.jmusicbot.commands.dj;
+package com.jagrosh.jmusicbot.commands.music;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.audio.AudioHandler;
-import com.jagrosh.jmusicbot.commands.DJCommand;
+import com.jagrosh.jmusicbot.commands.MusicCommand;
 
 /**
  *
  * @author John Grosh <john.a.grosh@gmail.com>
  */
-public class StopCmd extends DJCommand 
+public class PauseCmd extends MusicCommand
 {
-    public StopCmd(Bot bot)
+    public PauseCmd(Bot bot)
     {
         super(bot);
-        this.name = "stop";
-        this.help = "stops the current song and clears the queue";
+        this.name = "pause";
+        this.help = "pauses the current song";
         this.aliases = bot.getConfig().getAliases(this.name);
-        this.bePlaying = false;
+        this.bePlaying = true;
     }
 
     @Override
     public void doCommand(CommandEvent event) 
     {
         AudioHandler handler = (AudioHandler)event.getGuild().getAudioManager().getSendingHandler();
-        handler.stopAndClear();
-        event.getGuild().getAudioManager().closeAudioConnection();
-        event.reply(event.getClient().getSuccess()+" The player has stopped and the queue has been cleared.");
+        if(handler.getPlayer().isPaused()) {
+            handler.getPlayer().setPaused(false);
+            event.replySuccess("Resumed **"+handler.getPlayer().getPlayingTrack().getInfo().title+"**.");
+        } else {
+            handler.getPlayer().setPaused(true);
+            event.replySuccess("Paused **" + handler.getPlayer().getPlayingTrack().getInfo().title + "**.");
+        }
     }
 }

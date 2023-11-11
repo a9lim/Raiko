@@ -32,14 +32,12 @@ public class Settings implements GuildSettingsProvider
     private final SettingsManager manager;
     protected long textId;
     protected long voiceId;
-    protected long roleId;
     private int volume;
     private String defaultPlaylist;
     private RepeatMode repeatMode;
     private String prefix;
-    private double skipRatio;
 
-    public Settings(SettingsManager manager, String textId, String voiceId, String roleId, int volume, String defaultPlaylist, RepeatMode repeatMode, String prefix, double skipRatio)
+    public Settings(SettingsManager manager, String textId, String voiceId, int volume, String defaultPlaylist, RepeatMode repeatMode, String prefix)
     {
         this.manager = manager;
         try
@@ -58,32 +56,21 @@ public class Settings implements GuildSettingsProvider
         {
             this.voiceId = 0;
         }
-        try
-        {
-            this.roleId = Long.parseLong(roleId);
-        }
-        catch(NumberFormatException e)
-        {
-            this.roleId = 0;
-        }
         this.volume = volume;
         this.defaultPlaylist = defaultPlaylist;
         this.repeatMode = repeatMode;
         this.prefix = prefix;
-        this.skipRatio = skipRatio;
     }
     
-    public Settings(SettingsManager manager, long textId, long voiceId, long roleId, int volume, String defaultPlaylist, RepeatMode repeatMode, String prefix, double skipRatio)
+    public Settings(SettingsManager manager, long textId, long voiceId, int volume, String defaultPlaylist, RepeatMode repeatMode, String prefix)
     {
         this.manager = manager;
         this.textId = textId;
         this.voiceId = voiceId;
-        this.roleId = roleId;
         this.volume = volume;
         this.defaultPlaylist = defaultPlaylist;
         this.repeatMode = repeatMode;
         this.prefix = prefix;
-        this.skipRatio = skipRatio;
     }
     
     // Getters
@@ -95,11 +82,6 @@ public class Settings implements GuildSettingsProvider
     public VoiceChannel getVoiceChannel(Guild guild)
     {
         return guild == null ? null : guild.getVoiceChannelById(voiceId);
-    }
-    
-    public Role getRole(Guild guild)
-    {
-        return guild == null ? null : guild.getRoleById(roleId);
     }
     
     public int getVolume()
@@ -121,11 +103,6 @@ public class Settings implements GuildSettingsProvider
     {
         return prefix;
     }
-    
-    public double getSkipRatio()
-    {
-        return skipRatio;
-    }
 
     @Override
     public Collection<String> getPrefixes()
@@ -143,12 +120,6 @@ public class Settings implements GuildSettingsProvider
     public void setVoiceChannel(VoiceChannel vc)
     {
         this.voiceId = vc == null ? 0 : vc.getIdLong();
-        this.manager.writeSettings();
-    }
-    
-    public void setDJRole(Role role)
-    {
-        this.roleId = role == null ? 0 : role.getIdLong();
         this.manager.writeSettings();
     }
     
@@ -176,9 +147,4 @@ public class Settings implements GuildSettingsProvider
         this.manager.writeSettings();
     }
 
-    public void setSkipRatio(double skipRatio)
-    {
-        this.skipRatio = skipRatio;
-        this.manager.writeSettings();
-    }
 }
