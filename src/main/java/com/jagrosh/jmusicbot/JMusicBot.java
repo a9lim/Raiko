@@ -138,8 +138,6 @@ public class JMusicBot
                         new SetstatusCmd(bot),
                         new ShutdownCmd(bot)
                 );
-        if(config.useEval())
-            cb.addCommand(new EvalCmd(bot));
         boolean nogame = false;
         if(config.getStatus()!=OnlineStatus.UNKNOWN)
             cb.setStatus(config.getStatus());
