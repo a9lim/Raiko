@@ -19,13 +19,13 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jmusicbot.Bot;
 import com.jagrosh.jmusicbot.audio.AudioHandler;
 import com.jagrosh.jmusicbot.audio.RequestMetadata;
-import com.jagrosh.jmusicbot.commands.DJCommand;
+import com.jagrosh.jmusicbot.commands.MusicCommand;
 
 /**
  *
  * @author John Grosh <john.a.grosh@gmail.com>
  */
-public class SkipCmd extends DJCommand
+public class SkipCmd extends MusicCommand
 {
     public SkipCmd(Bot bot)
     {
