@@ -104,7 +104,7 @@ public class SearchCmd extends MusicCommand
         {
             builder.setColor(event.getSelfMember().getColor())
                     .setText(FormatUtil.filter(event.getClient().getSuccess()+" Search results for `"+event.getArgs()+"`:"))
-                    .setChoices(new String[0])
+                    .setChoices()
                     .setSelection((msg,i) -> 
                     {
                         AudioTrack track = playlist.getTracks().get(i-1);
