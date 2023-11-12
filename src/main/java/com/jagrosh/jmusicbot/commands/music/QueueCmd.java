@@ -15,15 +15,17 @@
  */
 package com.jagrosh.jmusicbot.commands.music;
 
-import java.util.List;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.menu.Paginator;
 import com.jagrosh.jmusicbot.Bot;
-import com.jagrosh.jmusicbot.JMusicBot;
 import com.jagrosh.jmusicbot.audio.AudioHandler;
 import com.jagrosh.jmusicbot.audio.QueuedTrack;
 import com.jagrosh.jmusicbot.commands.MusicCommand;
+import com.jagrosh.jmusicbot.queue.DoubleDealingQueue;
 import com.jagrosh.jmusicbot.settings.RepeatMode;
 import com.jagrosh.jmusicbot.settings.Settings;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
@@ -71,8 +73,8 @@ public class QueueCmd extends MusicCommand
         }
         catch(NumberFormatException ignore){}
         AudioHandler ah = (AudioHandler)event.getGuild().getAudioManager().getSendingHandler();
-        List<QueuedTrack> list = ah.getQueue().getList();
-        if(list.isEmpty())
+        Deque<QueuedTrack> deque = ah.getQueue().getDeque();
+        if(deque.isEmpty())
         {
             Message nowp = ah.getNowPlaying(event.getJDA());
             Message nonowp = ah.getNoMusicPlaying(event.getJDA());
@@ -86,12 +88,14 @@ public class QueueCmd extends MusicCommand
             });
             return;
         }
-        String[] songs = new String[list.size()];
+        String[] songs = new String[deque.size()];
         long total = 0;
-        for(int i=0; i<list.size(); i++)
+        Iterator<QueuedTrack> iterator = deque.iterator();
+        for(int i=0; i<deque.size(); i++)
         {
-            total += list.get(i).getTrack().getDuration();
-            songs[i] = list.get(i).toString();
+            QueuedTrack track = iterator.next();
+            total += track.getTrack().getDuration();
+            songs[i] = track.toString();
         }
         Settings settings = event.getClient().getSettingsFor(event.getGuild());
         long fintotal = total;
