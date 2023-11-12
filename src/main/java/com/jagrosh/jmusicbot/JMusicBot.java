@@ -55,12 +55,9 @@ public class JMusicBot
     public static void main(String[] args)
     {
         if(args.length > 0)
-            switch(args[0].toLowerCase())
-            {
-                case "generate-config":
-                    BotConfig.writeDefaultConfig();
-                    return;
-                default:
+            if (args[0].equalsIgnoreCase("generate-config")) {
+                BotConfig.writeDefaultConfig();
+                return;
             }
         startBot();
     }
@@ -101,8 +98,7 @@ public class JMusicBot
                 .addCommands(aboutCommand,
                         new PingCommand(),
                         new SettingsCmd(bot),
-                        
-                        new LyricsCmd(bot),
+
                         new NowplayingCmd(bot),
                         new PlayCmd(bot),
                         new PlaylistsCmd(bot),

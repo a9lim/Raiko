@@ -131,7 +131,7 @@ public class Bot
         threadpool.shutdownNow();
         if(jda.getStatus()!=JDA.Status.SHUTTING_DOWN)
         {
-            jda.getGuilds().stream().forEach(g -> 
+            jda.getGuilds().forEach(g ->
             {
                 g.getAudioManager().closeAudioConnection();
                 AudioHandler ah = (AudioHandler)g.getAudioManager().getSendingHandler();

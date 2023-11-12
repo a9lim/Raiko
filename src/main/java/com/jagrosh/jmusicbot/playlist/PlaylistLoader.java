@@ -47,8 +47,7 @@ public class PlaylistLoader
         if(folderExists())
         {
             File folder = new File(OtherUtil.getPath(config.getPlaylistsFolder()).toString());
-            return Arrays.asList(folder.listFiles((pathname) -> pathname.getName().endsWith(".txt")))
-                    .stream().map(f -> f.getName().substring(0,f.getName().length()-4)).collect(Collectors.toList());
+            return Arrays.stream(folder.listFiles((pathname) -> pathname.getName().endsWith(".txt"))).map(f -> f.getName().substring(0,f.getName().length()-4)).collect(Collectors.toList());
         }
         else
         {
@@ -213,10 +212,10 @@ public class PlaylistLoader
                                     loaded.set(first, loaded.get(second));
                                     loaded.set(second, tmp);
                                 }
-                            loaded.removeIf(track -> config.isTooLong(track));
+                            loaded.removeIf(config::isTooLong);
                             loaded.forEach(at -> at.setUserData(0L));
                             tracks.addAll(loaded);
-                            loaded.forEach(at -> consumer.accept(at));
+                            loaded.forEach(consumer);
                         }
                         done();
                     }

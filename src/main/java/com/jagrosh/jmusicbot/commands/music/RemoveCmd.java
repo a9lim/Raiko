@@ -87,8 +87,8 @@ public class RemoveCmd extends MusicCommand
             event.replyError("Position must be a valid integer between 1 and " + handler.getQueue().size() + "!");
             return;
         }
-        QueuedTrack qt = handler.getQueue().get(pos-1);
-        handler.getQueue().remove(pos-1);
+        QueuedTrack qt = handler.getQueue().get(pos);
+        handler.getQueue().remove(pos);
         User u;
         try {
             u = event.getJDA().getUserById(qt.getIdentifier());

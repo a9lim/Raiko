@@ -52,8 +52,6 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler
     
     private final DoubleDealingQueue<QueuedTrack> queue = new DoubleDealingQueue<>();
     private final List<AudioTrack> defaultQueue = new LinkedList<>();
-    private final Set<String> votes = new HashSet<>();
-    
     private final PlayerManager manager;
     private final AudioPlayer audioPlayer;
     private final long guildId;
@@ -179,7 +177,6 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) 
     {
-        votes.clear();
         manager.getBot().getNowplayingHandler().onTrackUpdate(guildId, track, this);
     }
 

@@ -68,7 +68,7 @@ public class AloneInVoiceHandler
 
             toRemove.add(entrySet.getKey());
         }
-        toRemove.forEach(id -> aloneSince.remove(id));
+        toRemove.forEach(aloneSince::remove);
     }
 
     public void onVoiceUpdate(GuildVoiceUpdateEvent event)
