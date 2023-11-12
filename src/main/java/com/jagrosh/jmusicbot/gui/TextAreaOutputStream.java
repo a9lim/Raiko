@@ -17,6 +17,7 @@ package com.jagrosh.jmusicbot.gui;
 
 import java.awt.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -30,7 +31,7 @@ public class TextAreaOutputStream extends OutputStream {
 // INSTANCE MEMBERS
 // *************************************************************************************************
 
-private byte[]                          oneByte;                                                    // array for write(int val);
+private final byte[]                          oneByte;                                                    // array for write(int val);
 private Appender                        appender;                                                   // most recent action
 
 public TextAreaOutputStream(JTextArea txtara) {
@@ -76,12 +77,8 @@ public synchronized void write(byte[] ba,int str,int len) {
 
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings("DM_DEFAULT_ENCODING")
 static private String bytesToString(byte[] ba, int str, int len) {
-    try { 
-        return new String(ba,str,len,"UTF-8"); 
-    } catch(UnsupportedEncodingException thr) { 
-        return new String(ba,str,len); 
-    } // all JVMs are required to support UTF-8
-    }
+    return new String(ba,str,len, StandardCharsets.UTF_8);
+}
 
 // *************************************************************************************************
 // STATIC MEMBERS
