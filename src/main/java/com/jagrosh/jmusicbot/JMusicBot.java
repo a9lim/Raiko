@@ -68,18 +68,14 @@ public class JMusicBot
     private static void startBot()
     {
         // create prompt to handle startup
-        Prompt prompt = new Prompt("JMusicBot");
-        
-        // startup checks
-        //OtherUtil.checkVersion(prompt);
-        OtherUtil.checkJavaVersion(prompt);
+        Prompt prompt = new Prompt("Raiko");
         
         // load config
         BotConfig config = new BotConfig(prompt);
         config.load();
         if(!config.isValid())
             return;
-        LOG.info("Loaded config from " + config.getConfigLocation());
+        LOG.info("loaded config from " + config.getConfigLocation());
         
         // set up the listener
         EventWaiter waiter = new EventWaiter();
@@ -88,7 +84,7 @@ public class JMusicBot
         
         AboutCommand aboutCommand = new AboutCommand(Color.BLUE.brighter(),
                                 "raiko gaming",
-                                new String[]{"High-quality music playback", "FairQueue™ Technology", "Easy to host yourself"},
+                                new String[]{"high-quality (touhou) music playback", "FairQueue™ Technology", "easy to host yourself"},
                                 RECOMMENDED_PERMS);
         aboutCommand.setIsAuthor(false);
         aboutCommand.setReplacementCharacter("\uD83C\uDFB6"); // 🎶
@@ -115,7 +111,6 @@ public class JMusicBot
                         new SearchCmd(bot),
                         new SCSearchCmd(bot),
                         new ShuffleCmd(bot),
-                        new ShuffleAllCmd(bot),
 
                         new SkipCmd(bot),
                         new MoveTrackCmd(bot),
@@ -183,20 +178,20 @@ public class JMusicBot
         }
         catch (LoginException ex)
         {
-            prompt.alert(Prompt.Level.ERROR, "JMusicBot", ex + "\nPlease make sure you are "
+            prompt.alert(Prompt.Level.ERROR, "Raiko", ex + "\nPlease make sure you are "
                     + "editing the correct config.txt file, and that you have used the "
                     + "correct token (not the 'secret'!)\nConfig Location: " + config.getConfigLocation());
             System.exit(1);
         }
         catch(IllegalArgumentException ex)
         {
-            prompt.alert(Prompt.Level.ERROR, "JMusicBot", "Some aspect of the configuration is "
+            prompt.alert(Prompt.Level.ERROR, "Raiko", "Some aspect of the configuration is "
                     + "invalid: " + ex + "\nConfig Location: " + config.getConfigLocation());
             System.exit(1);
         }
         catch(ErrorResponseException ex)
         {
-            prompt.alert(Prompt.Level.ERROR, "JMusicBot", ex + "\nInvalid reponse returned when "
+            prompt.alert(Prompt.Level.ERROR, "Raiko", ex + "\nInvalid reponse returned when "
                     + "attempting to connect, please make sure you're connected to the internet");
             System.exit(1);
         }

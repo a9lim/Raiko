@@ -35,7 +35,7 @@ public class RemoveCmd extends MusicCommand
         super(bot);
         this.name = "remove";
         this.help = "removes a song from the queue";
-        this.arguments = "<position|ALL>";
+        this.arguments = "<position|MINE|ALL>";
         this.aliases = bot.getConfig().getAliases(this.name);
         this.beListening = true;
         this.bePlaying = true;
@@ -52,6 +52,14 @@ public class RemoveCmd extends MusicCommand
         }
         if(event.getArgs().equalsIgnoreCase("all"))
         {
+            int count = handler.getQueue().size();
+            handler.getQueue().clear();
+            if(count==0)
+                event.replyWarning("There are no songs in the queue!");
+            else
+                event.replySuccess("Successfully removed "+count+" entries.");
+        } else if(event.getArgs().equalsIgnoreCase("mine"))
+        {
             int count = handler.getQueue().removeAll(event.getAuthor().getIdLong());
             if(count==0)
                 event.replyWarning("You don't have any songs in the queue!");
@@ -63,7 +71,17 @@ public class RemoveCmd extends MusicCommand
         try {
             pos = Integer.parseInt(event.getArgs());
         } catch(NumberFormatException e) {
-            pos = 0;
+            QueuedTrack qt = handler.getQueue().getDeque().peek();
+            handler.getQueue().getDeque().pop();
+            User u;
+            try {
+                u = event.getJDA().getUserById(qt.getIdentifier());
+            } catch(Exception f) {
+                u = null;
+            }
+            event.replySuccess("Removed **"+qt.getTrack().getInfo().title
+                    +"** from the queue (requested by "+(u==null ? "someone" : "**"+u.getName()+"**")+")");
+            return;
         }
         if(pos<1 || pos>handler.getQueue().size()) {
             event.replyError("Position must be a valid integer between 1 and " + handler.getQueue().size() + "!");

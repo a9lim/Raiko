@@ -15,8 +15,8 @@
  */
 package com.jagrosh.jmusicbot.audio;
 
-import com.jagrosh.jmusicbot.JMusicBot;
 import com.jagrosh.jmusicbot.playlist.PlaylistLoader.Playlist;
+import com.jagrosh.jmusicbot.queue.DoubleDealingQueue;
 import com.jagrosh.jmusicbot.settings.RepeatMode;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import com.jagrosh.jmusicbot.queue.FairQueue;
+
 import com.jagrosh.jmusicbot.settings.Settings;
 import com.jagrosh.jmusicbot.utils.FormatUtil;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack;
@@ -50,7 +50,7 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler
     public final static String PAUSE_EMOJI = "\u23F8"; // ⏸
     public final static String STOP_EMOJI  = "\u23F9"; // ⏹
     
-    private final FairQueue<QueuedTrack> queue = new FairQueue<>();
+    private final DoubleDealingQueue<QueuedTrack> queue = new DoubleDealingQueue<>();
     private final List<AudioTrack> defaultQueue = new LinkedList<>();
     private final Set<String> votes = new HashSet<>();
     
@@ -67,32 +67,23 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler
         this.guildId = guild.getIdLong();
     }
 
-    public int addTrackToFront(QueuedTrack qtrack)
+    public void pushTrack(QueuedTrack qtrack)
     {
         if(audioPlayer.getPlayingTrack()==null)
-        {
             audioPlayer.playTrack(qtrack.getTrack());
-            return -1;
-        }
         else
-        {
-            queue.addAt(0, qtrack);
-            return 0;
-        }
+            queue.push(qtrack);
     }
-    
-    public int addTrack(QueuedTrack qtrack)
+
+    public void addTrack(QueuedTrack qtrack)
     {
         if(audioPlayer.getPlayingTrack()==null)
-        {
             audioPlayer.playTrack(qtrack.getTrack());
-            return -1;
-        }
         else
-            return queue.add(qtrack);
+            queue.add(qtrack);
     }
     
-    public FairQueue<QueuedTrack> getQueue()
+    public DoubleDealingQueue<QueuedTrack> getQueue()
     {
         return queue;
     }
@@ -108,11 +99,6 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler
     public boolean isMusicPlaying(JDA jda)
     {
         return guild(jda).getSelfMember().getVoiceState().inVoiceChannel() && audioPlayer.getPlayingTrack()!=null;
-    }
-    
-    public Set<String> getVotes()
-    {
-        return votes;
     }
     
     public AudioPlayer getPlayer()
