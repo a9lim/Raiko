@@ -18,13 +18,10 @@ package hayashi.raiko.commands.music;
 import hayashi.raiko.Bot;
 
 /**
- *
  * @author John Grosh <john.a.grosh@gmail.com>
  */
-public class SCSearchCmd extends SearchCmd 
-{
-    public SCSearchCmd(Bot bot)
-    {
+public class SCSearchCmd extends SearchCmd {
+    public SCSearchCmd(Bot bot) {
         super(bot);
         this.searchPrefix = "scsearch:";
         this.name = "scsearch";

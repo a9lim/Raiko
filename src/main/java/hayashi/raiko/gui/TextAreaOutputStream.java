@@ -116,7 +116,7 @@ static private String bytesToString(byte[] ba, int str, int len) {
             queue=false; 
             EventQueue.invokeLater(this); 
         }
-        }
+    }
 
     private synchronized void clear() {
         clear=true;
@@ -127,7 +127,7 @@ static private String bytesToString(byte[] ba, int str, int len) {
             queue=false; 
             EventQueue.invokeLater(this); 
         }
-        }
+    }
 
     // MUST BE THE ONLY METHOD THAT TOUCHES textArea!
     @Override
