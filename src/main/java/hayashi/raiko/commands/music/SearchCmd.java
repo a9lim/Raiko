@@ -63,10 +63,10 @@ public class SearchCmd extends MusicCommand {
     public void doCommand(CommandEvent event) {
         if (event.getArgs().isEmpty()) {
             event.replyError("Please include a query.");
-            return;
+        } else {
+            event.reply(searchingEmoji + " Searching... `[" + event.getArgs() + "]`",
+                    m -> bot.getPlayerManager().loadItemOrdered(event.getGuild(), searchPrefix + event.getArgs(), new ResultHandler(m, event)));
         }
-        event.reply(searchingEmoji + " Searching... `[" + event.getArgs() + "]`",
-                m -> bot.getPlayerManager().loadItemOrdered(event.getGuild(), searchPrefix + event.getArgs(), new ResultHandler(m, event)));
     }
 
     private class ResultHandler implements AudioLoadResultHandler {
@@ -83,14 +83,14 @@ public class SearchCmd extends MusicCommand {
             if (bot.getConfig().isTooLong(track)) {
                 m.editMessage(FormatUtil.filter(event.getClient().getWarning() + " This track (**" + track.getInfo().title + "**) is longer than the allowed maximum: `"
                         + FormatUtil.formatTime(track.getDuration()) + "` > `" + bot.getConfig().getMaxTime() + "`")).queue();
-                return;
+            } else {
+                AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
+                handler.addTrack(new QueuedTrack(track, event.getAuthor()));
+                int pos = handler.getQueue().size() + 1;
+                m.editMessage(FormatUtil.filter(event.getClient().getSuccess() + " Added **" + track.getInfo().title
+                        + "** (`" + FormatUtil.formatTime(track.getDuration()) + "`) " + (pos == 0 ? "to begin playing"
+                        : " to the queue at position " + pos))).queue();
             }
-            AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
-            handler.addTrack(new QueuedTrack(track, event.getAuthor()));
-            int pos = handler.getQueue().size() + 1;
-            m.editMessage(FormatUtil.filter(event.getClient().getSuccess() + " Added **" + track.getInfo().title
-                    + "** (`" + FormatUtil.formatTime(track.getDuration()) + "`) " + (pos == 0 ? "to begin playing"
-                    : " to the queue at position " + pos))).queue();
         }
 
         @Override
@@ -98,20 +98,19 @@ public class SearchCmd extends MusicCommand {
             builder.setColor(event.getSelfMember().getColor())
                     .setText(FormatUtil.filter(event.getClient().getSuccess() + " Search results for `" + event.getArgs() + "`:"))
                     .setChoices()
-                    .setSelection((msg, i) ->
-                    {
+                    .setSelection((msg, i) -> {
                         AudioTrack track = playlist.getTracks().get(i - 1);
                         if (bot.getConfig().isTooLong(track)) {
                             event.replyWarning("This track (**" + track.getInfo().title + "**) is longer than the allowed maximum: `"
                                     + FormatUtil.formatTime(track.getDuration()) + "` > `" + bot.getConfig().getMaxTime() + "`");
-                            return;
+                        } else {
+                            AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
+                            handler.addTrack(new QueuedTrack(track, event.getAuthor()));
+                            int pos = handler.getQueue().size() + 1;
+                            event.replySuccess("Added **" + FormatUtil.filter(track.getInfo().title)
+                                    + "** (`" + FormatUtil.formatTime(track.getDuration()) + "`) " + (pos == 0 ? "to begin playing"
+                                    : " to the queue at position " + pos));
                         }
-                        AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
-                        handler.addTrack(new QueuedTrack(track, event.getAuthor()));
-                        int pos = handler.getQueue().size() + 1;
-                        event.replySuccess("Added **" + FormatUtil.filter(track.getInfo().title)
-                                + "** (`" + FormatUtil.formatTime(track.getDuration()) + "`) " + (pos == 0 ? "to begin playing"
-                                : " to the queue at position " + pos));
                     })
                     .setCancel((msg) -> {
                     })
@@ -131,10 +130,8 @@ public class SearchCmd extends MusicCommand {
 
         @Override
         public void loadFailed(FriendlyException throwable) {
-            if (throwable.severity == Severity.COMMON)
-                m.editMessage(event.getClient().getError() + " Error loading: " + throwable.getMessage()).queue();
-            else
-                m.editMessage(event.getClient().getError() + " Error loading track.").queue();
+            m.editMessage(event.getClient().getError() + " Error loading" +
+                    (throwable.severity == Severity.COMMON ? ": " + throwable.getMessage() : "  track.")).queue();
         }
     }
 }

@@ -69,8 +69,7 @@ public class QueueCmd extends MusicCommand {
         int pagenum = 1;
         try {
             pagenum = Integer.parseInt(event.getArgs());
-        } catch (NumberFormatException ignore) {
-        }
+        } catch (NumberFormatException ignore) {}
         AudioHandler ah = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
         Deque<QueuedTrack> deque = ah.getQueue().getDeque();
         if (deque.isEmpty()) {
@@ -79,8 +78,7 @@ public class QueueCmd extends MusicCommand {
             Message built = new MessageBuilder()
                     .setContent(event.getClient().getWarning() + " There is no music in the queue!")
                     .setEmbeds((nowp == null ? nonowp : nowp).getEmbeds().get(0)).build();
-            event.reply(built, m ->
-            {
+            event.reply(built, m -> {
                 if (nowp != null)
                     bot.getNowplayingHandler().setLastNPMessage(m);
             });

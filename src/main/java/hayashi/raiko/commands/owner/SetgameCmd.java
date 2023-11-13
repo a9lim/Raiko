@@ -49,7 +49,7 @@ public class SetgameCmd extends OwnerCommand {
         }
     }
 
-    private class SetstreamCmd extends OwnerCommand {
+    private static class SetstreamCmd extends OwnerCommand {
         private SetstreamCmd() {
             this.name = "stream";
             this.aliases = new String[]{"twitch", "streaming"};
@@ -75,7 +75,7 @@ public class SetgameCmd extends OwnerCommand {
         }
     }
 
-    private class SetlistenCmd extends OwnerCommand {
+    private static class SetlistenCmd extends OwnerCommand {
         private SetlistenCmd() {
             this.name = "listen";
             this.aliases = new String[]{"listening"};
@@ -100,7 +100,7 @@ public class SetgameCmd extends OwnerCommand {
         }
     }
 
-    private class SetwatchCmd extends OwnerCommand {
+    private static class SetwatchCmd extends OwnerCommand {
         private SetwatchCmd() {
             this.name = "watch";
             this.aliases = new String[]{"watching"};

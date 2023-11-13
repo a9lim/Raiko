@@ -80,8 +80,7 @@ public class PlaylistLoader {
             if (folderExists()) {
                 boolean[] shuffle = {false};
                 List<String> list = new ArrayList<>();
-                Files.readAllLines(OtherUtil.getPath(config.getPlaylistsFolder() + File.separator + name + ".txt")).forEach(str ->
-                {
+                Files.readAllLines(OtherUtil.getPath(config.getPlaylistsFolder() + File.separator + name + ".txt")).forEach(str -> {
                     String s = str.trim();
                     if (s.isEmpty())
                         return;
@@ -93,7 +92,7 @@ public class PlaylistLoader {
                         list.add(s);
                 });
                 if (shuffle[0])
-                    shuffle(list);
+                    Collections.shuffle(list);
                 return new Playlist(name, list, shuffle[0]);
             } else {
                 createFolder();
@@ -101,16 +100,6 @@ public class PlaylistLoader {
             }
         } catch (IOException e) {
             return null;
-        }
-    }
-
-
-    private static <T> void shuffle(List<T> list) {
-        for (int first = 0; first < list.size(); first++) {
-            int second = (int) (Math.random() * list.size());
-            T tmp = list.get(first);
-            list.set(first, list.get(second));
-            list.set(second, tmp);
         }
     }
 
@@ -140,7 +129,7 @@ public class PlaylistLoader {
                     private void done() {
                         if (last) {
                             if (shuffle)
-                                shuffleTracks();
+                                Collections.shuffle(tracks);
                             if (callback != null)
                                 callback.run();
                         }
@@ -167,12 +156,7 @@ public class PlaylistLoader {
                         } else {
                             List<AudioTrack> loaded = new ArrayList<>(ap.getTracks());
                             if (shuffle)
-                                for (int first = 0; first < loaded.size(); first++) {
-                                    int second = (int) (Math.random() * loaded.size());
-                                    AudioTrack tmp = loaded.get(first);
-                                    loaded.set(first, loaded.get(second));
-                                    loaded.set(second, tmp);
-                                }
+                                Collections.shuffle(loaded);
                             loaded.removeIf(config::isTooLong);
                             loaded.forEach(at -> at.setUserData(0L));
                             tracks.addAll(loaded);
@@ -196,10 +180,6 @@ public class PlaylistLoader {
             }
         }
 
-        public void shuffleTracks() {
-            shuffle(tracks);
-        }
-
         public String getName() {
             return name;
         }
@@ -217,7 +197,7 @@ public class PlaylistLoader {
         }
     }
 
-    public class PlaylistLoadError {
+    public static class PlaylistLoadError {
         private final int number;
         private final String item;
         private final String reason;

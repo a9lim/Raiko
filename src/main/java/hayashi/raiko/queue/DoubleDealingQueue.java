@@ -135,13 +135,12 @@ public class DoubleDealingQueue<T extends Queueable> {
         return out.size();
     }
 
-    public int shuffle() {
+    public void shuffle() {
         ArrayList<T> out = new ArrayList<>(deque);
         Collections.shuffle(out);
         deque.clear();
         for(T t: out)
             deque.push(t);
-        return deque.size();
     }
 
     public void skip(int number) {

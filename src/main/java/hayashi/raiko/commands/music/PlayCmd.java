@@ -127,7 +127,7 @@ public class PlayCmd extends MusicCommand {
 
         private int loadPlaylist(AudioPlaylist playlist, AudioTrack exclude) {
             int[] count = {0};
-            playlist.getTracks().stream().forEach((track) -> {
+            playlist.getTracks().forEach((track) -> {
                 if (!bot.getConfig().isTooLong(track) && !track.equals(exclude)) {
                     AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
                     handler.addTrack(new QueuedTrack(track, event.getAuthor()));
@@ -152,7 +152,7 @@ public class PlayCmd extends MusicCommand {
                 loadSingle(single, playlist);
             } else {
                 int count = loadPlaylist(playlist, null);
-                if (playlist.getTracks().size() == 0) {
+                if (playlist.getTracks().isEmpty()) {
                     m.editMessage(FormatUtil.filter(event.getClient().getWarning() + " The playlist " + (playlist.getName() == null ? "" : "(**" + playlist.getName()
                             + "**) ") + " could not be loaded or contained 0 entries")).queue();
                 } else if (count == 0) {
@@ -178,10 +178,8 @@ public class PlayCmd extends MusicCommand {
 
         @Override
         public void loadFailed(FriendlyException throwable) {
-            if (throwable.severity == Severity.COMMON)
-                m.editMessage(event.getClient().getError() + " Error loading: " + throwable.getMessage()).queue();
-            else
-                m.editMessage(event.getClient().getError() + " Error loading track.").queue();
+            m.editMessage(event.getClient().getError() + " Error loading" +
+                    (throwable.severity == Severity.COMMON ? ": " + throwable.getMessage() : "  track.")).queue();
         }
     }
 
