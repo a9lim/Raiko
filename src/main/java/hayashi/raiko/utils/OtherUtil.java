@@ -44,11 +44,10 @@ public class OtherUtil {
     public static Path getPath(String path) {
         Path result = Paths.get(path);
         // special logic to prevent trying to access system32
-        if (result.toAbsolutePath().toString().toLowerCase().startsWith(WINDOWS_INVALID_PATH)) {
+        if (result.toAbsolutePath().toString().toLowerCase().startsWith(WINDOWS_INVALID_PATH))
             try {
                 result = Paths.get(new File(Raiko.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getPath() + File.separator + path);
             } catch (URISyntaxException ex) {}
-        }
         return result;
     }
 

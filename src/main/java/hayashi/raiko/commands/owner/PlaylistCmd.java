@@ -70,15 +70,17 @@ public class PlaylistCmd extends OwnerCommand {
             pname = pname.replaceAll("[*?|\\/\":<>]", "");
             if (pname == null || pname.isEmpty()) {
                 event.replyError("Please provide a name for the playlist!");
-            } else if (bot.getPlaylistLoader().getPlaylist(pname) == null) {
-                try {
-                    bot.getPlaylistLoader().createPlaylist(pname);
-                    event.reply(event.getClient().getSuccess() + " Successfully created playlist `" + pname + "`!");
-                } catch (IOException e) {
-                    event.reply(event.getClient().getError() + " Unable to create the playlist: " + e.getLocalizedMessage());
-                }
-            } else {
+                return;
+            }
+            if (bot.getPlaylistLoader().getPlaylist(pname) != null) {
                 event.reply(event.getClient().getError() + " Playlist `" + pname + "` already exists!");
+                return;
+            }
+            try {
+                bot.getPlaylistLoader().createPlaylist(pname);
+                event.reply(event.getClient().getSuccess() + " Successfully created playlist `" + pname + "`!");
+            } catch (IOException e) {
+                event.reply(event.getClient().getError() + " Unable to create the playlist: " + e.getLocalizedMessage());
             }
         }
     }
@@ -97,13 +99,13 @@ public class PlaylistCmd extends OwnerCommand {
             String pname = event.getArgs().replaceAll("\\s+", "_");
             if (bot.getPlaylistLoader().getPlaylist(pname) == null) {
                 event.reply(event.getClient().getError() + " Playlist `" + pname + "` doesn't exist!");
-            } else {
-                try {
-                    bot.getPlaylistLoader().deletePlaylist(pname);
-                    event.reply(event.getClient().getSuccess() + " Successfully deleted playlist `" + pname + "`!");
-                } catch (IOException e) {
-                    event.reply(event.getClient().getError() + " I was unable to delete the playlist: " + e.getLocalizedMessage());
-                }
+                return;
+            }
+            try {
+                bot.getPlaylistLoader().deletePlaylist(pname);
+                event.reply(event.getClient().getSuccess() + " Successfully deleted playlist `" + pname + "`!");
+            } catch (IOException e) {
+                event.reply(event.getClient().getError() + " I was unable to delete the playlist: " + e.getLocalizedMessage());
             }
         }
     }
@@ -122,28 +124,28 @@ public class PlaylistCmd extends OwnerCommand {
             String[] parts = event.getArgs().split("\\s+", 2);
             if (parts.length < 2) {
                 event.reply(event.getClient().getError() + " Please include a playlist name and URLs to add!");
-            } else {
-                String pname = parts[0];
-                Playlist playlist = bot.getPlaylistLoader().getPlaylist(pname);
-                if (playlist == null) {
-                    event.reply(event.getClient().getError() + " Playlist `" + pname + "` doesn't exist!");
-                } else {
-                    StringBuilder builder = new StringBuilder();
-                    playlist.getItems().forEach(item -> builder.append("\r\n").append(item));
-                    String[] urls = parts[1].split("\\|");
-                    for (String url : urls) {
-                        String u = url.trim();
-                        if (u.startsWith("<") && u.endsWith(">"))
-                            u = u.substring(1, u.length() - 1);
-                        builder.append("\r\n").append(u);
-                    }
-                    try {
-                        bot.getPlaylistLoader().writePlaylist(pname, builder.toString());
-                        event.reply(event.getClient().getSuccess() + " Successfully added " + urls.length + " items to playlist `" + pname + "`!");
-                    } catch (IOException e) {
-                        event.reply(event.getClient().getError() + " I was unable to append to the playlist: " + e.getLocalizedMessage());
-                    }
-                }
+                return;
+            }
+            String pname = parts[0];
+            Playlist playlist = bot.getPlaylistLoader().getPlaylist(pname);
+            if (playlist == null) {
+                event.reply(event.getClient().getError() + " Playlist `" + pname + "` doesn't exist!");
+                return;
+            }
+            StringBuilder builder = new StringBuilder();
+            playlist.getItems().forEach(item -> builder.append("\r\n").append(item));
+            String[] urls = parts[1].split("\\|");
+            for (String url : urls) {
+                String u = url.trim();
+                if (u.startsWith("<") && u.endsWith(">"))
+                    u = u.substring(1, u.length() - 1);
+                builder.append("\r\n").append(u);
+            }
+            try {
+                bot.getPlaylistLoader().writePlaylist(pname, builder.toString());
+                event.reply(event.getClient().getSuccess() + " Successfully added " + urls.length + " items to playlist `" + pname + "`!");
+            } catch (IOException e) {
+                event.reply(event.getClient().getError() + " I was unable to append to the playlist: " + e.getLocalizedMessage());
             }
         }
     }
@@ -172,18 +174,20 @@ public class PlaylistCmd extends OwnerCommand {
                 bot.getPlaylistLoader().createFolder();
             if (!bot.getPlaylistLoader().folderExists()) {
                 event.reply(event.getClient().getWarning() + " Playlists folder does not exist and could not be created!");
-            } else {
-                List<String> list = bot.getPlaylistLoader().getPlaylistNames();
-                if (list == null) {
-                    event.reply(event.getClient().getError() + " Failed to load available playlists!");
-                } else if (list.isEmpty()) {
-                    event.reply(event.getClient().getWarning() + " There are no playlists in the Playlists folder!");
-                } else {
-                    StringBuilder builder = new StringBuilder(event.getClient().getSuccess() + " Available playlists:\n");
-                    list.forEach(str -> builder.append("`").append(str).append("` "));
-                    event.reply(builder.toString());
-                }
+                return;
             }
+            List<String> list = bot.getPlaylistLoader().getPlaylistNames();
+            if (list == null) {
+                event.reply(event.getClient().getError() + " Failed to load available playlists!");
+                return;
+            }
+            if (list.isEmpty()) {
+                event.reply(event.getClient().getWarning() + " There are no playlists in the Playlists folder!");
+                return;
+            }
+            StringBuilder builder = new StringBuilder(event.getClient().getSuccess() + " Available playlists:\n");
+            list.forEach(str -> builder.append("`").append(str).append("` "));
+            event.reply(builder.toString());
         }
     }
 }

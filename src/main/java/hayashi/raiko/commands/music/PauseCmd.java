@@ -38,9 +38,9 @@ public class PauseCmd extends MusicCommand {
         if (handler.getPlayer().isPaused()) {
             handler.getPlayer().setPaused(false);
             event.replySuccess("Resumed **" + handler.getPlayer().getPlayingTrack().getInfo().title + "**.");
-        } else {
-            handler.getPlayer().setPaused(true);
-            event.replySuccess("Paused **" + handler.getPlayer().getPlayingTrack().getInfo().title + "**.");
+            return;
         }
+        handler.getPlayer().setPaused(true);
+        event.replySuccess("Paused **" + handler.getPlayer().getPlayingTrack().getInfo().title + "**.");
     }
 }

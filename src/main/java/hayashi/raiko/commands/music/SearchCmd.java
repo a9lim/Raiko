@@ -63,10 +63,10 @@ public class SearchCmd extends MusicCommand {
     public void doCommand(CommandEvent event) {
         if (event.getArgs().isEmpty()) {
             event.replyError("Please include a query.");
-        } else {
-            event.reply(searchingEmoji + " Searching... `[" + event.getArgs() + "]`",
-                    m -> bot.getPlayerManager().loadItemOrdered(event.getGuild(), searchPrefix + event.getArgs(), new ResultHandler(m, event)));
+            return;
         }
+        event.reply(searchingEmoji + " Searching... `[" + event.getArgs() + "]`",
+                m -> bot.getPlayerManager().loadItemOrdered(event.getGuild(), searchPrefix + event.getArgs(), new ResultHandler(m, event)));
     }
 
     private class ResultHandler implements AudioLoadResultHandler {
@@ -83,14 +83,14 @@ public class SearchCmd extends MusicCommand {
             if (bot.getConfig().isTooLong(track)) {
                 m.editMessage(FormatUtil.filter(event.getClient().getWarning() + " This track (**" + track.getInfo().title + "**) is longer than the allowed maximum: `"
                         + FormatUtil.formatTime(track.getDuration()) + "` > `" + bot.getConfig().getMaxTime() + "`")).queue();
-            } else {
-                AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
-                handler.addTrack(new QueuedTrack(track, event.getAuthor()));
-                int pos = handler.getQueue().size() + 1;
-                m.editMessage(FormatUtil.filter(event.getClient().getSuccess() + " Added **" + track.getInfo().title
-                        + "** (`" + FormatUtil.formatTime(track.getDuration()) + "`) " + (pos == 0 ? "to begin playing"
-                        : " to the queue at position " + pos))).queue();
+                return;
             }
+            AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
+            handler.addTrack(new QueuedTrack(track, event.getAuthor()));
+            int pos = handler.getQueue().size() + 1;
+            m.editMessage(FormatUtil.filter(event.getClient().getSuccess() + " Added **" + track.getInfo().title
+                    + "** (`" + FormatUtil.formatTime(track.getDuration()) + "`) " + (pos == 0 ? "to begin playing"
+                    : " to the queue at position " + pos))).queue();
         }
 
         @Override
@@ -103,14 +103,14 @@ public class SearchCmd extends MusicCommand {
                         if (bot.getConfig().isTooLong(track)) {
                             event.replyWarning("This track (**" + track.getInfo().title + "**) is longer than the allowed maximum: `"
                                     + FormatUtil.formatTime(track.getDuration()) + "` > `" + bot.getConfig().getMaxTime() + "`");
-                        } else {
-                            AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
-                            handler.addTrack(new QueuedTrack(track, event.getAuthor()));
-                            int pos = handler.getQueue().size() + 1;
-                            event.replySuccess("Added **" + FormatUtil.filter(track.getInfo().title)
-                                    + "** (`" + FormatUtil.formatTime(track.getDuration()) + "`) " + (pos == 0 ? "to begin playing"
-                                    : " to the queue at position " + pos));
+                            return;
                         }
+                        AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
+                        handler.addTrack(new QueuedTrack(track, event.getAuthor()));
+                        int pos = handler.getQueue().size() + 1;
+                        event.replySuccess("Added **" + FormatUtil.filter(track.getInfo().title)
+                                + "** (`" + FormatUtil.formatTime(track.getDuration()) + "`) " + (pos == 0 ? "to begin playing"
+                                : " to the queue at position " + pos));
                     })
                     .setCancel((msg) -> {
                     })

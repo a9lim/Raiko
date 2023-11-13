@@ -119,9 +119,8 @@ public class BotConfig {
                 if (owner <= 0) {
                     prompt.alert(Prompt.Level.ERROR, CONTEXT, "Invalid User ID! Exiting.\n\nConfig Location: " + path.toAbsolutePath());
                     return;
-                } else {
-                    write = true;
                 }
+                write = true;
             }
 
             if (write)
@@ -147,6 +146,7 @@ public class BotConfig {
         }
     }
 
+    //uhh
     private static String loadDefaultConfig() {
         String original = OtherUtil.loadResource(new Raiko(), "/reference.conf");
         return original == null
@@ -168,10 +168,9 @@ public class BotConfig {
         Prompt prompt = new Prompt(null, null, true, true);
         prompt.alert(Prompt.Level.INFO, "Raiko Config", "Generating default config file");
         Path path = BotConfig.getConfigPath();
-        byte[] bytes = BotConfig.loadDefaultConfig().getBytes();
         try {
             prompt.alert(Prompt.Level.INFO, "Raiko Config", "Writing default config file to " + path.toAbsolutePath());
-            Files.write(path, bytes);
+            Files.write(path, BotConfig.loadDefaultConfig().getBytes());
         } catch (Exception ex) {
             prompt.alert(Prompt.Level.ERROR, "Raiko Config", "An error occurred writing the default config file: " + ex.getMessage());
         }

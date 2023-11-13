@@ -104,10 +104,9 @@ public class QueueCmd extends MusicCommand {
 
     private String getQueueTitle(AudioHandler ah, String success, int songslength, long total, RepeatMode repeatmode) {
         StringBuilder sb = new StringBuilder();
-        if (ah.getPlayer().getPlayingTrack() != null) {
+        if (ah.getPlayer().getPlayingTrack() != null)
             sb.append(ah.getStatusEmoji()).append(" **")
                     .append(ah.getPlayer().getPlayingTrack().getInfo().title).append("**\n");
-        }
         return FormatUtil.filter(sb.append(success).append(" Current Queue | ").append(songslength)
                 .append(" entries | `").append(FormatUtil.formatTime(total)).append("` ")
                 .append(repeatmode.getEmoji() != null ? "| " + repeatmode.getEmoji() : "").toString());

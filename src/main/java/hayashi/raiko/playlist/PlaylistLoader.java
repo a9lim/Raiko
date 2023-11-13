@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -44,17 +45,15 @@ public class PlaylistLoader {
         if (folderExists()) {
             File folder = new File(OtherUtil.getPath(config.getPlaylistsFolder()).toString());
             return Arrays.stream(folder.listFiles((pathname) -> pathname.getName().endsWith(".txt"))).map(f -> f.getName().substring(0, f.getName().length() - 4)).collect(Collectors.toList());
-        } else {
-            createFolder();
-            return Collections.emptyList();
         }
+        createFolder();
+        return Collections.emptyList();
     }
 
     public void createFolder() {
         try {
             Files.createDirectory(OtherUtil.getPath(config.getPlaylistsFolder()));
-        } catch (IOException ignore) {
-        }
+        } catch (IOException ignore) {}
     }
 
     public boolean folderExists() {
@@ -78,7 +77,7 @@ public class PlaylistLoader {
             return null;
         try {
             if (folderExists()) {
-                boolean[] shuffle = {false};
+                AtomicBoolean shuffle = new AtomicBoolean(false);
                 List<String> list = new ArrayList<>();
                 Files.readAllLines(OtherUtil.getPath(config.getPlaylistsFolder() + File.separator + name + ".txt")).forEach(str -> {
                     String s = str.trim();
@@ -87,17 +86,16 @@ public class PlaylistLoader {
                     if (s.startsWith("#") || s.startsWith("//")) {
                         s = s.replaceAll("\\s+", "");
                         if (s.equalsIgnoreCase("#shuffle") || s.equalsIgnoreCase("//shuffle"))
-                            shuffle[0] = true;
+                            shuffle.set(true);
                     } else
                         list.add(s);
                 });
-                if (shuffle[0])
+                if (shuffle.get())
                     Collections.shuffle(list);
-                return new Playlist(name, list, shuffle[0]);
-            } else {
-                createFolder();
-                return null;
+                return new Playlist(name, list, shuffle.get());
             }
+            createFolder();
+            return null;
         } catch (IOException e) {
             return null;
         }

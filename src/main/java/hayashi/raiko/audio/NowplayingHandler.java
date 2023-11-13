@@ -86,13 +86,13 @@ public class NowplayingHandler {
         }
         toRemove.forEach(lastNP::remove);
     }
-    
+
+    //rework
     public void updateTopic(long guildId, AudioHandler handler, boolean wait) {
         Guild guild = bot.getJDA().getGuildById(guildId);
         if(guild==null)
             return;
-        Settings settings = bot.getSettingsManager().getSettings(guildId);
-        TextChannel tchan = settings.getTextChannel(guild);
+        TextChannel tchan = bot.getSettingsManager().getSettings(guildId).getTextChannel(guild);
         if(tchan!=null && guild.getSelfMember().hasPermission(tchan, Permission.MANAGE_CHANNEL)) {
             String otherText;
             String topic = tchan.getTopic();
@@ -103,7 +103,7 @@ public class NowplayingHandler {
             else
                 otherText = "\u200B\n "+topic;
             String text = handler.getTopicFormat(bot.getJDA()) + otherText;
-            if(!text.equals(tchan.getTopic())) {
+            if(!text.equals(tchan.getTopic()))
                 try {
                     // normally here if 'wait' was false, we'd want to queue, however,
                     // new discord ratelimits specifically limiting changing channel topics
@@ -111,7 +111,6 @@ public class NowplayingHandler {
                     // ratelimit, we just won't change the topic this time
                     tchan.getManager().setTopic(text).complete(wait);
                 } catch(PermissionException | RateLimitedException ignore) {}
-            }
         }
     }
     

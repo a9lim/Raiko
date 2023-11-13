@@ -24,8 +24,7 @@ public class MoveTrackCmd extends MusicCommand {
 
     @Override
     public void doCommand(CommandEvent event) {
-        int from;
-        int to;
+        int from, to;
 
         String[] parts = event.getArgs().split("\\s+", 2);
         try {
@@ -38,16 +37,16 @@ public class MoveTrackCmd extends MusicCommand {
         }
         if (from == to) {
             event.replyError("Can't move a track to the same position.");
+            return;
+        }
+        // Validate that from and to are available
+        AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
+        DoubleDealingQueue<QueuedTrack> queue = handler.getQueue();
+        if (isUnavailablePosition(queue, from) || isUnavailablePosition(queue, to)) {
+            event.replyError("Provide a valid position in the queue!");
         } else {
-            // Validate that from and to are available
-            AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
-            DoubleDealingQueue<QueuedTrack> queue = handler.getQueue();
-            if (isUnavailablePosition(queue, from) || isUnavailablePosition(queue, to)) {
-                event.replyError("Provide a valid position in the queue!");
-            } else {
-                // Move the track
-                event.replySuccess(String.format("Moved **%s** from position `%d` to `%d`.", queue.moveItem(from - 1, to - 1).getTrack().getInfo().title, from, to));
-            }
+            // Move the track
+            event.replySuccess(String.format("Moved **%s** from position `%d` to `%d`.", queue.moveItem(from - 1, to - 1).getTrack().getInfo().title, from, to));
         }
     }
 

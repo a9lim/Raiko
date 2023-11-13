@@ -39,14 +39,13 @@ public class RepeatCmd extends MusicCommand {
     protected void execute(CommandEvent event) {
         String args = event.getArgs().toLowerCase();
         Settings settings = event.getClient().getSettingsFor(event.getGuild());
-        RepeatMode value = switch(args) {
+        settings.setRepeatMode(switch(args) {
             case "false", "off" -> RepeatMode.OFF;
             case "true", "on", "all" -> RepeatMode.ALL;
             case "one", "single" -> RepeatMode.SINGLE;
             default -> settings.getRepeatMode() == RepeatMode.OFF ? RepeatMode.ALL : RepeatMode.OFF;
-        };
-        settings.setRepeatMode(value);
-        event.replySuccess("Repeat mode is now `" + value.getUserFriendlyName() + "`");
+        });
+        event.replySuccess("Repeat mode is now `" + settings.getRepeatMode().getUserFriendlyName() + "`");
     }
 
     @Override
