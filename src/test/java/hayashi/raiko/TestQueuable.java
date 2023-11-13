@@ -3,7 +3,7 @@ package hayashi.raiko;
 import hayashi.raiko.queue.Queueable;
 public class TestQueuable<T> implements Queueable{
     private T s;
-    private long identifier;
+    private final long identifier;
 
     public TestQueuable(T j){
         this(j,0);

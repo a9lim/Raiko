@@ -21,13 +21,10 @@ import hayashi.raiko.audio.AudioHandler;
 import hayashi.raiko.commands.MusicCommand;
 
 /**
- *
  * @author John Grosh <john.a.grosh@gmail.com>
  */
-public class ShuffleCmd extends MusicCommand 
-{
-    public ShuffleCmd(Bot bot)
-    {
+public class ShuffleCmd extends MusicCommand {
+    public ShuffleCmd(Bot bot) {
         super(bot);
         this.name = "shuffle";
         this.help = "shuffles the queue";
@@ -38,23 +35,22 @@ public class ShuffleCmd extends MusicCommand
     }
 
     @Override
-    public void doCommand(CommandEvent event) 
-    {
-        AudioHandler handler = (AudioHandler)event.getGuild().getAudioManager().getSendingHandler();
+    public void doCommand(CommandEvent event) {
+        AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
         int s;
-        if(event.getArgs().equalsIgnoreCase("mine")) {
+        if (event.getArgs().equalsIgnoreCase("mine")) {
             if ((s = handler.getQueue().shuffle(event.getAuthor().getIdLong())) < 2) {
                 event.replyError("You don't have enough songs in the queue!");
             } else {
                 event.replySuccess("You successfully shuffled your " + s + " entries.");
             }
         } else {
-            if((s = handler.getQueue().size())<2) {
+            if ((s = handler.getQueue().size()) < 2) {
                 event.replyWarning("There aren't enough songs in the queue!");
             } else {
                 event.replySuccess("You successfully shuffled all " + s + " entries.");
             }
         }
     }
-    
+
 }

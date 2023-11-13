@@ -46,8 +46,7 @@ public abstract class MusicCommand extends Command {
         if (tchannel != null && !event.getTextChannel().equals(tchannel)) {
             try {
                 event.getMessage().delete().queue();
-            } catch (PermissionException ignore) {
-            }
+            } catch (PermissionException ignore) {}
             event.replyInDm(event.getClient().getError() + " You can only use that command in " + tchannel.getAsMention() + "!");
             return;
         }

@@ -37,24 +37,14 @@ public class RepeatCmd extends MusicCommand {
     // override musiccommand's execute because we don't actually care where this is used
     @Override
     protected void execute(CommandEvent event) {
-        String args = event.getArgs();
-        RepeatMode value;
+        String args = event.getArgs().toLowerCase();
         Settings settings = event.getClient().getSettingsFor(event.getGuild());
-        if (args.isEmpty()) {
-            if (settings.getRepeatMode() == RepeatMode.OFF)
-                value = RepeatMode.ALL;
-            else
-                value = RepeatMode.OFF;
-        } else if (args.equalsIgnoreCase("false") || args.equalsIgnoreCase("off")) {
-            value = RepeatMode.OFF;
-        } else if (args.equalsIgnoreCase("true") || args.equalsIgnoreCase("on") || args.equalsIgnoreCase("all")) {
-            value = RepeatMode.ALL;
-        } else if (args.equalsIgnoreCase("one") || args.equalsIgnoreCase("single")) {
-            value = RepeatMode.SINGLE;
-        } else {
-            event.replyError("Valid options are `off`, `all` or `single` (or leave empty to toggle between `off` and `all`)");
-            return;
-        }
+        RepeatMode value = switch(args) {
+            case "false", "off" -> RepeatMode.OFF;
+            case "true", "on", "all" -> RepeatMode.ALL;
+            case "one", "single" -> RepeatMode.SINGLE;
+            default -> settings.getRepeatMode() == RepeatMode.OFF ? RepeatMode.ALL : RepeatMode.OFF;
+        };
         settings.setRepeatMode(value);
         event.replySuccess("Repeat mode is now `" + value.getUserFriendlyName() + "`");
     }

@@ -73,18 +73,18 @@ public class RemoveCmd extends MusicCommand {
             }
             if (pos < 1 || pos > handler.getQueue().size()) {
                 event.replyError("Position must be a valid integer between 1 and " + handler.getQueue().size() + "!");
-                return;
+            } else {
+                QueuedTrack qt = handler.getQueue().get(pos);
+                handler.getQueue().remove(pos);
+                User u;
+                try {
+                    u = event.getJDA().getUserById(qt.getIdentifier());
+                } catch (Exception e) {
+                    u = null;
+                }
+                event.replySuccess("Removed **" + qt.getTrack().getInfo().title
+                        + "** from the queue (requested by " + (u == null ? "someone" : "**" + u.getName() + "**") + ")");
             }
-            QueuedTrack qt = handler.getQueue().get(pos);
-            handler.getQueue().remove(pos);
-            User u;
-            try {
-                u = event.getJDA().getUserById(qt.getIdentifier());
-            } catch (Exception e) {
-                u = null;
-            }
-            event.replySuccess("Removed **" + qt.getTrack().getInfo().title
-                    + "** from the queue (requested by " + (u == null ? "someone" : "**" + u.getName() + "**") + ")");
         }
     }
 }

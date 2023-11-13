@@ -67,7 +67,7 @@ public class NowplayingHandler {
                 continue;
             }
             Pair<Long,Long> pair = lastNP.get(guildId);
-            TextChannel tc = guild.getTextChannelById(pair.getKey());
+            TextChannel tc = guild.getTextChannelById(pair.key());
             if(tc==null) {
                 toRemove.add(guildId);
                 continue;
@@ -79,7 +79,7 @@ public class NowplayingHandler {
                 toRemove.add(guildId);
             }
             try {
-                tc.editMessageById(pair.getValue(), msg).queue(m->{}, t -> lastNP.remove(guildId));
+                tc.editMessageById(pair.value(), msg).queue(m->{}, t -> lastNP.remove(guildId));
             } catch(Exception e) {
                 toRemove.add(guildId);
             }
@@ -124,14 +124,13 @@ public class NowplayingHandler {
             else
                 bot.resetGame();
         }
-        
         // update channel topic if applicable
         updateTopic(guildId, handler, false);
     }
     
     public void onMessageDelete(Guild guild, long messageId) {
         Pair<Long,Long> pair = lastNP.get(guild.getIdLong());
-        if(pair != null && pair.getValue() == messageId)
+        if(pair != null && pair.value() == messageId)
             lastNP.remove(guild.getIdLong());
     }
 }

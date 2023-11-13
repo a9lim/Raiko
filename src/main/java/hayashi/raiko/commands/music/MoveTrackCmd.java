@@ -28,11 +28,6 @@ public class MoveTrackCmd extends MusicCommand {
         int to;
 
         String[] parts = event.getArgs().split("\\s+", 2);
-        if (parts.length < 2) {
-            event.replyError("Please include two valid indexes.");
-            return;
-        }
-
         try {
             // Validate the args
             from = Integer.parseInt(parts[0]);
@@ -41,31 +36,19 @@ public class MoveTrackCmd extends MusicCommand {
             event.replyError("Please provide two valid indexes.");
             return;
         }
-
         if (from == to) {
             event.replyError("Can't move a track to the same position.");
-            return;
+        } else {
+            // Validate that from and to are available
+            AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
+            DoubleDealingQueue<QueuedTrack> queue = handler.getQueue();
+            if (isUnavailablePosition(queue, from) || isUnavailablePosition(queue, to)) {
+                event.replyError("Provide a valid position in the queue!");
+            } else {
+                // Move the track
+                event.replySuccess(String.format("Moved **%s** from position `%d` to `%d`.", queue.moveItem(from - 1, to - 1).getTrack().getInfo().title, from, to));
+            }
         }
-
-        // Validate that from and to are available
-        AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
-        DoubleDealingQueue<QueuedTrack> queue = handler.getQueue();
-        if (isUnavailablePosition(queue, from)) {
-            String reply = String.format("`%d` is not a valid position in the queue!", from);
-            event.replyError(reply);
-            return;
-        }
-        if (isUnavailablePosition(queue, to)) {
-            String reply = String.format("`%d` is not a valid position in the queue!", to);
-            event.replyError(reply);
-            return;
-        }
-
-        // Move the track
-        QueuedTrack track = queue.moveItem(from - 1, to - 1);
-        String trackTitle = track.getTrack().getInfo().title;
-        String reply = String.format("Moved **%s** from position `%d` to `%d`.", trackTitle, from, to);
-        event.replySuccess(reply);
     }
 
     private static boolean isUnavailablePosition(DoubleDealingQueue<QueuedTrack> queue, int position) {

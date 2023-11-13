@@ -91,10 +91,11 @@ public class BotConfig {
 
             // validate bot token
             if (token == null || token.isEmpty() || token.equalsIgnoreCase("BOT_TOKEN_HERE")) {
-                token = prompt.prompt("Please provide a bot token."
-                        + "\nInstructions for obtaining a token can be found here:"
-                        + "\nhttps://github.com/jagrosh/MusicBot/wiki/Getting-a-Bot-Token."
-                        + "\nBot Token: ");
+                token = prompt.prompt("""
+                        Please provide a bot token.
+                        Instructions for obtaining a token can be found here:
+                        https://github.com/jagrosh/MusicBot/wiki/Getting-a-Bot-Token.
+                        Bot Token:\s""");
                 if (token == null) {
                     prompt.alert(Prompt.Level.WARNING, CONTEXT, "No token provided! Exiting.\n\nConfig Location: " + path.toAbsolutePath());
                     return;
@@ -106,11 +107,12 @@ public class BotConfig {
             // validate bot owner
             if (owner <= 0) {
                 try {
-                    owner = Long.parseLong(prompt.prompt("Owner ID was missing, or the provided owner ID is not valid."
-                            + "\nPlease provide the User ID of the bot's owner."
-                            + "\nInstructions for obtaining your User ID can be found here:"
-                            + "\nhttps://github.com/jagrosh/MusicBot/wiki/Finding-Your-User-ID"
-                            + "\nOwner User ID: "));
+                    owner = Long.parseLong(prompt.prompt("""
+                            Owner ID was missing, or the provided owner ID is not valid.
+                            Please provide the User ID of the bot's owner.
+                            Instructions for obtaining your User ID can be found here:
+                            https://github.com/jagrosh/MusicBot/wiki/Finding-Your-User-ID
+                            Owner User ID:\s"""));
                 } catch (NumberFormatException | NullPointerException ex) {
                     owner = 0;
                 }
@@ -264,9 +266,7 @@ public class BotConfig {
     }
 
     public boolean isTooLong(AudioTrack track) {
-        if (maxSeconds <= 0)
-            return false;
-        return Math.round(track.getDuration() / 1000.0) > maxSeconds;
+        return maxSeconds > 0 && (track.getDuration() / 1000 > maxSeconds);
     }
 
     public String[] getAliases(String command) {

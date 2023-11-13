@@ -39,8 +39,7 @@ public class AloneInVoiceHandler {
     }
 
     public void init() {
-        aloneTimeUntilStop = bot.getConfig().getAloneTimeUntilStop();
-        if (aloneTimeUntilStop > 0)
+        if ((aloneTimeUntilStop = bot.getConfig().getAloneTimeUntilStop()) > 0)
             bot.getThreadpool().scheduleWithFixedDelay(this::check, 0, 5, TimeUnit.SECONDS);
     }
 
@@ -65,23 +64,22 @@ public class AloneInVoiceHandler {
     }
 
     public void onVoiceUpdate(GuildVoiceUpdateEvent event) {
-        if (aloneTimeUntilStop <= 0) return;
+        if (aloneTimeUntilStop > 0) {
+            Guild guild = event.getEntity().getGuild();
+            if (bot.getPlayerManager().hasHandler(guild)) {
+                boolean alone = isAlone(guild);
+                boolean inList = aloneSince.containsKey(guild.getIdLong());
 
-        Guild guild = event.getEntity().getGuild();
-        if (!bot.getPlayerManager().hasHandler(guild)) return;
-
-        boolean alone = isAlone(guild);
-        boolean inList = aloneSince.containsKey(guild.getIdLong());
-
-        if (!alone && inList)
-            aloneSince.remove(guild.getIdLong());
-        else if (alone && !inList)
-            aloneSince.put(guild.getIdLong(), Instant.now());
+                if (!alone && inList)
+                    aloneSince.remove(guild.getIdLong());
+                else if (alone && !inList)
+                    aloneSince.put(guild.getIdLong(), Instant.now());
+            }
+        }
     }
 
     private boolean isAlone(Guild guild) {
-        if (guild.getAudioManager().getConnectedChannel() == null) return false;
-        return guild.getAudioManager().getConnectedChannel().getMembers().stream()
+        return guild.getAudioManager().getConnectedChannel() != null && guild.getAudioManager().getConnectedChannel().getMembers().stream()
                 .noneMatch(x ->
                         !x.getVoiceState().isDeafened()
                                 && !x.getUser().isBot());
