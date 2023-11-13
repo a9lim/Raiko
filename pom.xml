@@ -44,6 +44,11 @@
             <artifactId>jda-utilities-commons</artifactId>
             <version>3.0.5</version>
         </dependency>
+        <dependency>
+            <groupId>com.jagrosh</groupId>
+            <artifactId>jda-utilities-menu</artifactId>
+            <version>3.0.5</version>
+        </dependency>
         <!-- Music Dependencies -->
         <!-- using a fork of this to fix some issues faster -->
         <!--dependency>
