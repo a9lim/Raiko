@@ -17,10 +17,9 @@ package hayashi.raiko;
 
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
-import com.jagrosh.jdautilities.examples.command.*;
 import hayashi.raiko.commands.music.*;
 import hayashi.raiko.commands.owner.*;
-import hayashi.raiko.commands.general.SettingsCmd;
+import hayashi.raiko.commands.general.*;
 import hayashi.raiko.entities.Prompt;
 import hayashi.raiko.gui.GUI;
 import hayashi.raiko.settings.SettingsManager;

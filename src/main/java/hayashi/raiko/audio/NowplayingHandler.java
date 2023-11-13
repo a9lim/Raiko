@@ -17,7 +17,6 @@ package hayashi.raiko.audio;
 
 import hayashi.raiko.Bot;
 import hayashi.raiko.entities.Pair;
-import hayashi.raiko.settings.Settings;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import java.util.HashMap;
 import java.util.HashSet;
