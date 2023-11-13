@@ -30,7 +30,8 @@ public class ShuffleCmd extends MusicCommand
     {
         super(bot);
         this.name = "shuffle";
-        this.help = "this doesn't work yet";
+        this.help = "shuffles the queue";
+        this.arguments = "<MINE|ALL>";
         this.aliases = bot.getConfig().getAliases(this.name);
         this.beListening = true;
         this.bePlaying = true;
@@ -40,18 +41,19 @@ public class ShuffleCmd extends MusicCommand
     public void doCommand(CommandEvent event) 
     {
         AudioHandler handler = (AudioHandler)event.getGuild().getAudioManager().getSendingHandler();
-        int s = handler.getQueue().shuffle(event.getAuthor().getIdLong());
-        switch (s) 
-        {
-            case 0:
-                event.replyError("You don't have any music in the queue to shuffle!");
-                break;
-            case 1:
-                event.replyWarning("You only have one song in the queue!");
-                break;
-            default:
-                event.replySuccess("You successfully shuffled your "+s+" entries.");
-                break;
+        int s;
+        if(event.getArgs().equalsIgnoreCase("mine")) {
+            if ((s = handler.getQueue().shuffle(event.getAuthor().getIdLong())) < 2) {
+                event.replyError("You don't have enough songs in the queue!");
+            } else {
+                event.replySuccess("You successfully shuffled your " + s + " entries.");
+            }
+        } else {
+            if((s = handler.getQueue().size())<2) {
+                event.replyWarning("There aren't enough songs in the queue!");
+            } else {
+                event.replySuccess("You successfully shuffled all " + s + " entries.");
+            }
         }
     }
     

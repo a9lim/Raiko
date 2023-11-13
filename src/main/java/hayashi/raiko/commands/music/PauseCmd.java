@@ -21,13 +21,10 @@ import hayashi.raiko.audio.AudioHandler;
 import hayashi.raiko.commands.MusicCommand;
 
 /**
- *
  * @author John Grosh <john.a.grosh@gmail.com>
  */
-public class PauseCmd extends MusicCommand
-{
-    public PauseCmd(Bot bot)
-    {
+public class PauseCmd extends MusicCommand {
+    public PauseCmd(Bot bot) {
         super(bot);
         this.name = "pause";
         this.help = "pauses the current song";
@@ -36,12 +33,11 @@ public class PauseCmd extends MusicCommand
     }
 
     @Override
-    public void doCommand(CommandEvent event) 
-    {
-        AudioHandler handler = (AudioHandler)event.getGuild().getAudioManager().getSendingHandler();
-        if(handler.getPlayer().isPaused()) {
+    public void doCommand(CommandEvent event) {
+        AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
+        if (handler.getPlayer().isPaused()) {
             handler.getPlayer().setPaused(false);
-            event.replySuccess("Resumed **"+handler.getPlayer().getPlayingTrack().getInfo().title+"**.");
+            event.replySuccess("Resumed **" + handler.getPlayer().getPlayingTrack().getInfo().title + "**.");
         } else {
             handler.getPlayer().setPaused(true);
             event.replySuccess("Paused **" + handler.getPlayer().getPlayingTrack().getInfo().title + "**.");

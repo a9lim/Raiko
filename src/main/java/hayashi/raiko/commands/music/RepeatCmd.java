@@ -22,13 +22,10 @@ import hayashi.raiko.settings.RepeatMode;
 import hayashi.raiko.settings.Settings;
 
 /**
- *
  * @author John Grosh <john.a.grosh@gmail.com>
  */
-public class RepeatCmd extends MusicCommand
-{
-    public RepeatCmd(Bot bot)
-    {
+public class RepeatCmd extends MusicCommand {
+    public RepeatCmd(Bot bot) {
         super(bot);
         this.name = "repeat";
         this.help = "re-adds music to the queue when finished";
@@ -36,40 +33,30 @@ public class RepeatCmd extends MusicCommand
         this.aliases = bot.getConfig().getAliases(this.name);
         this.guildOnly = true;
     }
-    
+
     // override musiccommand's execute because we don't actually care where this is used
     @Override
-    protected void execute(CommandEvent event) 
-    {
+    protected void execute(CommandEvent event) {
         String args = event.getArgs();
         RepeatMode value;
         Settings settings = event.getClient().getSettingsFor(event.getGuild());
-        if(args.isEmpty())
-        {
-            if(settings.getRepeatMode() == RepeatMode.OFF)
+        if (args.isEmpty()) {
+            if (settings.getRepeatMode() == RepeatMode.OFF)
                 value = RepeatMode.ALL;
             else
                 value = RepeatMode.OFF;
-        }
-        else if(args.equalsIgnoreCase("false") || args.equalsIgnoreCase("off"))
-        {
+        } else if (args.equalsIgnoreCase("false") || args.equalsIgnoreCase("off")) {
             value = RepeatMode.OFF;
-        }
-        else if(args.equalsIgnoreCase("true") || args.equalsIgnoreCase("on") || args.equalsIgnoreCase("all"))
-        {
+        } else if (args.equalsIgnoreCase("true") || args.equalsIgnoreCase("on") || args.equalsIgnoreCase("all")) {
             value = RepeatMode.ALL;
-        }
-        else if(args.equalsIgnoreCase("one") || args.equalsIgnoreCase("single"))
-        {
+        } else if (args.equalsIgnoreCase("one") || args.equalsIgnoreCase("single")) {
             value = RepeatMode.SINGLE;
-        }
-        else
-        {
+        } else {
             event.replyError("Valid options are `off`, `all` or `single` (or leave empty to toggle between `off` and `all`)");
             return;
         }
         settings.setRepeatMode(value);
-        event.replySuccess("Repeat mode is now `"+value.getUserFriendlyName()+"`");
+        event.replySuccess("Repeat mode is now `" + value.getUserFriendlyName() + "`");
     }
 
     @Override
