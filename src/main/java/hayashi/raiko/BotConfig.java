@@ -39,7 +39,8 @@ public class BotConfig {
 
     private Path path = null;
     private String token, prefix, altprefix, helpWord, playlistsFolder,
-            successEmoji, warningEmoji, errorEmoji, loadingEmoji, searchingEmoji;
+            successEmoji, warningEmoji, errorEmoji, loadingEmoji, searchingEmoji,
+            cgpttoken;
     private boolean stayInChannel, songInGame, npImages, dbots;
     private long owner, maxSeconds, aloneTimeUntilStop;
     private OnlineStatus status;
@@ -84,6 +85,7 @@ public class BotConfig {
             aloneTimeUntilStop = config.getLong("alonetimeuntilstop");
             playlistsFolder = config.getString("playlistsfolder");
             aliases = config.getConfig("aliases");
+            cgpttoken = config.getString("gpttoken");
             dbots = owner == 113156185389092864L;
 
             // we may need to write a new config file
@@ -276,4 +278,7 @@ public class BotConfig {
         }
     }
 
+    public String getCgpttoken(){
+        return cgpttoken;
+    }
 }
