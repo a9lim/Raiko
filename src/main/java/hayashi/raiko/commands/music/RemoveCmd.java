@@ -41,50 +41,55 @@ public class RemoveCmd extends MusicCommand {
         AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
         if (handler.getQueue().isEmpty()) {
             event.replyError("There is nothing in the queue!");
-        } else if (event.getArgs().equalsIgnoreCase("all")) {
+            return;
+        }
+        if (event.getArgs().equalsIgnoreCase("all")) {
             int count = handler.getQueue().size();
             handler.getQueue().clear();
             if (count == 0)
                 event.replyWarning("There are no songs in the queue!");
             else
                 event.replySuccess("Successfully removed " + count + " entries.");
-        } else if (event.getArgs().equalsIgnoreCase("mine")) {
+            return;
+        }
+        if (event.getArgs().equalsIgnoreCase("mine")) {
             int count = handler.getQueue().removeAll(event.getAuthor().getIdLong());
             if (count == 0)
                 event.replyWarning("You don't have any songs in the queue!");
             else
                 event.replySuccess("Successfully removed your " + count + " entries.");
-        } else {
-            int pos;
-            try {
-                pos = Integer.parseInt(event.getArgs());
-            } catch (NumberFormatException e) {
-                QueuedTrack qt = handler.getQueue().getDeque().peek();
-                handler.getQueue().getDeque().pop();
-                User u;
-                try {
-                    u = event.getJDA().getUserById(qt.getIdentifier());
-                } catch (Exception f) {
-                    u = null;
-                }
-                event.replySuccess("Removed **" + qt.getTrack().getInfo().title
-                        + "** from the queue (requested by " + (u == null ? "someone" : "**" + u.getName() + "**") + ")");
-                return;
-            }
-            if (pos < 1 || pos > handler.getQueue().size()) {
-                event.replyError("Position must be a valid integer between 1 and " + handler.getQueue().size() + "!");
-            } else {
-                QueuedTrack qt = handler.getQueue().get(pos);
-                handler.getQueue().remove(pos);
-                User u;
-                try {
-                    u = event.getJDA().getUserById(qt.getIdentifier());
-                } catch (Exception e) {
-                    u = null;
-                }
-                event.replySuccess("Removed **" + qt.getTrack().getInfo().title
-                        + "** from the queue (requested by " + (u == null ? "someone" : "**" + u.getName() + "**") + ")");
-            }
+            return;
         }
+        int pos;
+        try {
+            pos = Integer.parseInt(event.getArgs());
+        } catch (NumberFormatException e) {
+            QueuedTrack qt = handler.getQueue().getDeque().peek();
+            handler.getQueue().getDeque().pop();
+            User u;
+            try {
+                u = event.getJDA().getUserById(qt.getIdentifier());
+            } catch (Exception f) {
+                u = null;
+            }
+            event.replySuccess("Removed **" + qt.getTrack().getInfo().title
+                    + "** from the queue (requested by " + (u == null ? "someone" : "**" + u.getName() + "**") + ")");
+            return;
+        }
+        if (pos < 1 || pos > handler.getQueue().size()) {
+            event.replyError("Position must be a valid integer between 1 and " + handler.getQueue().size() + "!");
+            return;
+        }
+        QueuedTrack qt = handler.getQueue().get(pos);
+        handler.getQueue().remove(pos);
+        User u;
+        try {
+            u = event.getJDA().getUserById(qt.getIdentifier());
+        } catch (Exception e) {
+            u = null;
+        }
+        event.replySuccess("Removed **" + qt.getTrack().getInfo().title
+                + "** from the queue (requested by " + (u == null ? "someone" : "**" + u.getName() + "**") + ")");
+
     }
 }

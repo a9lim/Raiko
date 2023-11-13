@@ -46,16 +46,16 @@ public class SetvcCmd extends AdminCommand {
         if (event.getArgs().equalsIgnoreCase("none")) {
             s.setVoiceChannel(null);
             event.reply(event.getClient().getSuccess() + " Music can now be played in any channel");
-        } else {
-            List<VoiceChannel> list = FinderUtil.findVoiceChannels(event.getArgs(), event.getGuild());
-            if (list.isEmpty())
-                event.reply(event.getClient().getWarning() + " No Voice Channels found matching \"" + event.getArgs() + "\"");
-            else if (list.size() > 1)
-                event.reply(event.getClient().getWarning() + FormatUtil.listOfVChannels(list, event.getArgs()));
-            else {
-                s.setVoiceChannel(list.get(0));
-                event.reply(event.getClient().getSuccess() + " Music can now only be played in " + list.get(0).getAsMention());
-            }
+            return;
+        }
+        List<VoiceChannel> list = FinderUtil.findVoiceChannels(event.getArgs(), event.getGuild());
+        if (list.isEmpty())
+            event.reply(event.getClient().getWarning() + " No Voice Channels found matching \"" + event.getArgs() + "\"");
+        else if (list.size() > 1)
+            event.reply(event.getClient().getWarning() + FormatUtil.listOfVChannels(list, event.getArgs()));
+        else {
+            s.setVoiceChannel(list.get(0));
+            event.reply(event.getClient().getSuccess() + " Music can now only be played in " + list.get(0).getAsMention());
         }
     }
 }

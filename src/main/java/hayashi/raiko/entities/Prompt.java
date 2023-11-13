@@ -65,19 +65,19 @@ public class Prompt {
                     log.info(message);
                     break;
             }
-        } else {
-            try {
-                int option = switch (level) {
-                    case INFO -> JOptionPane.INFORMATION_MESSAGE;
-                    case WARNING -> JOptionPane.WARNING_MESSAGE;
-                    case ERROR -> JOptionPane.ERROR_MESSAGE;
-                };
-                JOptionPane.showMessageDialog(null, "<html><body><p style='width: 400px;'>" + message, title, option);
-            } catch (Exception e) {
-                nogui = true;
-                alert(Level.WARNING, context, noguiMessage);
-                alert(level, context, message);
-            }
+            return;
+        }
+        try {
+            int option = switch (level) {
+                case INFO -> JOptionPane.INFORMATION_MESSAGE;
+                case WARNING -> JOptionPane.WARNING_MESSAGE;
+                case ERROR -> JOptionPane.ERROR_MESSAGE;
+            };
+            JOptionPane.showMessageDialog(null, "<html><body><p style='width: 400px;'>" + message, title, option);
+        } catch (Exception e) {
+            nogui = true;
+            alert(Level.WARNING, context, noguiMessage);
+            alert(level, context, message);
         }
     }
 
@@ -97,14 +97,13 @@ public class Prompt {
                 e.printStackTrace();
                 return null;
             }
-        } else {
-            try {
-                return JOptionPane.showInputDialog(null, content, title, JOptionPane.QUESTION_MESSAGE);
-            } catch (Exception e) {
-                nogui = true;
-                alert(Level.WARNING, title, noguiMessage);
-                return prompt(content);
-            }
+        }
+        try {
+            return JOptionPane.showInputDialog(null, content, title, JOptionPane.QUESTION_MESSAGE);
+        } catch (Exception e) {
+            nogui = true;
+            alert(Level.WARNING, title, noguiMessage);
+            return prompt(content);
         }
     }
 

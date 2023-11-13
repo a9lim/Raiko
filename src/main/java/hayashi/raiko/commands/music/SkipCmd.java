@@ -50,12 +50,13 @@ public class SkipCmd extends MusicCommand
                     +"** "+(rm.getOwner() == 0L ? "(autoplay)" : "(requested by **" + rm.user.username + "**)"));
             handler.getPlayer().stopTrack();
             return;
-        } if(index<1 || index>handler.getQueue().size()) {
+        }
+        if(index<1 || index>handler.getQueue().size()) {
             event.reply(event.getClient().getError()+" Position must be a valid integer between 1 and "+handler.getQueue().size()+"!");
-        } else {
+            return;
+        }
         handler.getQueue().skip(index - 1);
         event.reply(event.getClient().getSuccess() + " Skipped to **" + handler.getQueue().get(0).getTrack().getInfo().title + "**");
         handler.getPlayer().stopTrack();
-        }
     }
 }

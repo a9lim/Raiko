@@ -54,11 +54,10 @@ public class Raiko {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        if (args.length > 0)
-            if (args[0].equalsIgnoreCase("generate-config")) {
-                BotConfig.writeDefaultConfig();
-                return;
-            }
+        if (args.length > 0 && args[0].equalsIgnoreCase("generate-config")) {
+            BotConfig.writeDefaultConfig();
+            return;
+        }
         startBot();
     }
 

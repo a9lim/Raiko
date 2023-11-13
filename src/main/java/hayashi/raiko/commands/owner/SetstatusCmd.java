@@ -38,10 +38,10 @@ public class SetstatusCmd extends OwnerCommand {
             OnlineStatus status = OnlineStatus.fromKey(event.getArgs());
             if (status == OnlineStatus.UNKNOWN) {
                 event.replyError("Please include one of the following statuses: `ONLINE`, `IDLE`, `DND`, `INVISIBLE`");
-            } else {
-                event.getJDA().getPresence().setStatus(status);
-                event.replySuccess("Set the status to `" + status.getKey().toUpperCase() + "`");
+                return;
             }
+            event.getJDA().getPresence().setStatus(status);
+            event.replySuccess("Set the status to `" + status.getKey().toUpperCase() + "`");
         } catch (Exception e) {
             event.reply(event.getClient().getError() + " The status could not be set!");
         }

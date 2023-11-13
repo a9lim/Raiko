@@ -39,17 +39,15 @@ public class ShuffleCmd extends MusicCommand {
         AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
         int s;
         if (event.getArgs().equalsIgnoreCase("mine")) {
-            if ((s = handler.getQueue().shuffle(event.getAuthor().getIdLong())) < 2) {
+            if ((s = handler.getQueue().shuffle(event.getAuthor().getIdLong())) < 2)
                 event.replyError("You don't have enough songs in the queue!");
-            } else {
+            else
                 event.replySuccess("You successfully shuffled your " + s + " entries.");
-            }
         } else {
-            if ((s = handler.getQueue().size()) < 2) {
+            if ((s = handler.getQueue().size()) < 2)
                 event.replyWarning("There aren't enough songs in the queue!");
-            } else {
+            else
                 event.replySuccess("You successfully shuffled all " + s + " entries.");
-            }
         }
     }
 

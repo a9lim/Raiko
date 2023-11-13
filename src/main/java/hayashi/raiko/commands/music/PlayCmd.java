@@ -30,6 +30,7 @@ import hayashi.raiko.commands.MusicCommand;
 import hayashi.raiko.utils.FormatUtil;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import hayashi.raiko.playlist.PlaylistLoader;
 import net.dv8tion.jda.api.Permission;
@@ -98,43 +99,45 @@ public class PlayCmd extends MusicCommand {
                 return;
             }
             AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
+            handler.addTrack(new QueuedTrack(track, event.getAuthor()));
             int pos = handler.getQueue().size() + 1;
             String addMsg = FormatUtil.filter(event.getClient().getSuccess() + " Added **" + track.getInfo().title
                     + "** (`" + FormatUtil.formatTime(track.getDuration()) + "`) " + (pos == 0 ? "to begin playing" : " to the queue at position " + pos));
-            if (playlist == null || !event.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_ADD_REACTION))
+            if (playlist == null || !event.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_ADD_REACTION)) {
                 m.editMessage(addMsg).queue();
-            else {
-                new ButtonMenu.Builder()
-                        .setText(addMsg + "\n" + event.getClient().getWarning() + " This track has a playlist of **" + playlist.getTracks().size() + "** tracks attached. Select " + LOAD + " to load playlist.")
-                        .setChoices(LOAD, CANCEL)
-                        .setEventWaiter(bot.getWaiter())
-                        .setTimeout(30, TimeUnit.SECONDS)
-                        .setAction(re ->
-                        {
-                            if (re.getName().equals(LOAD))
-                                m.editMessage(addMsg + "\n" + event.getClient().getSuccess() + " Loaded **" + loadPlaylist(playlist, track) + "** additional tracks!").queue();
-                            else
-                                m.editMessage(addMsg).queue();
-                        }).setFinalAction(m ->
-                        {
-                            try {
-                                m.clearReactions().queue();
-                            } catch (PermissionException ignore) {
-                            }
-                        }).build().display(m);
+                return;
             }
+            new ButtonMenu.Builder()
+                    .setText(addMsg + "\n" + event.getClient().getWarning() + " This track has a playlist of **" + playlist.getTracks().size() + "** tracks attached. Select " + LOAD + " to load playlist.")
+                    .setChoices(LOAD, CANCEL)
+                    .setEventWaiter(bot.getWaiter())
+                    .setTimeout(30, TimeUnit.SECONDS)
+                    .setAction(re ->
+                    {
+                        if (re.getName().equals(LOAD))
+                            m.editMessage(addMsg + "\n" + event.getClient().getSuccess() + " Loaded **" + loadPlaylist(playlist, track) + "** additional tracks!").queue();
+                        else
+                            m.editMessage(addMsg).queue();
+                    }).setFinalAction(m ->
+                    {
+                        try {
+                            m.clearReactions().queue();
+                        } catch (PermissionException ignore) {}
+                    }).build().display(m);
+
         }
 
+        // why lambda
         private int loadPlaylist(AudioPlaylist playlist, AudioTrack exclude) {
-            int[] count = {0};
+            AtomicInteger count = new AtomicInteger();
             playlist.getTracks().forEach((track) -> {
                 if (!bot.getConfig().isTooLong(track) && !track.equals(exclude)) {
                     AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
                     handler.addTrack(new QueuedTrack(track, event.getAuthor()));
-                    count[0]++;
+                    count.getAndIncrement();
                 }
             });
-            return count[0];
+            return count.get();
         }
 
         @Override
@@ -145,35 +148,40 @@ public class PlayCmd extends MusicCommand {
         @Override
         public void playlistLoaded(AudioPlaylist playlist) {
             if (playlist.getTracks().size() == 1 || playlist.isSearchResult()) {
-                AudioTrack single = playlist.getSelectedTrack() == null ? playlist.getTracks().get(0) : playlist.getSelectedTrack();
-                loadSingle(single, null);
-            } else if (playlist.getSelectedTrack() != null) {
+                AudioTrack single = playlist.getSelectedTrack();
+                loadSingle(single == null ? playlist.getTracks().get(0) : single, null);
+                return;
+            }
+            if (playlist.getSelectedTrack() != null) {
                 AudioTrack single = playlist.getSelectedTrack();
                 loadSingle(single, playlist);
-            } else {
-                int count = loadPlaylist(playlist, null);
-                if (playlist.getTracks().isEmpty()) {
-                    m.editMessage(FormatUtil.filter(event.getClient().getWarning() + " The playlist " + (playlist.getName() == null ? "" : "(**" + playlist.getName()
-                            + "**) ") + " could not be loaded or contained 0 entries")).queue();
-                } else if (count == 0) {
-                    m.editMessage(FormatUtil.filter(event.getClient().getWarning() + " All entries in this playlist " + (playlist.getName() == null ? "" : "(**" + playlist.getName()
-                            + "**) ") + "were longer than the allowed maximum (`" + bot.getConfig().getMaxTime() + "`)")).queue();
-                } else {
-                    m.editMessage(FormatUtil.filter(event.getClient().getSuccess() + " Found "
-                            + (playlist.getName() == null ? "a playlist" : "playlist **" + playlist.getName() + "**") + " with `"
-                            + playlist.getTracks().size() + "` entries; added to the queue!"
-                            + (count < playlist.getTracks().size() ? "\n" + event.getClient().getWarning() + " Tracks longer than the allowed maximum (`"
-                            + bot.getConfig().getMaxTime() + "`) have been omitted." : ""))).queue();
-                }
+                return;
             }
+            int count = loadPlaylist(playlist, null);
+            if (playlist.getTracks().isEmpty()) {
+                m.editMessage(FormatUtil.filter(event.getClient().getWarning() + " The playlist " + (playlist.getName() == null ? "" : "(**" + playlist.getName()
+                        + "**) ") + " could not be loaded or contained 0 entries")).queue();
+                return;
+            }
+            if (count == 0) {
+                m.editMessage(FormatUtil.filter(event.getClient().getWarning() + " All entries in this playlist " + (playlist.getName() == null ? "" : "(**" + playlist.getName()
+                        + "**) ") + "were longer than the allowed maximum (`" + bot.getConfig().getMaxTime() + "`)")).queue();
+                return;
+            }
+            m.editMessage(FormatUtil.filter(event.getClient().getSuccess() + " Found "
+                    + (playlist.getName() == null ? "a playlist" : "playlist **" + playlist.getName() + "**") + " with `"
+                    + playlist.getTracks().size() + "` entries; added to the queue!"
+                    + (count < playlist.getTracks().size() ? "\n" + event.getClient().getWarning() + " Tracks longer than the allowed maximum (`"
+                    + bot.getConfig().getMaxTime() + "`) have been omitted." : ""))).queue();
         }
 
         @Override
         public void noMatches() {
-            if (ytsearch)
+            if (ytsearch) {
                 m.editMessage(FormatUtil.filter(event.getClient().getWarning() + " No results found for `" + event.getArgs() + "`.")).queue();
-            else
-                bot.getPlayerManager().loadItemOrdered(event.getGuild(), "ytsearch:" + event.getArgs(), new ResultHandler(m, event, true));
+                return;
+            }
+            bot.getPlayerManager().loadItemOrdered(event.getGuild(), "ytsearch:" + event.getArgs(), new ResultHandler(m, event, true));
         }
 
         @Override
