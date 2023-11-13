@@ -18,6 +18,7 @@ package hayashi.raiko.utils;
 import hayashi.raiko.Raiko;
 
 import java.io.*;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -47,7 +48,7 @@ public class OtherUtil {
         if (result.toAbsolutePath().toString().toLowerCase().startsWith(WINDOWS_INVALID_PATH))
             try {
                 result = Paths.get(new File(Raiko.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getPath() + File.separator + path);
-            } catch (URISyntaxException ex) {}
+            } catch (URISyntaxException ignored) {}
         return result;
     }
 
@@ -78,11 +79,11 @@ public class OtherUtil {
         if (url == null)
             return null;
         try {
-            URL u = new URL(url);
+            URL u = new URI(url).toURL();
             URLConnection urlConnection = u.openConnection();
             urlConnection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36");
             return urlConnection.getInputStream();
-        } catch (IOException | IllegalArgumentException ignore) {
+        } catch (Exception ignore) {
             return null;
         }
     }

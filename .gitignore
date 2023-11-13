@@ -2,6 +2,7 @@
 /target/
 /Playlists/
 /out/
+/src/test/
 *.json
 *.txt
 nb*.xml
