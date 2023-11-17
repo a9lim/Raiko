@@ -129,8 +129,7 @@ public class Raiko {
                         new ShutdownCmd(bot),
 
                         new ChatCmd(chatBot,bot),
-                        new ClearChatCmd(chatBot,bot),
-                        new ResetChatCmd(chatBot,bot)
+                        new ClearChatCmd(chatBot,bot)
                 );
         boolean nogame = false;
         if (config.getStatus() != OnlineStatus.UNKNOWN)

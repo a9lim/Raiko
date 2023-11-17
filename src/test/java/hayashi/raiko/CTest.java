@@ -21,34 +21,29 @@ public class CTest {
 
         String preprompt = "You are Raiko Horikawa, fun-loving, free spirited drum tsukumogami. You're having a chat with several humans!";
         String apiKey = config.getCgpttoken();
-        String prompt = "Hi Raiko!";
         MediaType mediaType = MediaType.parse("application/json");
         Scanner s = new Scanner(System.in);
 
-        String head = "{\"model\": \"gpt-4\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, " +
-                "{\"role\": \"user\", \"content\": \"" + prompt + "\"}";
-        String reply;
+        String jsonhead = "{\"model\": \"gpt-3.5-turbo-1106\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
         while (true) {
-            RequestBody body = RequestBody.create(mediaType,
-                    head + "]}");
-            Request request = new Request.Builder()
-                    .url("https://api.openai.com/v1/chat/completions")
-                    .post(body)
-                    .addHeader("Authorization", "Bearer " + apiKey)
-                    .addHeader("Content-Type", "application/json")
-                    .build();
-            System.out.println("WAITING");
-            reply = new JSONObject(client.newCall(request).execute()
-                    .body().string())
-                    .getJSONArray("choices").getJSONObject(0)
-                    .getJSONObject("message").getString("content");
-            System.out.println(reply);
-            prompt = s.nextLine();
-            if(prompt.equalsIgnoreCase("quit")) {
-                System.out.println(head);
-                return;
+            jsonhead += "{\"role\": \"user\", \"content\": \"" + s.nextLine().replace("\\","\\\\").replace("\"", "\\\"") + "\"}";
+            try {
+                String reply = (new JSONObject(client.newCall(new Request.Builder()
+                                .url("https://api.openai.com/v1/chat/completions")
+                                .post(RequestBody.create(mediaType, jsonhead + "]}"))
+                                .addHeader("Authorization", "Bearer " + apiKey)
+                                .addHeader("Content-Type", "application/json")
+                                .build())
+                        .execute().body().string())
+                        .getJSONArray("choices").getJSONObject(0)
+                        .getJSONObject("message").getString("content"));
+                jsonhead += ", {\"role\": \"assistant\", \"content\": \"" + reply.replace("\\","\\\\").replace("\"", "\\\"") + "\"}, ";
+                System.out.println(reply);
+            } catch (Exception e){
+                System.out.println(e.toString());
+                jsonhead = "{\"model\": \"gpt-3.5-turbo-1106\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
+                System.out.println("huh");
             }
-            head += ", {\"role\": \"assistant\", \"content\": \"" + reply + "\"}, {\"role\": \"user\", \"content\": \"" + prompt + "\"}";
         }
     }
 }
