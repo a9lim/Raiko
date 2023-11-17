@@ -18,7 +18,7 @@ package hayashi.raiko.commands.owner;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.jagrosh.jdautilities.command.CommandEvent;
+import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
 import hayashi.raiko.commands.OwnerCommand;
 import hayashi.raiko.utils.OtherUtil;

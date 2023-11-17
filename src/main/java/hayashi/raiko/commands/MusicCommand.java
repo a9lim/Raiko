@@ -15,8 +15,8 @@
  */
 package hayashi.raiko.commands;
 
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
+import hayashi.jdautilities.command.Command;
+import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
 import hayashi.raiko.settings.Settings;
 import hayashi.raiko.audio.AudioHandler;

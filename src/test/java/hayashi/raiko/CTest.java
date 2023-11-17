@@ -17,6 +17,7 @@ public class CTest {
 
         String preprompt = "You are Raiko Horikawa, drum tsukumogami";
         String prompt = "Hi Raiko!";
+        String apiKey = "";
 
         MediaType mediaType = MediaType.parse("application/json");
         System.out.println(mediaType);

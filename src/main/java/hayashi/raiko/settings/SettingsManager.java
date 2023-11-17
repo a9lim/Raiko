@@ -15,7 +15,7 @@
  */
 package hayashi.raiko.settings;
 
-import com.jagrosh.jdautilities.command.GuildSettingsManager;
+import hayashi.jdautilities.command.GuildSettingsManager;
 import hayashi.raiko.utils.OtherUtil;
 
 import java.io.IOException;

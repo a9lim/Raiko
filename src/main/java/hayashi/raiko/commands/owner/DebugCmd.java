@@ -15,8 +15,7 @@
  */
 package hayashi.raiko.commands.owner;
 
-import com.jagrosh.jdautilities.command.CommandEvent;
-import com.jagrosh.jdautilities.commons.JDAUtilitiesInfo;
+import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
 import hayashi.raiko.commands.OwnerCommand;
 import com.sedmelluq.discord.lavaplayer.tools.PlayerLibrary;
@@ -58,7 +57,7 @@ public class DebugCmd extends OwnerCommand {
                 .append("\n  StayInChannel = ").append(bot.getConfig().getStay());
         sb.append("\n\nDependency Information:")
                 .append("\n  JDA Version = ").append(JDAInfo.VERSION)
-                .append("\n  JDA-Utilities Version = ").append(JDAUtilitiesInfo.VERSION)
+//                .append("\n  JDA-Utilities Version = ").append(JDAUtilitiesInfo.VERSION)
                 .append("\n  Lavaplayer Version = ").append(PlayerLibrary.VERSION);
         long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
         long used = total - (Runtime.getRuntime().freeMemory() / 1024 / 1024);

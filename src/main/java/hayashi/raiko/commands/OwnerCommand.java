@@ -15,7 +15,7 @@
  */
 package hayashi.raiko.commands;
 
-import com.jagrosh.jdautilities.command.Command;
+import hayashi.jdautilities.command.Command;
 
 /**
  * @author John Grosh (john.a.grosh@gmail.com)

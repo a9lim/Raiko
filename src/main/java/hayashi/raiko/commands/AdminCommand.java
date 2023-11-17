@@ -15,7 +15,7 @@
  */
 package hayashi.raiko.commands;
 
-import com.jagrosh.jdautilities.command.Command;
+import hayashi.jdautilities.command.Command;
 import net.dv8tion.jda.api.Permission;
 
 /**

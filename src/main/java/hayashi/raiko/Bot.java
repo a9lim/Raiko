@@ -18,7 +18,7 @@ package hayashi.raiko;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import hayashi.jdautilities.commons.waiter.EventWaiter;
 import hayashi.raiko.audio.AloneInVoiceHandler;
 import hayashi.raiko.audio.AudioHandler;
 import hayashi.raiko.audio.NowplayingHandler;

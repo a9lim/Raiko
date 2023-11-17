@@ -15,8 +15,8 @@
  */
 package hayashi.raiko.commands.general;
 
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
+import hayashi.jdautilities.command.Command;
+import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
 import hayashi.raiko.settings.RepeatMode;
 import hayashi.raiko.settings.Settings;

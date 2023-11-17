@@ -1,7 +1,7 @@
 package hayashi.raiko.commands.general;
 
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
+import hayashi.jdautilities.command.Command;
+import hayashi.jdautilities.command.CommandEvent;
 
 import java.time.temporal.ChronoUnit;
 
