@@ -78,10 +78,12 @@ public class Raiko {
 
         AboutCommand aboutCommand = new AboutCommand(Color.BLUE.brighter(),
                 "raiko gaming",
-                new String[]{"high-quality (touhou) music playback", "FairQueue™ Technology", "easy to host yourself"},
+                new String[]{"high-quality (touhou) music playback", "DoubleDealingQueue™ Technology", "(somewhat) easy to host yourself"},
                 RECOMMENDED_PERMS);
         aboutCommand.setIsAuthor(false);
         aboutCommand.setReplacementCharacter("\uD83C\uDFB6"); // 🎶
+
+        ChatBot chatBot = new ChatBot(config.getCgpttoken());
 
         // set up the command client
         CommandClientBuilder cb = new CommandClientBuilder()
@@ -126,7 +128,8 @@ public class Raiko {
                         new SetstatusCmd(bot),
                         new ShutdownCmd(bot),
 
-                        new ChatCmd(config.getCgpttoken(),bot)
+                        new ChatCmd(chatBot,bot),
+                        new ClearChatCmd(chatBot,bot)
                 );
         boolean nogame = false;
         if (config.getStatus() != OnlineStatus.UNKNOWN)
