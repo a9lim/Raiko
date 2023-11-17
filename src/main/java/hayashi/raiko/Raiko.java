@@ -15,8 +15,8 @@
  */
 package hayashi.raiko;
 
-import com.jagrosh.jdautilities.command.CommandClientBuilder;
-import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
+import hayashi.jdautilities.command.CommandClientBuilder;
+import hayashi.jdautilities.commons.waiter.EventWaiter;
 import hayashi.raiko.commands.music.*;
 import hayashi.raiko.commands.owner.*;
 import hayashi.raiko.commands.general.*;

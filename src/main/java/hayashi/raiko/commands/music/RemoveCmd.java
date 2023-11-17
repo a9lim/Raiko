@@ -15,7 +15,7 @@
  */
 package hayashi.raiko.commands.music;
 
-import com.jagrosh.jdautilities.command.CommandEvent;
+import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
 import hayashi.raiko.audio.AudioHandler;
 import hayashi.raiko.audio.QueuedTrack;

@@ -15,7 +15,7 @@
  */
 package hayashi.raiko.settings;
 
-import com.jagrosh.jdautilities.command.GuildSettingsProvider;
+import hayashi.jdautilities.command.GuildSettingsProvider;
 
 import java.util.Collection;
 import java.util.Collections;

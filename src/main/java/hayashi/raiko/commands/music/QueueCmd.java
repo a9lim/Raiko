@@ -19,8 +19,8 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
-import com.jagrosh.jdautilities.command.CommandEvent;
-import com.jagrosh.jdautilities.menu.Paginator;
+import hayashi.jdautilities.command.CommandEvent;
+import hayashi.jdautilities.menu.Paginator;
 import hayashi.raiko.Bot;
 import hayashi.raiko.audio.AudioHandler;
 import hayashi.raiko.audio.QueuedTrack;
@@ -52,8 +52,7 @@ public class QueueCmd extends MusicCommand {
                 .setFinalAction(m -> {
                     try {
                         m.clearReactions().queue();
-                    } catch (PermissionException ignore) {
-                    }
+                    } catch (PermissionException ignore) {}
                 })
                 .setItemsPerPage(10)
                 .waitOnSinglePage(false)
@@ -74,10 +73,9 @@ public class QueueCmd extends MusicCommand {
         Deque<QueuedTrack> deque = ah.getQueue().getDeque();
         if (deque.isEmpty()) {
             Message nowp = ah.getNowPlaying(event.getJDA());
-            Message nonowp = ah.getNoMusicPlaying(event.getJDA());
             Message built = new MessageBuilder()
                     .setContent(event.getClient().getWarning() + " There is no music in the queue!")
-                    .setEmbeds((nowp == null ? nonowp : nowp).getEmbeds().get(0)).build();
+                    .setEmbeds((nowp == null ? ah.getNoMusicPlaying(event.getJDA()) : nowp).getEmbeds().get(0)).build();
             event.reply(built, m -> {
                 if (nowp != null)
                     bot.getNowplayingHandler().setLastNPMessage(m);
@@ -97,8 +95,7 @@ public class QueueCmd extends MusicCommand {
         builder.setText((i1, i2) -> getQueueTitle(ah, event.getClient().getSuccess(), songs.length, fintotal, settings.getRepeatMode()))
                 .setItems(songs)
                 .setUsers(event.getAuthor())
-                .setColor(event.getSelfMember().getColor())
-        ;
+                .setColor(event.getSelfMember().getColor());
         builder.build().paginate(event.getChannel(), pagenum);
     }
 

@@ -17,8 +17,8 @@ package hayashi.raiko.commands.admin;
 
 import java.util.List;
 
-import com.jagrosh.jdautilities.command.CommandEvent;
-import com.jagrosh.jdautilities.commons.utils.FinderUtil;
+import hayashi.jdautilities.command.CommandEvent;
+import hayashi.jdautilities.commons.utils.FinderUtil;
 import hayashi.raiko.Bot;
 import hayashi.raiko.commands.AdminCommand;
 import hayashi.raiko.settings.Settings;

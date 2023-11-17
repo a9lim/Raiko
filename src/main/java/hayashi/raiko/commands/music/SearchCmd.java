@@ -23,8 +23,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import java.util.concurrent.TimeUnit;
 
-import com.jagrosh.jdautilities.command.CommandEvent;
-import com.jagrosh.jdautilities.menu.OrderedMenu;
+import hayashi.jdautilities.command.CommandEvent;
+import hayashi.jdautilities.menu.OrderedMenu;
 import hayashi.raiko.Bot;
 import hayashi.raiko.audio.AudioHandler;
 import hayashi.raiko.audio.QueuedTrack;

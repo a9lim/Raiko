@@ -1,11 +1,9 @@
 package hayashi.raiko.commands.general;
-
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
+import hayashi.jdautilities.command.Command;
+import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
 import okhttp3.*;
 import org.json.JSONObject;
-
 import java.util.concurrent.TimeUnit;
 
 public class ChatCmd extends Command {
@@ -15,9 +13,7 @@ public class ChatCmd extends Command {
             .readTimeout(10, TimeUnit.MINUTES)
             .writeTimeout(10, TimeUnit.MINUTES)
             .build();
-
     private final String preprompt = "You are Raiko Horikawa";
-
     private final String apiKey;
     public ChatCmd(String apiKey, Bot bot) {
         this.apiKey = apiKey;
@@ -39,13 +35,12 @@ public class ChatCmd extends Command {
                 .addHeader("Content-Type", "application/json")
                 .build();
         try {
-            event.reply(new JSONObject(client.newCall(request).execute()
-                    .body().string())
+            event.reply(new JSONObject(client.newCall(request).execute().body().string())
                     .getJSONArray("choices").getJSONObject(0)
                     .getJSONObject("message").getString("content"));
 
         } catch (Exception e){
-            System.out.println("h");
+            event.reply("Huh?");
         }
     }
 }

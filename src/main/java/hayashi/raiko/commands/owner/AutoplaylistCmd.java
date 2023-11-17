@@ -15,7 +15,7 @@
  */
 package hayashi.raiko.commands.owner;
 
-import com.jagrosh.jdautilities.command.CommandEvent;
+import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
 import hayashi.raiko.commands.OwnerCommand;
 import hayashi.raiko.settings.Settings;

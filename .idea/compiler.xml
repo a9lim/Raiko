@@ -7,6 +7,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="raiko" />
+        <module name="menu" />
+        <module name="command" />
+        <module name="commons" />
       </profile>
     </annotationProcessing>
   </component>
