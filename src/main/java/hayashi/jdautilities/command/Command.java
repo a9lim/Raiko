@@ -496,7 +496,6 @@ public abstract class Command {
                     event.getJDA().getShardInfo() != null ? cooldownScope.genKey(name, event.getAuthor().getIdLong(), event.getJDA().getShardInfo().getShardId()) :
                             CooldownScope.USER.genKey(name, event.getAuthor().getIdLong());
             case GLOBAL -> cooldownScope.genKey(name, 0);
-            default -> "";
         };
     }
 
