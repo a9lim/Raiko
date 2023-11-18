@@ -25,7 +25,7 @@ public class CTest {
         final Scanner s = new Scanner(System.in);
         String model = config.getModel();
 
-        String jsonhead = "{\"model\": \"gpt-3.5-turbo-1106\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
+        String jsonhead = "{\"model\": \"gpt-4-1106-preview\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
         while (true) {
             jsonhead += "{\"role\": \"user\", \"content\": \"" + s.nextLine().replace("\\","\\\\").replace("\"", "\\\"") + "\"}";
             try {
@@ -42,7 +42,7 @@ public class CTest {
                 System.out.println(reply);
             } catch (Exception e){
                 System.out.println(e.toString());
-                jsonhead = "{\"model\": \"" + model + "\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
+                jsonhead = "{\"model\": \"gpt-4-1106-preview\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
                 System.out.println("huh");
             }
         }

@@ -21,9 +21,11 @@ public class ChatBot {
     private final String apiKey;
     private final MediaType mediaType = MediaType.parse("application/json");
     public ChatBot(String apiKey, String model) {
-        clear();
         this.apiKey = apiKey;
         setModel(model);
+        clear();
+        System.out.println("model:" + this.model);
+
     }
     public String chat(String s) {
         jsonhead += "{\"role\": \"user\", \"content\": \"" + s.replace("\\","\\\\").replace("\"", "\\\"") + "\"}";
@@ -51,10 +53,11 @@ public class ChatBot {
 
     public void setModel(String s) throws ConfigException{
         model = switch (s) {
-            case "cheap" -> "gpt-4-1106-preview";
-            case "standard" -> "gpt-3.5-turbo-1106";
+            case "cheap" -> "gpt-3.5-turbo-1106";
+            case "standard" -> "gpt-4-1106-preview";
             case "expensive" -> "gpt-4";
             default -> throw new ConfigException("Please input \"cheap\", \"standard\", or \"expensive\" for model!") {};
         };
+        clear();
     }
 }
