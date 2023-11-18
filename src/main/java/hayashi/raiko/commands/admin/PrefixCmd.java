@@ -20,9 +20,6 @@ import hayashi.raiko.Bot;
 import hayashi.raiko.commands.AdminCommand;
 import hayashi.raiko.settings.Settings;
 
-/**
- * @author John Grosh (john.a.grosh@gmail.com)
- */
 public class PrefixCmd extends AdminCommand {
     public PrefixCmd(Bot bot) {
         this.name = "prefix";

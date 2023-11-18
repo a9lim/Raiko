@@ -21,9 +21,6 @@ import hayashi.raiko.commands.MusicCommand;
 import hayashi.raiko.settings.RepeatMode;
 import hayashi.raiko.settings.Settings;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class RepeatCmd extends MusicCommand {
     public RepeatCmd(Bot bot) {
         super(bot);

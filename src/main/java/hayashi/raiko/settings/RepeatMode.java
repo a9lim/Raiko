@@ -15,9 +15,6 @@
  */
 package hayashi.raiko.settings;
 
-/**
- * @author Michaili K
- */
 public enum RepeatMode {
     OFF(null, "Off"),
     ALL("\uD83D\uDD01", "All"), // 🔁

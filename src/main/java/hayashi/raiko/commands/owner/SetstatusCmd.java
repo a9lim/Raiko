@@ -20,9 +20,6 @@ import hayashi.raiko.Bot;
 import hayashi.raiko.commands.OwnerCommand;
 import net.dv8tion.jda.api.OnlineStatus;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class SetstatusCmd extends OwnerCommand {
     public SetstatusCmd(Bot bot) {
         this.name = "setstatus";

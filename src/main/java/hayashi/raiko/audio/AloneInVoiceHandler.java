@@ -26,9 +26,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author Michaili K (mysteriouscursor+git@protonmail.com)
- */
 public class AloneInVoiceHandler {
     private final Bot bot;
     private final HashMap<Long, Instant> aloneSince = new HashMap<>();

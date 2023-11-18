@@ -20,9 +20,6 @@ import hayashi.raiko.Bot;
 import hayashi.raiko.audio.AudioHandler;
 import hayashi.raiko.commands.MusicCommand;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class PauseCmd extends MusicCommand {
     public PauseCmd(Bot bot) {
         super(bot);

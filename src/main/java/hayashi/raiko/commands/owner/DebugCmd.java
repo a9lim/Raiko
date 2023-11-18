@@ -23,9 +23,6 @@ import net.dv8tion.jda.api.JDAInfo;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
 
-/**
- * @author John Grosh (john.a.grosh@gmail.com)
- */
 public class DebugCmd extends OwnerCommand {
     private final static String[] PROPERTIES = {"java.version", "java.vm.name", "java.vm.specification.version",
             "java.runtime.name", "java.runtime.version", "java.specification.version", "os.arch", "os.name"};

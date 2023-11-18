@@ -25,9 +25,6 @@ import hayashi.raiko.Bot;
 import hayashi.raiko.commands.OwnerCommand;
 import hayashi.raiko.playlist.PlaylistLoader.Playlist;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class PlaylistCmd extends OwnerCommand {
     private static final Pattern PATTERN = Pattern.compile("[*?|\\/\":<>]");
     private final Bot bot;

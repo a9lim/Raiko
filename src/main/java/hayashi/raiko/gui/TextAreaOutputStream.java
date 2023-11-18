@@ -21,10 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
-/**
- *
- * @author Lawrence Dol
- */
 public class TextAreaOutputStream extends OutputStream {
 
 // *************************************************************************************************

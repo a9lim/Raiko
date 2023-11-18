@@ -25,9 +25,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public abstract class MusicCommand extends Command {
     protected final Bot bot;
     protected boolean bePlaying;

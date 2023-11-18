@@ -17,9 +17,6 @@ package hayashi.raiko.commands;
 
 import hayashi.jdautilities.command.Command;
 
-/**
- * @author John Grosh (john.a.grosh@gmail.com)
- */
 public abstract class OwnerCommand extends Command {
     public OwnerCommand() {
         this.category = new Category("Owner");

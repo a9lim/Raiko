@@ -25,9 +25,6 @@ import hayashi.raiko.settings.Settings;
 import hayashi.raiko.utils.FormatUtil;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class SetvcCmd extends AdminCommand {
     public SetvcCmd(Bot bot) {
         this.name = "setvc";

@@ -28,9 +28,6 @@ import java.nio.file.Path;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 
-/**
- * @author John Grosh (jagrosh)
- */
 public class BotConfig {
     private final Prompt prompt;
     private final static String CONTEXT = "Config";

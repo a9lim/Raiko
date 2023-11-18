@@ -22,9 +22,6 @@ import hayashi.raiko.commands.MusicCommand;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class NowplayingCmd extends MusicCommand {
     public NowplayingCmd(Bot bot) {
         super(bot);

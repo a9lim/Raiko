@@ -24,9 +24,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class Settings implements GuildSettingsProvider {
     private final SettingsManager manager;
     protected long textId;

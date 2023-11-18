@@ -22,9 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class ConsolePanel extends JPanel {
 
     public ConsolePanel() {

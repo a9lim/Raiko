@@ -22,9 +22,6 @@ import hayashi.raiko.commands.MusicCommand;
 import hayashi.raiko.settings.Settings;
 import hayashi.raiko.utils.FormatUtil;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class VolumeCmd extends MusicCommand {
     public VolumeCmd(Bot bot) {
         super(bot);

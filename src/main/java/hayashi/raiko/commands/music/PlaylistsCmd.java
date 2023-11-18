@@ -21,9 +21,6 @@ import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
 import hayashi.raiko.commands.MusicCommand;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class PlaylistsCmd extends MusicCommand {
     public PlaylistsCmd(Bot bot) {
         super(bot);

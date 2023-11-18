@@ -39,9 +39,6 @@ import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author John Grosh (jagrosh)
- */
 public class Raiko {
     public final static Logger LOG = LoggerFactory.getLogger(Raiko.class);
     public final static Permission[] RECOMMENDED_PERMS = {Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION,
@@ -49,9 +46,6 @@ public class Raiko {
             Permission.MANAGE_CHANNEL, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.NICKNAME_CHANGE};
     public final static GatewayIntent[] INTENTS = {GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_VOICE_STATES};
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         if (args.length > 0 && "generate-config".equalsIgnoreCase(args[0])) {
             BotConfig.writeDefaultConfig();

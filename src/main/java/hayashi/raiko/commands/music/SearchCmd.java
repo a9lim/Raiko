@@ -33,9 +33,6 @@ import hayashi.raiko.utils.FormatUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class SearchCmd extends MusicCommand {
     protected String searchPrefix = "ytsearch:";
     private final OrderedMenu.Builder builder;

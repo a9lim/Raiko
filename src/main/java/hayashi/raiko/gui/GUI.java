@@ -23,10 +23,6 @@ import javax.swing.WindowConstants;
 
 import hayashi.raiko.Bot;
 
-
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class GUI extends JFrame {
     private final ConsolePanel console;
     private final Bot bot;

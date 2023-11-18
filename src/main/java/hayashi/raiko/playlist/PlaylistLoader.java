@@ -33,9 +33,6 @@ import java.util.stream.Collectors;
 
 import static hayashi.jdautilities.command.Command.COMPILE;
 
-/**
- * @author John Grosh (john.a.grosh@gmail.com)
- */
 public class PlaylistLoader {
     private final BotConfig config;
 
