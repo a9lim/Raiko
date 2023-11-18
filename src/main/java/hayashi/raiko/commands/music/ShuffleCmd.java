@@ -20,9 +20,6 @@ import hayashi.raiko.Bot;
 import hayashi.raiko.audio.AudioHandler;
 import hayashi.raiko.commands.MusicCommand;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class ShuffleCmd extends MusicCommand {
     public ShuffleCmd(Bot bot) {
         super(bot);

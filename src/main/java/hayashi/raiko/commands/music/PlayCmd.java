@@ -37,9 +37,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class PlayCmd extends MusicCommand {
     private final static String LOAD = "\uD83D\uDCE5"; // 📥
     private final static String CANCEL = "\uD83D\uDEAB"; // 🚫

@@ -21,9 +21,6 @@ import hayashi.raiko.queue.Queueable;
 import hayashi.raiko.utils.FormatUtil;
 import net.dv8tion.jda.api.entities.User;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class QueuedTrack implements Queueable {
     private final AudioTrack track;
 

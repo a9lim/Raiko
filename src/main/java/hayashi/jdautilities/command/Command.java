@@ -67,122 +67,40 @@ import net.dv8tion.jda.api.sharding.ShardManager;
  */
 public abstract class Command {
     public static final Pattern COMPILE = Pattern.compile("\\s+");
-    /**
-     * The name of the command, allows the command to be called the format: {@code [prefix]<command name>}.
-     */
+
     protected String name = "null";
 
-    /**
-     * A small help String that summarizes the function of the command, used in the default help builder.
-     */
     protected String help = "no help available";
 
-    /**
-     * The {@link Category Category} of the command.
-     * <br>This can perform any other checks not completed by the default conditional fields.
-     */
     protected Category category;
 
-    /**
-     * An arguments format String for the command, used in the default help builder.
-     */
-    protected String arguments;
+    protected String arguments, requiredRole;
 
-    /**
-     * {@code true} if the command may only be used in a {@link Guild Guild},
-     * {@code false} if it may be used in both a Guild and a DM.
-     * <br>Default {@code true}.
-     */
     protected boolean guildOnly = true;
 
-    /**
-     * A String name of a role required to use this command.
-     */
-    protected String requiredRole;
+    protected boolean ownerCommand, hidden;
 
-    /**
-     * {@code true} if the command may only be used by a User with an ID matching the
-     * Owners or any of the CoOwners.
-     * <br>Default {@code false}.
-     */
-    protected boolean ownerCommand;
-
-    /**
-     * An {@code int} number of seconds users must wait before using this command again.
-     */
     protected int cooldown;
 
-    /**
-     * Any {@link Permission Permission}s a Member must have to use this command.
-     * <br>These are only checked in a {@link Guild Guild} environment.
-     */
     protected Permission[] userPermissions = new Permission[0];
 
-    /**
-     * Any {@link Permission Permission}s the bot must have to use a command.
-     * <br>These are only checked in a {@link Guild Guild} environment.
-     */
     protected Permission[] botPermissions = new Permission[0];
 
-    /**
-     * The aliases of the command, when calling a command these function identically to calling the
-     * {@link Command#name Command.name}.
-     */
     protected String[] aliases = new String[0];
 
-    /**
-     * The child commands of the command. These are used in the format {@code [prefix]<parent name>
-     * <child name>}.
-     */
     protected Command[] children = new Command[0];
 
-    /**
-     * The {@link BiConsumer BiConsumer} for creating a help response to the format
-     * {@code [prefix]<command name> help}.
-     */
     protected BiConsumer<CommandEvent, Command> helpBiConsumer;
 
-    /**
-     * {@code true} if this command checks a channel topic for topic-tags.
-     * <br>This means that putting {@code {-commandname}}, {@code {-command category}}, {@code {-all}} in a channel topic
-     * will cause this command to terminate.
-     * <br>Default {@code true}.
-     */
     protected boolean usesTopicTags = true;
 
-    /**
-     * {@code true} if this command should be hidden from the help.
-     * <br>Default {@code false}
-     */
-    protected boolean hidden;
-
-    /**
-     * The {@link CooldownScope CooldownScope}
-     * of the command. This defines how far of a scope cooldowns have.
-     * <br>Default {@link CooldownScope#USER CooldownScope.USER}.
-     */
     protected CooldownScope cooldownScope = CooldownScope.USER;
 
     private final static String BOT_PERM = "%s I need the %s permission in this %s!";
     private final static String USER_PERM = "%s You must have the %s permission in this %s to use that!";
 
-    /**
-     * The main body method of a {@link Command Command}.
-     * <br>This is the "response" for a successful
-     * {@link Command#run(CommandEvent) #run(CommandEvent)}.
-     *
-     * @param event The {@link CommandEvent CommandEvent} that
-     *              triggered this Command
-     */
     protected abstract void execute(CommandEvent event);
 
-    /**
-     * Runs checks for the {@link Command Command} with the
-     * given {@link CommandEvent CommandEvent} that called it.
-     * <br>Will terminate, and possibly respond with a failure message, if any checks fail.
-     *
-     * @param event The CommandEvent that triggered this Command
-     */
     public final void run(CommandEvent event) {
         // child check
         if (!event.getArgs().isEmpty()) {
@@ -293,12 +211,6 @@ public abstract class Command {
             event.getClient().getListener().onCompletedCommand(event, this);
     }
 
-    /**
-     * Checks if the given input represents this Command
-     *
-     * @param input The input to check
-     * @return {@code true} if the input is the name or an alias of the Command
-     */
     public boolean isCommandFor(String input) {
         if (name.equalsIgnoreCase(input))
             return true;
@@ -308,23 +220,6 @@ public abstract class Command {
         return false;
     }
 
-    /**
-     * Checks whether a command is allowed in a {@link TextChannel TextChannel}
-     * by searching the channel topic for topic tags relating to the command.
-     *
-     * <p>{-{@link Command#name name}},
-     * {-{@link Category category name}}, or {-{@code all}}
-     * are valid examples of ways that this method would return {@code false} if placed in a channel topic.
-     *
-     * <p><b>NOTE:</b>Topic tags are <b>case sensitive</b> and proper usage must be in lower case!
-     * <br>Also note that setting {@link Command#usesTopicTags usesTopicTags}
-     * to {@code false} will cause this method to always return {@code true}, as the feature would not be applicable
-     * in the first place.
-     *
-     * @param channel The TextChannel to test.
-     * @return {@code true} if the channel topic doesn't specify any topic-tags that would cause this command
-     * to be cancelled, or if {@code usesTopicTags} has been set to {@code false}.
-     */
     public boolean isAllowed(TextChannel channel) {
         if (!usesTopicTags || channel == null)
             return true;
@@ -347,120 +242,54 @@ public abstract class Command {
         return !topic.contains("{-all}");
     }
 
-    /**
-     * Gets the {@link Command#name Command.name} for the Command.
-     *
-     * @return The name for the Command
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * Gets the {@link Command#help Command.help} for the Command.
-     *
-     * @return The help for the Command
-     */
     public String getHelp() {
         return help;
     }
 
-    /**
-     * Gets the {@link Command#category Command.category} for the Command.
-     *
-     * @return The category for the Command
-     */
     public Category getCategory() {
         return category;
     }
 
-    /**
-     * Gets the {@link Command#arguments Command.arguments} for the Command.
-     *
-     * @return The arguments for the Command
-     */
     public String getArguments() {
         return arguments;
     }
 
-    /**
-     * Checks if this Command can only be used in a {@link Guild Guild}.
-     *
-     * @return {@code true} if this Command can only be used in a Guild, else {@code false} if it can
-     * be used outside of one
-     */
     public boolean isGuildOnly() {
         return guildOnly;
     }
 
-    /**
-     * Gets the {@link Command#requiredRole Command.requiredRole} for the Command.
-     *
-     * @return The requiredRole for the Command
-     */
     public String getRequiredRole() {
         return requiredRole;
     }
 
-    /**
-     * Gets the {@link Command#cooldown Command.cooldown} for the Command.
-     *
-     * @return The cooldown for the Command
-     */
     public int getCooldown() {
         return cooldown;
     }
 
-    /**
-     * Gets the {@link Command#userPermissions Command.userPermissions} for the Command.
-     *
-     * @return The userPermissions for the Command
-     */
     public Permission[] getUserPermissions() {
         return userPermissions;
     }
 
-    /**
-     * Gets the {@link Command#botPermissions Command.botPermissions} for the Command.
-     *
-     * @return The botPermissions for the Command
-     */
     public Permission[] getBotPermissions() {
         return botPermissions;
     }
 
-    /**
-     * Gets the {@link Command#aliases Command.aliases} for the Command.
-     *
-     * @return The aliases for the Command
-     */
     public String[] getAliases() {
         return aliases;
     }
 
-    /**
-     * Gets the {@link Command#children Command.children} for the Command.
-     *
-     * @return The children for the Command
-     */
     public Command[] getChildren() {
         return children;
     }
 
-    /**
-     * Checks whether or not this command is an owner only Command.
-     *
-     * @return {@code true} if the command is an owner command, otherwise {@code false} if it is not
-     */
     public boolean isOwnerCommand() {
         return ownerCommand;
     }
 
-    /**
-     * Checks whether or not this command should be hidden from the help
-     *
-     * @return {@code true} if the command should be hidden, otherwise {@code false}
-     */
     public boolean isHidden() {
         return hidden;
     }
@@ -472,13 +301,6 @@ public abstract class Command {
             event.getClient().getListener().onTerminatedCommand(event, this);
     }
 
-    /**
-     * Gets the proper cooldown key for this Command under the provided
-     * {@link CommandEvent CommandEvent}.
-     *
-     * @param event The CommandEvent to generate the cooldown for.
-     * @return A String key to use when applying a cooldown.
-     */
     public String getCooldownKey(CommandEvent event) {
         return switch (cooldownScope) {
             case USER -> cooldownScope.genKey(name, event.getAuthor().getIdLong());
@@ -500,15 +322,6 @@ public abstract class Command {
         };
     }
 
-    /**
-     * Gets an error message for this Command under the provided
-     * {@link CommandEvent CommanEvent}.
-     *
-     * @param event     The CommandEvent to generate the error message for.
-     * @param remaining The remaining number of seconds a command is on cooldown for.
-     * @return A String error message for this command if {@code remaining > 0},
-     * else {@code null}.
-     */
     public String getCooldownError(CommandEvent event, int remaining) {
         if (remaining <= 0)
             return null;
@@ -524,90 +337,37 @@ public abstract class Command {
         return front + " " + cooldownScope.errorSpecification + "!";
     }
 
-    /**
-     * To be used in {@link Command Command}s as a means of
-     * organizing commands into "Categories" as well as terminate command usage when the calling
-     * {@link CommandEvent CommandEvent} doesn't meet
-     * certain requirements.
-     *
-     * @author John Grosh (jagrosh)
-     */
     public static class Category {
         private final String name;
         private final String failResponse;
         private final Predicate<CommandEvent> predicate;
 
-        /**
-         * A Command Category containing a name.
-         *
-         * @param name The name of the Category
-         */
         public Category(String name) {
             this.name = name;
             this.failResponse = null;
             this.predicate = null;
         }
 
-        /**
-         * A Command Category containing a name and a {@link Predicate}.
-         *
-         * <p>The command will be terminated if
-         * {@link Category#test(CommandEvent)}
-         * returns {@code false}.
-         *
-         * @param name      The name of the Category
-         * @param predicate The Category predicate to test
-         */
         public Category(String name, Predicate<CommandEvent> predicate) {
             this.name = name;
             this.failResponse = null;
             this.predicate = predicate;
         }
 
-        /**
-         * A Command Category containing a name, a {@link Predicate},
-         * and a failure response.
-         *
-         * <p>The command will be terminated if
-         * {@link Category#test(CommandEvent)}
-         * returns {@code false}, and the failure response will be sent.
-         *
-         * @param name         The name of the Category
-         * @param failResponse The response if the test fails
-         * @param predicate    The Category predicate to test
-         */
         public Category(String name, String failResponse, Predicate<CommandEvent> predicate) {
             this.name = name;
             this.failResponse = failResponse;
             this.predicate = predicate;
         }
 
-        /**
-         * Gets the name of the Category.
-         *
-         * @return The name of the Category
-         */
         public String getName() {
             return name;
         }
 
-        /**
-         * Gets the failure response of the Category.
-         *
-         * @return The failure response of the Category
-         */
         public String getFailureResponse() {
             return failResponse;
         }
 
-        /**
-         * Runs a test of the provided {@link Predicate}.
-         *
-         * @param event The {@link CommandEvent CommandEvent}
-         *              that was called when this method is invoked
-         * @return {@code true} if the Predicate was not set, was set as null, or was
-         * tested and returned true, otherwise returns {@code false}
-         */
         public boolean test(CommandEvent event) {
             return predicate == null || predicate.test(event);
         }
@@ -629,120 +389,21 @@ public abstract class Command {
         }
     }
 
-    /**
-     * A series of {@link Enum Enum}s used for defining the scope size for a
-     * {@link Command Command}'s cooldown.
-     *
-     * <p>The purpose for these values is to allow easy, refined, and generally convenient keys
-     * for cooldown scopes, allowing a command to remain on cooldown for more than just the user
-     * calling it, with no unnecessary abstraction or developer input.
-     * <p>
-     * Cooldown keys are generated via {@link Command#getCooldownKey(CommandEvent)
-     * Command#getCooldownKey(CommandEvent)} using 1-2 Snowflake ID's corresponding to the name
-     * (IE: {@code USER_CHANNEL} uses the ID's of the User and the Channel from the CommandEvent).
-     *
-     * <p>However, the issue with generalizing and generating like this is that the command may
-     * be called in a non-guild environment, causing errors internally.
-     * <br>To prevent this, all of the values that contain "{@code GUILD}" in their name default
-     * to their "{@code CHANNEL}" counterparts when commands using them are called outside of a
-     * {@link Guild Guild} environment.
-     * <ul>
-     *     <li>{@link CooldownScope#GUILD GUILD} defaults to
-     *     {@link CooldownScope#CHANNEL CHANNEL}.</li>
-     *     <li>{@link CooldownScope#USER_GUILD USER_GUILD} defaults to
-     *     {@link CooldownScope#USER_CHANNEL USER_CHANNEL}.</li>
-     * </ul>
-     * <p>
-     * These are effective across a single instance of JDA, and not multiple
-     * ones, save when multiple shards run on a single JVM and under a
-     * {@link ShardManager ShardManager}.
-     * <br>There is no shard magic, and no guarantees for a 100% "global"
-     * cooldown, unless all shards of the bot run under the same ShardManager,
-     * and/or via some external system unrelated to JDA-Utilities.
-     *
-     * @author Kaidan Gustave
-     * @see Command#cooldownScope Command.cooldownScope
-     * @since 1.3
-     */
     public enum CooldownScope {
-        /**
-         * Applies the cooldown to the calling {@link User User} across all
-         * locations on this instance (IE: TextChannels, PrivateChannels, etc).
-         *
-         * <p>The key for this is generated in the format
-         */
         USER("U:%d", ""),
 
-        /**
-         * Applies the cooldown to the {@link MessageChannel MessageChannel} the
-         * command is called in.
-         *
-         * <p>The key for this is generated in the format
-         */
         CHANNEL("C:%d", "in this channel"),
 
-        /**
-         * Applies the cooldown to the calling {@link User User} local to the
-         * {@link MessageChannel MessageChannel} the command is called in.
-         *
-         */
         USER_CHANNEL("U:%d|C:%d", "in this channel"),
 
-        /**
-         * Applies the cooldown to the {@link Guild Guild} the command is called in.
-         *
-         * <p>The key for this is generated in the format
-         * <p><b>NOTE:</b> This will automatically default back to {@link CooldownScope#CHANNEL CooldownScope.CHANNEL}
-         * when called in a private channel.  This is done in order to prevent internal
-         * {@link NullPointerException NullPointerException}s from being thrown while generating cooldown keys!
-         */
         GUILD("G:%d", "in this server"),
 
-        /**
-         * Applies the cooldown to the calling {@link User User} local to the
-         * {@link Guild Guild} the command is called in.
-         *
-         * <p>The key for this is generated in the format
-         *
-         * <p><b>NOTE:</b> This will automatically default back to {@link CooldownScope#CHANNEL CooldownScope.CHANNEL}
-         * when called in a private channel. This is done in order to prevent internal
-         * {@link NullPointerException NullPointerException}s from being thrown while generating cooldown keys!
-         */
         USER_GUILD("U:%d|G:%d", "in this server"),
 
-        /**
-         * Applies the cooldown to the calling Shard the command is called on.
-         *
-         * <p>The key for this is generated in the format
-
-         * <p><b>NOTE:</b> This will automatically default back to {@link CooldownScope#GLOBAL CooldownScope.GLOBAL}
-         * when {@link JDA#getShardInfo() JDA#getShardInfo()} returns {@code null}.
-         * This is done in order to prevent internal {@link NullPointerException NullPointerException}s
-         * from being thrown while generating cooldown keys!
-         */
         SHARD("S:%d", "on this shard"),
 
-        /**
-         * Applies the cooldown to the calling {@link User User} on the Shard
-         * the command is called on.
-         *
-         * <p>The key for this is generated in the format
-         *
-         * <p><b>NOTE:</b> This will automatically default back to {@link CooldownScope#USER CooldownScope.USER}
-         * when {@link JDA#getShardInfo() JDA#getShardInfo()} returns {@code null}.
-         * This is done in order to prevent internal {@link NullPointerException NullPointerException}s
-         * from being thrown while generating cooldown keys!
-         */
         USER_SHARD("U:%d|S:%d", "on this shard"),
 
-        /**
-         * Applies this cooldown globally.
-         *
-         * <p>As this implies: the command will be unusable on the instance of JDA in all types of
-         * {@link MessageChannel MessageChannel}s until the cooldown has ended.
-         *
-         * <p>The key for this is {@code <command-name>|globally}
-         */
         GLOBAL("Global", "globally");
 
         private final String format;

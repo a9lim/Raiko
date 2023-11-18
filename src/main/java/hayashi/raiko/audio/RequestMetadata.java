@@ -17,9 +17,6 @@ package hayashi.raiko.audio;
 
 import net.dv8tion.jda.api.entities.User;
 
-/**
- * @author John Grosh (john.a.grosh@gmail.com)
- */
 public class RequestMetadata {
     public static final RequestMetadata EMPTY = new RequestMetadata(null);
 

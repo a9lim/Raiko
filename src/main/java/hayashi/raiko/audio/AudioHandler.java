@@ -40,9 +40,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class AudioHandler extends AudioEventAdapter implements AudioSendHandler {
     public final static String PLAY_EMOJI = "\u25B6"; // ▶
     public final static String PAUSE_EMOJI = "\u23F8"; // ⏸

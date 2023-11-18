@@ -24,9 +24,6 @@ import hayashi.raiko.commands.OwnerCommand;
 import hayashi.raiko.utils.OtherUtil;
 import net.dv8tion.jda.api.entities.Icon;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class SetavatarCmd extends OwnerCommand {
     public SetavatarCmd(Bot bot) {
         this.name = "setavatar";

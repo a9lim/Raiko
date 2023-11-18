@@ -26,9 +26,6 @@ import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class SettingsCmd extends Command {
     private final static String EMOJI = "\uD83C\uDFA7"; // 🎧
 

@@ -21,9 +21,6 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public enum FormatUtil {
     ;
 

@@ -51,18 +51,6 @@ import java.util.function.Function;
 
 import static hayashi.jdautilities.command.Command.COMPILE;
 
-/**
- * An implementation of {@link CommandClient CommandClient} to be used by a bot.
- *
- * <p>This is a listener usable with {@link JDA JDA}, as it implements
- * {@link EventListener EventListener} in order to catch and use different kinds of
- * {@link Event Event}s. The primary usage of this is where the CommandClient implementation
- * takes {@link MessageReceivedEvent MessageReceivedEvent}s, and automatically
- * processes arguments, and provide them to a {@link Command Command} for
- * running and execution.
- *
- * @author John Grosh (jagrosh)
- */
 public class CommandClientImpl implements CommandClient, EventListener {
     private static final Logger LOG = LoggerFactory.getLogger(CommandClient.class);
     private static final String DEFAULT_PREFIX = "@mention";
@@ -582,16 +570,6 @@ public class CommandClientImpl implements CommandClient, EventListener {
         return Arrays.copyOf(COMPILE.split(rawContent.substring(length).trim(), 2), 2);
     }
 
-    /**
-     * <b>DO NOT USE THIS!</b>
-     *
-     * <p>This is a method necessary for linking a bot's response messages
-     * to their corresponding call message ID.
-     * <br><b>Using this anywhere in your code can and will break your bot.</b>
-     *
-     * @param callId  The ID of the call Message
-     * @param message The Message to link to the ID
-     */
     public void linkIds(long callId, Message message) {
         if (usesLinkedDeletion()) {
             synchronized (linkMap) {

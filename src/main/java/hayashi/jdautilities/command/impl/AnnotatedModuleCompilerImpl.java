@@ -28,13 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-/**
- * Default implementation for {@link AnnotatedModuleCompiler
- * AnnotatedModuleCompiler}.
- *
- * @author Kaidan Gustave
- * @since 1.8
- */
 public class AnnotatedModuleCompilerImpl implements AnnotatedModuleCompiler {
     private static final Logger LOG = LoggerFactory.getLogger(AnnotatedModuleCompiler.class);
 

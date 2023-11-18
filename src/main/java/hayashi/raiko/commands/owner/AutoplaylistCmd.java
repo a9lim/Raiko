@@ -20,9 +20,6 @@ import hayashi.raiko.Bot;
 import hayashi.raiko.commands.OwnerCommand;
 import hayashi.raiko.settings.Settings;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class AutoplaylistCmd extends OwnerCommand {
     private final Bot bot;
 

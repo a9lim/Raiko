@@ -18,9 +18,6 @@ package hayashi.raiko.commands;
 import hayashi.jdautilities.command.Command;
 import net.dv8tion.jda.api.Permission;
 
-/**
- * @author John Grosh (john.a.grosh@gmail.com)
- */
 public abstract class AdminCommand extends Command {
     public AdminCommand() {
         this.category = new Category("Admin", event -> event.getAuthor().getId().equals(event.getClient().getOwnerId()) || event.getGuild() == null || event.getMember().hasPermission(Permission.MANAGE_SERVER));

@@ -15,10 +15,5 @@
  */
 package hayashi.raiko.entities;
 
-/**
- * @param <K>
- * @param <V>
- * @author John Grosh (john.a.grosh@gmail.com)
- */
 public record Pair<K, V>(K key, V value) {
 }

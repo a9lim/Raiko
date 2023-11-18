@@ -22,9 +22,6 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import net.dv8tion.jda.api.entities.Guild;
 
-/**
- * @author John Grosh (john.a.grosh@gmail.com)
- */
 public class PlayerManager extends DefaultAudioPlayerManager {
     private final Bot bot;
 

@@ -40,17 +40,6 @@ import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.utils.Checks;
 
-/**
- * A {@link Menu Menu} of ordered buttons signified
- * by numbers or letters, each with a reaction linked to it for users to click.
- *
- * <p>Up to ten text choices can be set in the {@link OrderedMenu.Builder},
- * and additional methods for handling the resulting choice made by a user using the
- * menu may also be attached via the {@link OrderedMenu.Builder#setSelection(BiConsumer)}
- * and {@link OrderedMenu.Builder#setCancel(Consumer)} methods.
- *
- * @author John Grosh
- */
 public class OrderedMenu extends Menu {
     private final Color color;
     private final String text, description;
@@ -82,19 +71,6 @@ public class OrderedMenu extends Menu {
         this.useCancel = useCancel;
     }
 
-    /**
-     * Shows the OrderedMenu as a new {@link net.dv8tion.jda.api.entities.Message Message}
-     * in the provided {@link net.dv8tion.jda.api.entities.MessageChannel MessageChannel}.
-     *
-     * @param channel The MessageChannel to send the new Message to
-     * @throws java.lang.IllegalArgumentException If <b>all</b> of the following are violated simultaneously:
-     *                                            <ul>
-     *                                                <li>Being sent to a {@link net.dv8tion.jda.api.entities.TextChannel TextChannel}.</li>
-     *                                                <li>This OrderedMenu does not allow typed input.</li>
-     *                                                <li>The bot doesn't have {@link net.dv8tion.jda.api.Permission#MESSAGE_ADD_REACTION
-     *                                                Permission.MESSAGE_ADD_REACTION} in the channel this menu is being sent to.</li>
-     *                                            </ul>
-     */
     @Override
     public void display(MessageChannel channel) {
         // This check is basically for whether or not the menu can even display.
@@ -108,19 +84,6 @@ public class OrderedMenu extends Menu {
         initialize(channel.sendMessage(getMessage()));
     }
 
-    /**
-     * Displays this OrderedMenu by editing the provided
-     * {@link net.dv8tion.jda.api.entities.Message Message}.
-     *
-     * @param message The Message to display the Menu in
-     * @throws java.lang.IllegalArgumentException If <b>all</b> of the following are violated simultaneously:
-     *                                            <ul>
-     *                                                <li>Being sent to a {@link net.dv8tion.jda.api.entities.TextChannel TextChannel}.</li>
-     *                                                <li>This OrderedMenu does not allow typed input.</li>
-     *                                                <li>The bot doesn't have {@link net.dv8tion.jda.api.Permission#MESSAGE_ADD_REACTION
-     *                                                Permission.MESSAGE_ADD_REACTION} in the channel this menu is being sent to.</li>
-     *                                            </ul>
-     */
     @Override
     public void display(Message message) {
         // This check is basically for whether or not the menu can even display.
@@ -296,12 +259,6 @@ public class OrderedMenu extends Menu {
             (message.length() == 1 ? " 123456789".indexOf(message) : ("10".equals(message) ? 10 : -1));
     }
 
-    /**
-     * The {@link Menu.Builder Menu.Builder} for
-     * an {@link OrderedMenu OrderedMenu}.
-     *
-     * @author John Grosh
-     */
     public static class Builder extends Menu.Builder<Builder, OrderedMenu> {
         private Color color;
         private String text, description;
@@ -312,20 +269,6 @@ public class OrderedMenu extends Menu {
         private boolean useLetters, addCancel;
         private boolean allowTypedInput = true;
 
-        /**
-         * Builds the {@link OrderedMenu OrderedMenu}
-         * with this Builder.
-         *
-         * @return The OrderedMenu built from this Builder.
-         * @throws java.lang.IllegalArgumentException If one of the following is violated:
-         *                                            <ul>
-         *                                                <li>No {@link EventWaiter EventWaiter} was set.</li>
-         *                                                <li>No choices were set.</li>
-         *                                                <li>More than ten choices were set.</li>
-         *                                                <li>No action {@link java.util.function.Consumer Consumer} was set.</li>
-         *                                                <li>Neither text nor description were set.</li>
-         *                                            </ul>
-         */
         @Override
         public OrderedMenu build() {
             Checks.check(waiter != null, "Must set an EventWaiter");
@@ -337,118 +280,51 @@ public class OrderedMenu extends Menu {
                 selection, cancel, useLetters, allowTypedInput, addCancel);
         }
 
-        /**
-         * Sets the {@link java.awt.Color Color} of the {@link net.dv8tion.jda.api.entities.MessageEmbed MessageEmbed}.
-         *
-         * @param color The Color of the MessageEmbed
-         * @return This builder
-         */
         public Builder setColor(Color color) {
             this.color = color;
             return this;
         }
 
-        /**
-         * Sets the builder to build an {@link OrderedMenu OrderedMenu}
-         * using letters for ordering and reactions (IE: A, B, C, etc.).
-         * <br>As a note - by default the builder will use <b>numbers</b> not letters.
-         *
-         * @return This builder
-         */
         public Builder useLetters() {
             this.useLetters = true;
             return this;
         }
 
-        /**
-         * Sets the builder to build an {@link OrderedMenu OrderedMenu}
-         * using numbers for ordering and reactions (IE: 1, 2, 3, etc.).
-         *
-         * @return This builder
-         */
         public Builder useNumbers() {
             this.useLetters = false;
             return this;
         }
 
-        /**
-         * If {@code true}, {@link net.dv8tion.jda.api.entities.User User}s can type the number or
-         * letter of the input to make their selection, in addition to the reaction option.
-         *
-         * @param allow {@code true} if raw text input is allowed, {@code false} if it is not
-         * @return This builder
-         */
         public Builder allowTextInput(boolean allow) {
             this.allowTypedInput = allow;
             return this;
         }
 
-        /**
-         * If {@code true}, adds a cancel button that performs the timeout action when selected.
-         *
-         * @param use {@code true} if the cancel button should be shown, {@code false} if it should not
-         * @return This builder
-         */
         public Builder useCancelButton(boolean use) {
             this.addCancel = use;
             return this;
         }
 
-        /**
-         * Sets the text of the {@link net.dv8tion.jda.api.entities.Message Message} to be displayed
-         * when the {@link OrderedMenu OrderedMenu} is built.
-         *
-         * <p>This is displayed directly above the embed.
-         *
-         * @param text The Message content to be displayed above the embed when the OrderedMenu is built
-         * @return This builder
-         */
         public Builder setText(String text) {
             this.text = text;
             return this;
         }
 
-        /**
-         * Sets the description to be placed in an {@link net.dv8tion.jda.api.entities.MessageEmbed MessageEmbed}.
-         * <br>If this is {@code null}, no MessageEmbed will be displayed
-         *
-         * @param description The content of the MessageEmbed's description
-         * @return This builder
-         */
         public Builder setDescription(String description) {
             this.description = description;
             return this;
         }
 
-        /**
-         * Sets the {@link java.util.function.BiConsumer BiConsumer} action to perform upon selecting a option.
-         *
-         * @param selection The BiConsumer action to perform upon selecting a button
-         * @return This builder
-         */
         public Builder setSelection(BiConsumer<Message, Integer> selection) {
             this.selection = selection;
             return this;
         }
 
-        /**
-         * Sets the {@link java.util.function.Consumer Consumer} to perform if the
-         * {@link OrderedMenu OrderedMenu} is cancelled.
-         *
-         * @param cancel The Consumer action to perform if the ButtonMenu is cancelled
-         * @return This builder
-         */
         public Builder setCancel(Consumer<Message> cancel) {
             this.cancel = cancel;
             return this;
         }
 
-        /**
-         * Adds a single String choice.
-         *
-         * @param choice The String choice to add
-         * @return This builder
-         */
         public Builder addChoice(String choice) {
             Checks.check(choices.size() < 10, "Cannot set more than 10 choices");
 
@@ -456,36 +332,17 @@ public class OrderedMenu extends Menu {
             return this;
         }
 
-        /**
-         * Adds the String choices.
-         * <br>These correspond to the button in order of addition.
-         *
-         * @param choices The String choices to add
-         * @return This builder
-         */
         public Builder addChoices(String... choices) {
             for (String choice : choices)
                 addChoice(choice);
             return this;
         }
 
-        /**
-         * Sets the String choices.
-         * <br>These correspond to the button in the order they are set.
-         *
-         * @param choices The String choices to set
-         * @return This builder
-         */
         public Builder setChoices(String... choices) {
             clearChoices();
             return addChoices(choices);
         }
 
-        /**
-         * Clears all previously set choices.
-         *
-         * @return This builder
-         */
         public Builder clearChoices() {
             this.choices.clear();
             return this;

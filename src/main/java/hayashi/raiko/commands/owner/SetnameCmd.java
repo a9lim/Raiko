@@ -20,9 +20,6 @@ import hayashi.raiko.Bot;
 import hayashi.raiko.commands.OwnerCommand;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class SetnameCmd extends OwnerCommand {
     public SetnameCmd(Bot bot) {
         this.name = "setname";

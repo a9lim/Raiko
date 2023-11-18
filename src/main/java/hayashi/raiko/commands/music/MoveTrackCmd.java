@@ -8,9 +8,6 @@ import hayashi.raiko.audio.QueuedTrack;
 import hayashi.raiko.commands.MusicCommand;
 import hayashi.raiko.queue.DoubleDealingQueue;
 
-/**
- * Command that provides users the ability to move a track in the playlist.
- */
 public class MoveTrackCmd extends MusicCommand {
 
     public MoveTrackCmd(Bot bot) {

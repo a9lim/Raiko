@@ -25,45 +25,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-/**
- * A series of query based utilities for finding entities, either globally across all accessible
- * {@link net.dv8tion.jda.api.entities.Guild Guild}s, or locally to a specified Guild.
- *
- * <p>All methods use a similar priority hierarchy and return an immutable {@link java.util.List List} based on the results.
- * <br>The hierarchy is as follows:
- * <ul>
- *     <li>Special Cases: Specifics of these are described per individual method documentation.
- *     <br>Note that successful results from these are typically
- *     {@link java.util.Collections#singletonList(Object) a singleton list}.</li>
- *     <li>Direct ID: Query is a number with 17 or more digits, resembling an
- *     {@link net.dv8tion.jda.api.entities.ISnowflake Snowflake} ID.</li>
- *     <li>Exact Match: Query provided is an exact match (case sensitive and complete) to one or more entities.</li>
- *     <li>Wrong Case: Query provided is a case-insensitive, but exact, match to the entirety of one or more entities.</li>
- *     <li>Starting With: Query provided is an case-insensitive match to the beginning of one or more entities.</li>
- *     <li>Contains: Query provided is a case-insensitive match to a part of one or more entities.</li>
- * </ul>
- * All queries return the highest List in this hierarchy that contains one or more entities, and only of these
- * kind of results (IE: the "exact" list will never contain any results from a successful "starting with" match,
- * unless by chance they could technically be the same result).<p>
- *
- * <b>Shard Manager Usage</b>
- *
- * <br>Methods that query an instance of {@link net.dv8tion.jda.api.JDA JDA} always have two implementations:
- * <ul>
- *     <li><b>Global:</b> Queries a {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} if one
- *                        is available, or JDA if one is not.</li>
- *
- *     <li><b>Shard:</b>  Always queries the provided instance, and never a ShardManager, even if one
- *                        is available.</li>
- * </ul>
- *
- * <p>Many of these utilities were inspired by and ported to JDA 3.X from
- * <a href="https://github.com/jagrosh/Spectra/blob/master/src/spectra/utils/FinderUtil.java">Spectra's FinderUtil</a>
- * originally written by <a href="https://github.com/jagrosh/">jagrosh</a> in 2.X.
- *
- * @author Kaidan Gustave
- * @since 1.3
- */
 @SuppressWarnings("Duplicates")
 public enum FinderUtil {
     ;
@@ -74,44 +35,10 @@ public enum FinderUtil {
     public final static Pattern ROLE_MENTION = Pattern.compile("<@&(\\d{17,20})>"); // $1 -> ID
     public final static Pattern EMOTE_MENTION = Pattern.compile("<:(.{2,32}):(\\d{17,20})>");
 
-    /**
-     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for {@link net.dv8tion.jda.api.entities.User User}s.<p>
-     * <p>
-     * If a {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available this will query across that
-     * instead of the JDA instance.
-     *
-     * <p>The following special cases are applied in order of listing before the standard search is done:
-     * <ul>
-     *     <li>User Mention: Query provided matches an @user mention (more specifically {@literal <@userID>}).</li>
-     *     <li>Full User Reference: Query provided matches a full Username#XXXX reference.
-     *     <br><b>NOTE:</b> this can return a list with more than one entity.</li>
-     * </ul>
-     *
-     * @param query The String query to search by
-     * @param jda   The instance of JDA to search from
-     * @return A possibly-empty {@link java.util.List List} of Users found by the query from the provided JDA instance.
-     */
     public static List<User> findUsers(String query, JDA jda) {
         return jdaUserSearch(query, jda, true);
     }
 
-    /**
-     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for {@link net.dv8tion.jda.api.entities.User User}s.<p>
-     * <p>
-     * This only queries the instance of JDA, regardless of whether or not a
-     * {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available.
-     *
-     * <p>The following special cases are applied in order of listing before the standard search is done:
-     * <ul>
-     *     <li>User Mention: Query provided matches an @user mention (more specifically {@literal <@userID>}).</li>
-     *     <li>Full User Reference: Query provided matches a full Username#XXXX reference.
-     *     <br><b>NOTE:</b> this can return a list with more than one entity.</li>
-     * </ul>
-     *
-     * @param query The String query to search by
-     * @param jda   The instance of JDA to search from
-     * @return A possibly-empty {@link java.util.List List} of Users found by the query from the provided JDA instance.
-     */
     public static List<User> findShardUsers(String query, JDA jda) {
         return jdaUserSearch(query, jda, false);
     }
@@ -167,37 +94,6 @@ public enum FinderUtil {
         return Collections.unmodifiableList(contains);
     }
 
-    /**
-     * Queries a provided {@link net.dv8tion.jda.api.entities.Guild Guild} for a banned {@link net.dv8tion.jda.api.entities.User
-     * User}.
-     *
-     * <p>The following special cases are applied in order of listing before the standard search is done:
-     * <ul>
-     *     <li>User Mention: Query provided matches an @user mention (more specifically {@literal <@userID>}).</li>
-     *     <li>Full User Reference: Query provided matches a full Username#XXXX reference.
-     *     <br><b>NOTE:</b> this can return a list with more than one entity.</li>
-     * </ul>
-     *
-     * <p><b>WARNING</b>
-     *
-     * <p>Unlike the other finder methods, this one has two very unique features that set it apart from the rest:
-     * <ul>
-     *     <li><b>1)</b> In order to get a list of bans that is usable, this method initial retrieves it by usage of
-     *     {@link net.dv8tion.jda.api.requests.RestAction#complete() Guild#getBans().complete()}. Because of this,
-     *     as would be the same expected effect from the other utility methods, this will block the thread it is called
-     *     in. The difference, however, comes in that this method may have slight variations in return speed, especially
-     *     when put under higher usage over a shorter period of time.</li>
-     *     <li><b>2) This method can return {@code null}</b> if and only if an {@link java.lang.Exception Exception} is
-     *     thrown while initially getting banned Users via {@link net.dv8tion.jda.api.entities.Guild#retrieveBanList()
-     *     Guild#getBanList()}.</li>
-     * </ul>
-     *
-     * @param query The String query to search by
-     * @param guild The Guild to search for banned Users from
-     * @return A possibly-empty {@link java.util.List List} of Users found by the query from the provided JDA instance,
-     * or {@code null} if an {@link java.lang.Exception Exception} is thrown while initially getting banned Users.
-     * @see net.dv8tion.jda.api.entities.Guild#retrieveBanList() Guild#getBanList()
-     */
     public static List<User> findBannedUsers(String query, Guild guild) {
         List<User> bans;
         try {
@@ -256,30 +152,6 @@ public enum FinderUtil {
         return Collections.unmodifiableList(contains);
     }
 
-    /**
-     * Queries a provided {@link net.dv8tion.jda.api.entities.Guild Guild} for {@link net.dv8tion.jda.api.entities.Member Member}s.
-     *
-     * <p>The following special cases are applied in order of listing before the standard search is done:
-     * <ul>
-     *     <li>User Mention: Query provided matches an @user mention (more specifically {@literal <@userID> or <@!userID>}).</li>
-     *     <li>Full User Reference: Query provided matches a full Username#XXXX reference.
-     *     <br><b>NOTE:</b> this can return a list with more than one entity.</li>
-     * </ul>
-     *
-     * <p>Unlike {@link FinderUtil#findUsers(String, JDA) FinderUtil.findUsers(String, JDA)},
-     * this method queries based on two different names: user name and effective name (excluding special cases in which it
-     * queries solely based on user name).
-     * <br>Each standard check looks at the user name, then the member name, and if either one's criteria is met the Member
-     * is added to the returned list. This is important to note, because the returned list may contain exact matches for
-     * User's name as well as exact matches for a Member's effective name, with nothing guaranteeing the returns will be
-     * exclusively containing matches for one or the other.
-     * <br>Information on effective name can be found in {@link net.dv8tion.jda.api.entities.Member#getEffectiveName()
-     * Member#getEffectiveName()}.
-     *
-     * @param query The String query to search by
-     * @param guild The Guild to search from
-     * @return A possibly empty {@link java.util.List List} of Members found by the query from the provided Guild.
-     */
     public static List<Member> findMembers(String query, Guild guild) {
         Matcher userMention = USER_MENTION.matcher(query);
         Matcher fullRefMatch = FULL_USER_REF.matcher(query);
@@ -327,59 +199,14 @@ public enum FinderUtil {
         return Collections.unmodifiableList(contains);
     }
 
-    /**
-     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for
-     * {@link net.dv8tion.jda.api.entities.TextChannel TextChannel}s.<p>
-     * <p>
-     * If a {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available this will query across that
-     * instead of the JDA instance.
-     *
-     * <p>The following special case is applied before the standard search is done:
-     * <ul>
-     *     <li>Channel Mention: Query provided matches a #channel mention (more specifically {@literal <#channelID>})</li>
-     * </ul>
-     *
-     * @param query The String query to search by
-     * @param jda   The instance of JDA to search from
-     * @return A possibly-empty {@link java.util.List List} of TextChannels found by the query from the provided JDA instance.
-     */
     public static List<TextChannel> findTextChannels(String query, JDA jda) {
         return jdaTextChannelSearch(query, jda, true);
     }
 
-    /**
-     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for
-     * {@link net.dv8tion.jda.api.entities.TextChannel TextChannel}s.<p>
-     * <p>
-     * This only queries the instance of JDA, regardless of whether or not a
-     * {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available.
-     *
-     * <p>The following special case is applied before the standard search is done:
-     * <ul>
-     *     <li>Channel Mention: Query provided matches a #channel mention (more specifically {@literal <#channelID>})</li>
-     * </ul>
-     *
-     * @param query The String query to search by
-     * @param jda   The instance of JDA to search from
-     * @return A possibly-empty {@link java.util.List List} of TextChannels found by the query from the provided JDA instance.
-     */
     public static List<TextChannel> findShardTextChannels(String query, JDA jda) {
         return jdaTextChannelSearch(query, jda, false);
     }
 
-    /**
-     * Queries a provided {@link net.dv8tion.jda.api.entities.Guild Guild} for
-     * {@link net.dv8tion.jda.api.entities.TextChannel TextChannel}s.
-     *
-     * <p>The following special case is applied before the standard search is done:
-     * <ul>
-     *     <li>Channel Mention: Query provided matches a #channel mention (more specifically {@literal <#channelID>})</li>
-     * </ul>
-     *
-     * @param query The String query to search by
-     * @param guild The Guild to search from
-     * @return A possibly-empty {@link java.util.List List} of TextChannels found by the query from the provided Guild.
-     */
     public static List<TextChannel> findTextChannels(String query, Guild guild) {
         Matcher channelMention = CHANNEL_MENTION.matcher(query);
         TextChannel tc = channelMention.matches() ? guild.getTextChannelById(channelMention.group(1)) :
@@ -422,50 +249,14 @@ public enum FinderUtil {
         return Collections.unmodifiableList(contains);
     }
 
-    /**
-     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for
-     * {@link net.dv8tion.jda.api.entities.VoiceChannel VoiceChannel}s.<p>
-     * <p>
-     * If a {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available this will query across that
-     * instead of the JDA instance.
-     *
-     * <p>The standard search does not follow any special cases.
-     *
-     * @param query The String query to search by
-     * @param jda   The instance of JDA to search from
-     * @return A possibly-empty {@link java.util.List List} of VoiceChannels found by the query from the provided JDA instance.
-     */
     public static List<VoiceChannel> findVoiceChannels(String query, JDA jda) {
         return jdaVoiceChannelSearch(query, jda, true);
     }
 
-    /**
-     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for
-     * {@link net.dv8tion.jda.api.entities.VoiceChannel VoiceChannel}s.<p>
-     * <p>
-     * This only queries the instance of JDA, regardless of whether or not a
-     * {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available.
-     *
-     * <p>The standard search does not follow any special cases.
-     *
-     * @param query The String query to search by
-     * @param jda   The instance of JDA to search from
-     * @return A possibly-empty {@link java.util.List List} of VoiceChannels found by the query from the provided JDA instance.
-     */
     public static List<VoiceChannel> findShardVoiceChannels(String query, JDA jda) {
         return jdaVoiceChannelSearch(query, jda, false);
     }
 
-    /**
-     * Queries a provided {@link net.dv8tion.jda.api.entities.Guild Guild} for
-     * {@link net.dv8tion.jda.api.entities.VoiceChannel VoiceChannel}s.
-     *
-     * <p>The standard search does not follow any special cases.
-     *
-     * @param query The String query to search by
-     * @param guild The Guild to search from
-     * @return A possibly-empty {@link java.util.List List} of VoiceChannels found by the query from the provided Guild.
-     */
     public static List<VoiceChannel> findVoiceChannels(String query, Guild guild) {
         VoiceChannel vc = DISCORD_ID.matcher(query).matches() ? guild.getVoiceChannelById(query) : null;
         return vc != null ? Collections.singletonList(vc) : genericVoiceChannelSearch(query, guild.getVoiceChannelCache());
@@ -503,50 +294,14 @@ public enum FinderUtil {
         return Collections.unmodifiableList(contains);
     }
 
-    /**
-     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for
-     * {@link net.dv8tion.jda.api.entities.Category Categories}.<p>
-     * <p>
-     * If a {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available this will query across that
-     * instead of the JDA instance.
-     *
-     * <p>The standard search does not follow any special cases.
-     *
-     * @param query The String query to search by
-     * @param jda   The instance of JDA to search from
-     * @return A possibly-empty {@link java.util.List List} of Categories found by the query from the provided JDA instance.
-     */
     public static List<Category> findCategories(String query, JDA jda) {
         return jdaCategorySearch(query, jda, true);
     }
 
-    /**
-     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for
-     * {@link net.dv8tion.jda.api.entities.Category Categories}.<p>
-     * <p>
-     * This only queries the instance of JDA, regardless of whether or not a
-     * {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available.
-     *
-     * <p>The standard search does not follow any special cases.
-     *
-     * @param query The String query to search by
-     * @param jda   The instance of JDA to search from
-     * @return A possibly-empty {@link java.util.List List} of Categories found by the query from the provided JDA instance.
-     */
     public static List<Category> findShardCategories(String query, JDA jda) {
         return jdaCategorySearch(query, jda, false);
     }
 
-    /**
-     * Queries a provided {@link net.dv8tion.jda.api.entities.Guild Guild} for
-     * {@link net.dv8tion.jda.api.entities.Category Categories}.
-     *
-     * <p>The standard search does not follow any special cases.
-     *
-     * @param query The String query to search by
-     * @param guild The Guild to search from
-     * @return A possibly-empty {@link java.util.List List} of Categories found by the query from the provided Guild.
-     */
     public static List<Category> findCategories(String query, Guild guild) {
         Category cat = DISCORD_ID.matcher(query).matches() ? guild.getCategoryById(query) : null;
         return cat != null ? Collections.singletonList(cat) : genericCategorySearch(query, guild.getCategoryCache());
@@ -584,18 +339,6 @@ public enum FinderUtil {
         return Collections.unmodifiableList(contains);
     }
 
-    /**
-     * Queries a provided {@link net.dv8tion.jda.api.entities.Guild Guild} for {@link net.dv8tion.jda.api.entities.Role Role}s.
-     *
-     * <p>The following special case is applied before the standard search is done:
-     * <ul>
-     *     <li>Role Mention: Query provided matches a @role mention (more specifically {@literal <@&roleID>})</li>
-     * </ul>
-     *
-     * @param query The String query to search by
-     * @param guild The Guild to search from
-     * @return A possibly-empty {@link java.util.List List} of Roles found by the query from the provided Guild.
-     */
     public static List<Role> findRoles(String query, Guild guild) {
         Matcher roleMention = ROLE_MENTION.matcher(query);
         if (roleMention.matches()) {
@@ -632,68 +375,14 @@ public enum FinderUtil {
         return Collections.unmodifiableList(contains);
     }
 
-    /**
-     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for
-     * {@link net.dv8tion.jda.api.entities.Emote Emote}s.<p>
-     * <p>
-     * If a {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available this will query across that
-     * instead of the JDA instance.
-     *
-     * <p>The following special case is applied before the standard search is done:
-     * <ul>
-     *     <li>Emote Mention: Query provided matches a :emote: mention (more specifically {@literal <:emoteName:emoteID>}).
-     *     <br>Note: This only returns here if the emote is <b>valid</b>. Validity being the ID retrieves a non-null
-     *     Emote and that the {@link net.dv8tion.jda.api.entities.Emote#getName() name} of the Emote is equal to the
-     *     name found in the query.</li>
-     * </ul>
-     *
-     * @param query The String query to search by
-     * @param jda   The instance of JDA to search from
-     * @return A possibly-empty {@link java.util.List List} of Emotes found by the query from the provided JDA instance.
-     */
     public static List<Emote> findEmotes(String query, JDA jda) {
         return jdaFindEmotes(query, jda, true);
     }
 
-    /**
-     * Queries a provided instance of {@link net.dv8tion.jda.api.JDA JDA} for
-     * {@link net.dv8tion.jda.api.entities.Emote Emote}s.<p>
-     * <p>
-     * This only queries the instance of JDA, regardless of whether or not a
-     * {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager} is available.
-     *
-     * <p>The following special case is applied before the standard search is done:
-     * <ul>
-     *     <li>Emote Mention: Query provided matches a :emote: mention (more specifically {@literal <:emoteName:emoteID>}).
-     *     <br>Note: This only returns here if the emote is <b>valid</b>. Validity being the ID retrieves a non-null
-     *     Emote and that the {@link net.dv8tion.jda.api.entities.Emote#getName() name} of the Emote is equal to the
-     *     name found in the query.</li>
-     * </ul>
-     *
-     * @param query The String query to search by
-     * @param jda   The instance of JDA to search from
-     * @return A possibly-empty {@link java.util.List List} of Emotes found by the query from the provided JDA instance.
-     */
     public static List<Emote> findShardEmotes(String query, JDA jda) {
         return jdaFindEmotes(query, jda, false);
     }
 
-    /**
-     * Queries a provided {@link net.dv8tion.jda.api.entities.Guild Guild} for
-     * {@link net.dv8tion.jda.api.entities.Emote Emote}s.
-     *
-     * <p>The following special case is applied before the standard search is done:
-     * <ul>
-     *     <li>Emote Mention: Query provided matches a :emote: mention (more specifically {@literal <:emoteName:emoteID>}).
-     *     <br>Note: This only returns here if the emote is <b>valid</b>. Validity being the ID retrieves a non-null
-     *     Emote and that the {@link net.dv8tion.jda.api.entities.Emote#getName() name} of the Emote is equal to the
-     *     name found in the query.</li>
-     * </ul>
-     *
-     * @param query The String query to search by
-     * @param guild The Guild to search from
-     * @return A possibly-empty {@link java.util.List List} of Emotes found by the query from the provided Guild.
-     */
     public static List<Emote> findEmotes(String query, Guild guild) {
         Matcher mentionMatcher = EMOTE_MENTION.matcher(query);
         if (DISCORD_ID.matcher(query).matches()) {

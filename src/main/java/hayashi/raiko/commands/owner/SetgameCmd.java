@@ -20,9 +20,6 @@ import hayashi.raiko.Bot;
 import hayashi.raiko.commands.OwnerCommand;
 import net.dv8tion.jda.api.entities.Activity;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class SetgameCmd extends OwnerCommand {
     public SetgameCmd(Bot bot) {
         this.name = "setgame";

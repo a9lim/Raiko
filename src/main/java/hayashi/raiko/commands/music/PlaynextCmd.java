@@ -27,9 +27,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Message;
 
-/**
- * @author John Grosh (john.a.grosh@gmail.com)
- */
 public class PlaynextCmd extends MusicCommand {
     private final String loadingEmoji;
 

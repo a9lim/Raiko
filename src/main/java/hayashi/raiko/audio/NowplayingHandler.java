@@ -32,10 +32,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 
-/**
- *
- * @author John Grosh (john.a.grosh@gmail.com)
- */
 public class NowplayingHandler {
     private final Bot bot;
     private final HashMap<Long, Pair<Long,Long>> lastNP; // guild -> channel,message

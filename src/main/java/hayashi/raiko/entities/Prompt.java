@@ -21,9 +21,6 @@ import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author John Grosh (john.a.grosh@gmail.com)
- */
 public class Prompt {
     private final String title;
     private final String noguiMessage;

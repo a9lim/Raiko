@@ -30,21 +30,10 @@ import net.dv8tion.jda.api.entities.Activity;
 
 import static hayashi.jdautilities.command.Command.COMPILE;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public enum OtherUtil {
     ;
     private final static String WINDOWS_INVALID_PATH = "c:\\windows\\system32\\";
 
-    /**
-     * gets a Path from a String
-     * also fixes the windows tendency to try to start in system32
-     * any time the bot tries to access this path, it will instead start in the location of the jar file
-     *
-     * @param path the string path
-     * @return the Path object
-     */
     public static Path getPath(String path) {
         Path result = Paths.get(path);
         // special logic to prevent trying to access system32
@@ -55,13 +44,6 @@ public enum OtherUtil {
         return result;
     }
 
-    /**
-     * Loads a resource from the jar as a string
-     *
-     * @param clazz class base object
-     * @param name  name of resource
-     * @return string containing the contents of the resource
-     */
     public static String loadResource(Object clazz, String name) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(clazz.getClass().getResourceAsStream(name)))) {
             StringBuilder sb = new StringBuilder();
@@ -72,12 +54,6 @@ public enum OtherUtil {
         }
     }
 
-    /**
-     * Loads image data from a URL
-     *
-     * @param url url of image
-     * @return inputstream of url
-     */
     public static InputStream imageFromUrl(String url) {
         if (url == null)
             return null;
@@ -91,12 +67,6 @@ public enum OtherUtil {
         }
     }
 
-    /**
-     * Parses an activity from a string
-     *
-     * @param game the game, including the action such as 'playing' or 'watching'
-     * @return the parsed activity
-     */
     public static Activity parseGame(String game) {
         if (game == null || game.trim().isEmpty() || "default".equalsIgnoreCase(game.trim()))
             return null;

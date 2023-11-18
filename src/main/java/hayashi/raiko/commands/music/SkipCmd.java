@@ -21,9 +21,6 @@ import hayashi.raiko.audio.AudioHandler;
 import hayashi.raiko.audio.RequestMetadata;
 import hayashi.raiko.commands.MusicCommand;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class SkipCmd extends MusicCommand {
     public SkipCmd(Bot bot) {
         super(bot);

@@ -22,9 +22,6 @@ import hayashi.raiko.audio.QueuedTrack;
 import hayashi.raiko.commands.MusicCommand;
 import net.dv8tion.jda.api.entities.User;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class RemoveCmd extends MusicCommand {
     public RemoveCmd(Bot bot) {
         super(bot);

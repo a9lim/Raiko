@@ -27,9 +27,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author John Grosh (john.a.grosh@gmail.com)
- */
 public class SettingsManager implements GuildSettingsManager<Settings> {
     private final HashMap<Long, Settings> settings;
 

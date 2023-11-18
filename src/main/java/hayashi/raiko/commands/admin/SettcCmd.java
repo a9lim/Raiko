@@ -25,9 +25,6 @@ import hayashi.raiko.settings.Settings;
 import hayashi.raiko.utils.FormatUtil;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class SettcCmd extends AdminCommand {
     public SettcCmd(Bot bot) {
         this.name = "settc";

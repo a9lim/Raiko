@@ -42,30 +42,12 @@ import javax.annotation.Nullable;
  */
 @FunctionalInterface
 public interface GuildSettingsManager<T> {
-    /**
-     * Gets settings for a specified {@link net.dv8tion.jda.api.entities.Guild Guild}
-     * as an object of the specified type {@code T}, or {@code null} if the guild has no
-     * settings.
-     *
-     * @param guild The guild to get settings for.
-     * @return The settings object for the guild, or {@code null} if the guild has no settings.
-     */
     @Nullable
     T getSettings(Guild guild);
 
-    /**
-     * Called when JDA has fired a {@link net.dv8tion.jda.api.events.ReadyEvent ReadyEvent}.
-     *
-     * <p>Developers should implement this method to create or initialize resources when starting their bot.
-     */
     default void init() {
     }
 
-    /**
-     * Called when JDA has fired a {@link net.dv8tion.jda.api.events.ShutdownEvent ShutdownEvent}.
-     *
-     * <p>Developers should implement this method to free up or close resources when shutting their bot.
-     */
     default void shutdown() {
     }
 }

@@ -19,9 +19,6 @@ import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
 import hayashi.raiko.commands.OwnerCommand;
 
-/**
- * @author John Grosh <john.a.grosh@gmail.com>
- */
 public class ShutdownCmd extends OwnerCommand {
     private final Bot bot;
 

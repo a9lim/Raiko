@@ -28,9 +28,6 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author John Grosh (john.a.grosh@gmail.com)
- */
 public class Listener extends ListenerAdapter {
     private final Bot bot;
 
