@@ -94,10 +94,8 @@ public class PlaylistLoader {
                 return new Playlist(name, list, shuffle.get());
             }
             createFolder();
-            return null;
-        } catch (IOException e) {
-            return null;
-        }
+        } catch (IOException ignored) {}
+        return null;
     }
 
 

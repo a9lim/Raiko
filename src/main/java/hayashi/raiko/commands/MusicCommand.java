@@ -27,8 +27,7 @@ import net.dv8tion.jda.api.exceptions.PermissionException;
 
 public abstract class MusicCommand extends Command {
     protected final Bot bot;
-    protected boolean bePlaying;
-    protected boolean beListening;
+    protected boolean bePlaying, beListening;
 
     public MusicCommand(Bot bot) {
         this.bot = bot;

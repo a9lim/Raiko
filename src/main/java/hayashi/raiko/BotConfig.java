@@ -39,13 +39,11 @@ public class BotConfig {
             successEmoji, warningEmoji, errorEmoji, loadingEmoji, searchingEmoji,
             cgpttoken;
     private boolean stayInChannel, songInGame, npImages, dbots,
-            model;
+            model, valid;
     private long owner, maxSeconds, aloneTimeUntilStop;
     private OnlineStatus status;
     private Activity game;
     private Config aliases;
-
-    private boolean valid;
 
     public BotConfig(Prompt prompt) {
         this.prompt = prompt;

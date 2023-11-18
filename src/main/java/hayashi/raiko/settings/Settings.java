@@ -26,13 +26,10 @@ import net.dv8tion.jda.api.entities.VoiceChannel;
 
 public class Settings implements GuildSettingsProvider {
     private final SettingsManager manager;
-    protected long textId;
-    protected long voiceId;
+    protected long textId, voiceId;
     private int volume;
-    private String defaultPlaylist;
+    private String defaultPlaylist, prefix;
     private RepeatMode repeatMode;
-    private String prefix;
-
     public Settings(SettingsManager manager, String textId, String voiceId, int volume, String defaultPlaylist, RepeatMode repeatMode, String prefix) {
         this.manager = manager;
         try {

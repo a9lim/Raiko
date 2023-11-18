@@ -20,8 +20,7 @@ public enum RepeatMode {
     ALL("\uD83D\uDD01", "All"), // 🔁
     SINGLE("\uD83D\uDD02", "Single"); // 🔂
 
-    private final String emoji;
-    private final String userFriendlyName;
+    private final String emoji, userFriendlyName;
 
     RepeatMode(String emoji, String userFriendlyName) {
         this.emoji = emoji;
