@@ -39,20 +39,18 @@ import java.util.function.Consumer;
 public class CommandBuilder {
     private String name = "null";
     private String help = "no help available";
-    private Command.Category category = null;
-    private String arguments = null;
+    private Command.Category category;
+    private String arguments, requiredRole;
     private boolean guildOnly = true;
-    private String requiredRole = null;
-    private boolean ownerCommand = false;
-    private int cooldown = 0;
+    private boolean ownerCommand, hidden;
+    private int cooldown;
     private Permission[] userPermissions = new Permission[0];
     private Permission[] botPermissions = new Permission[0];
     private final LinkedList<String> aliases = new LinkedList<>();
     private final LinkedList<Command> children = new LinkedList<>();
-    private BiConsumer<CommandEvent, Command> helpBiConsumer = null;
+    private BiConsumer<CommandEvent, Command> helpBiConsumer;
     private boolean usesTopicTags = true;
     private Command.CooldownScope cooldownScope = Command.CooldownScope.USER;
-    private boolean hidden = false;
 
     /**
      * Sets the {@link Command#name name}

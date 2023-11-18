@@ -32,7 +32,9 @@ package hayashi.jdautilities.commons.utils;
  * @author Kaidan Gustave
  * @since 1.2
  */
-public final class SafeIdUtil {
+public enum SafeIdUtil {
+    ;
+
     /**
      * Safely convert the provided String ID to a {@code long} usable with
      * {@link net.dv8tion.jda.api.utils.MiscUtil#parseSnowflake(String) MiscUtil.parseSnowflake(String)}.
@@ -75,8 +77,4 @@ public final class SafeIdUtil {
         }
     }
 
-    // Prevent instantiation
-    // skull emoji
-    private SafeIdUtil() {
-    }
 }

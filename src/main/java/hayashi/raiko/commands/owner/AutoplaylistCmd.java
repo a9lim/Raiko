@@ -41,12 +41,12 @@ public class AutoplaylistCmd extends OwnerCommand {
             event.reply(event.getClient().getError() + " Please include a playlist name or NONE");
             return;
         }
-        if (event.getArgs().equalsIgnoreCase("none")) {
+        if ("none".equalsIgnoreCase(event.getArgs())) {
             ((Settings) event.getClient().getSettingsFor(event.getGuild())).setDefaultPlaylist(null);
             event.reply(event.getClient().getSuccess() + " Cleared the default playlist for **" + event.getGuild().getName() + "**");
             return;
         }
-        String pname = event.getArgs().replaceAll("\\s+", "_");
+        String pname = COMPILE.matcher(event.getArgs()).replaceAll("_");
         if (bot.getPlaylistLoader().getPlaylist(pname) == null) {
             event.reply(event.getClient().getError() + " Could not find `" + pname + ".txt`!");
             return;

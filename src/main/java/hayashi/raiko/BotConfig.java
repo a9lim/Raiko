@@ -37,17 +37,18 @@ public class BotConfig {
     private final static String START_TOKEN = "/// START OF JMUSICBOT CONFIG ///";
     private final static String END_TOKEN = "/// END OF JMUSICBOT CONFIG ///";
 
-    private Path path = null;
+    private Path path;
     private String token, prefix, altprefix, helpWord, playlistsFolder,
             successEmoji, warningEmoji, errorEmoji, loadingEmoji, searchingEmoji,
-            cgpttoken, model;
-    private boolean stayInChannel, songInGame, npImages, dbots;
+            cgpttoken;
+    private boolean stayInChannel, songInGame, npImages, dbots,
+            model;
     private long owner, maxSeconds, aloneTimeUntilStop;
     private OnlineStatus status;
     private Activity game;
     private Config aliases;
 
-    private boolean valid = false;
+    private boolean valid;
 
     public BotConfig(Prompt prompt) {
         this.prompt = prompt;
@@ -86,14 +87,14 @@ public class BotConfig {
             playlistsFolder = config.getString("playlistsfolder");
             aliases = config.getConfig("aliases");
             cgpttoken = config.getString("gpttoken");
-            model = config.getString("model");
+            model = config.getBoolean("cheapmodel");
             dbots = owner == 113156185389092864L;
 
             // we may need to write a new config file
             boolean write = false;
 
             // validate bot token
-            if (token == null || token.isEmpty() || token.equalsIgnoreCase("BOT_TOKEN_HERE")) {
+            if (token == null || token.isEmpty() || "BOT_TOKEN_HERE".equalsIgnoreCase(token)) {
                 token = prompt.prompt("""
                         Please provide a bot token.
                         Instructions for obtaining a token can be found here:
@@ -107,11 +108,11 @@ public class BotConfig {
                 }
             }
 
-            if (cgpttoken == null || cgpttoken.isEmpty() || cgpttoken.equalsIgnoreCase("CGPTTOKEN")) {
-                token = prompt.prompt("""
+            if (cgpttoken == null || cgpttoken.isEmpty() || "CGPTTOKEN".equalsIgnoreCase(cgpttoken)) {
+                cgpttoken = prompt.prompt("""
                         Please provide an OpenAI token.
                         OpenAI Token:\s""");
-                if (token == null) {
+                if (cgpttoken == null) {
                     prompt.alert(Prompt.Level.WARNING, CONTEXT, "No token provided! Exiting.\n\nConfig Location: " + path.toAbsolutePath());
                     return;
                 } else {
@@ -183,10 +184,10 @@ public class BotConfig {
     public static void writeDefaultConfig() {
         Prompt prompt = new Prompt(null, null, true, true);
         prompt.alert(Prompt.Level.INFO, "Raiko Config", "Generating default config file");
-        Path path = BotConfig.getConfigPath();
+        Path path = getConfigPath();
         try {
             prompt.alert(Prompt.Level.INFO, "Raiko Config", "Writing default config file to " + path.toAbsolutePath());
-            Files.write(path, BotConfig.loadDefaultConfig().getBytes());
+            Files.write(path, loadDefaultConfig().getBytes());
         } catch (Exception ex) {
             prompt.alert(Prompt.Level.ERROR, "Raiko Config", "An error occurred writing the default config file: " + ex.getMessage());
         }
@@ -296,7 +297,7 @@ public class BotConfig {
         return cgpttoken;
     }
 
-    public String getModel(){
+    public boolean getModel(){
         return model;
     }
 }

@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class AloneInVoiceHandler {
     private final Bot bot;
     private final HashMap<Long, Instant> aloneSince = new HashMap<>();
-    private long aloneTimeUntilStop = 0;
+    private long aloneTimeUntilStop;
 
     public AloneInVoiceHandler(Bot bot) {
         this.bot = bot;

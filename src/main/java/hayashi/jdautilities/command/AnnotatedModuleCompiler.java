@@ -35,6 +35,7 @@ import java.util.List;
  * @since  1.7
  * @author Kaidan Gustave
  */
+@FunctionalInterface
 public interface AnnotatedModuleCompiler {
     /**
      * Compiles one or more {@link Command Command}s

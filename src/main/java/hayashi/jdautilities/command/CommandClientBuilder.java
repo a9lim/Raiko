@@ -40,26 +40,17 @@ import net.dv8tion.jda.api.entities.Activity;
 public class CommandClientBuilder {
     private Activity activity = Activity.playing("default");
     private OnlineStatus status = OnlineStatus.ONLINE;
-    private String ownerId;
+    private String ownerId, prefix, altprefix, serverInvite, success, warning, error, carbonKey, helpWord, botsKey;
     private String[] coOwnerIds;
-    private String prefix;
-    private String altprefix;
-    private String serverInvite;
-    private String success;
-    private String warning;
-    private String error;
-    private String carbonKey;
-    private String botsKey;
     private final LinkedList<Command> commands = new LinkedList<>();
     private CommandListener listener;
     private boolean useHelp = true;
     private boolean shutdownAutomatically = true;
     private Consumer<CommandEvent> helpConsumer;
-    private String helpWord;
     private ScheduledExecutorService executor;
-    private int linkedCacheSize = 0;
+    private int linkedCacheSize;
     private AnnotatedModuleCompiler compiler = new AnnotatedModuleCompilerImpl();
-    private GuildSettingsManager manager = null;
+    private GuildSettingsManager manager;
 
     /**
      * Builds a {@link CommandClientImpl CommandClientImpl}

@@ -53,19 +53,16 @@ import net.dv8tion.jda.internal.utils.Checks;
  */
 public class OrderedMenu extends Menu {
     private final Color color;
-    private final String text;
-    private final String description;
+    private final String text, description;
     private final List<String> choices;
     private final BiConsumer<Message, Integer> action;
     private final Consumer<Message> cancel;
-    private final boolean useLetters;
-    private final boolean allowTypedInput;
-    private final boolean useCancel;
+    private final boolean useLetters, allowTypedInput, useCancel;
 
-    public final static String[] NUMBERS = new String[]{"1\u20E3", "2\u20E3", "3\u20E3",
+    public final static String[] NUMBERS = {"1\u20E3", "2\u20E3", "3\u20E3",
         "4\u20E3", "5\u20E3", "6\u20E3", "7\u20E3", "8\u20E3", "9\u20E3", "\uD83D\uDD1F"};
 
-    public final static String[] LETTERS = new String[]{"\uD83C\uDDE6", "\uD83C\uDDE7", "\uD83C\uDDE8",
+    public final static String[] LETTERS = {"\uD83C\uDDE6", "\uD83C\uDDE7", "\uD83C\uDDE8",
         "\uD83C\uDDE9", "\uD83C\uDDEA", "\uD83C\uDDEB", "\uD83C\uDDEC", "\uD83C\uDDED", "\uD83C\uDDEE", "\uD83C\uDDEF"};
 
     public final static String CANCEL = "\u274C";
@@ -296,7 +293,7 @@ public class OrderedMenu extends Menu {
             // index 1, b to the index 2, and so on.
         // The same as above applies here, albeit in a different way.
         return useLetters ? (message.length() == 1 ? " abcdefghij".indexOf(message.toLowerCase()) : -1) :
-            (message.length() == 1 ? " 123456789".indexOf(message) : (message.equals("10") ? 10 : -1));
+            (message.length() == 1 ? " 123456789".indexOf(message) : ("10".equals(message) ? 10 : -1));
     }
 
     /**
@@ -307,15 +304,13 @@ public class OrderedMenu extends Menu {
      */
     public static class Builder extends Menu.Builder<Builder, OrderedMenu> {
         private Color color;
-        private String text;
-        private String description;
+        private String text, description;
         private final List<String> choices = new LinkedList<>();
         private BiConsumer<Message, Integer> selection;
         private Consumer<Message> cancel = (m) -> {
         };
-        private boolean useLetters = false;
+        private boolean useLetters, addCancel;
         private boolean allowTypedInput = true;
-        private boolean addCancel = false;
 
         /**
          * Builds the {@link OrderedMenu OrderedMenu}

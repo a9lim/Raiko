@@ -4,17 +4,16 @@ import hayashi.raiko.Bot;
 import hayashi.raiko.ChatBot;
 import hayashi.raiko.commands.ChatCommand;
 
-public class ChatCmd extends ChatCommand {
+public class ToggleModelCmd extends ChatCommand {
 
-    public ChatCmd(ChatBot chatBot, Bot bot) {
+    public ToggleModelCmd(ChatBot chatBot, Bot bot) {
         super(chatBot);
-        this.name = "chat";
-        this.help = "talk to raiko";
-        this.arguments = "<text>";
+        this.name = "setmodel";
+        this.help = "toggle";
         this.aliases = bot.getConfig().getAliases(this.name);
     }
     @Override
     protected void execute(CommandEvent event) {
-        event.reply(chatBot.chat(event.getArgs()));
+        chatBot.toggleModel();
     }
 }

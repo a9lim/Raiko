@@ -43,7 +43,7 @@ public class SettcCmd extends AdminCommand {
             return;
         }
         Settings s = event.getClient().getSettingsFor(event.getGuild());
-        if (event.getArgs().equalsIgnoreCase("none")) {
+        if ("none".equalsIgnoreCase(event.getArgs())) {
             s.setTextChannel(null);
             event.reply(event.getClient().getSuccess() + " Music commands can now be used in any channel");
             return;

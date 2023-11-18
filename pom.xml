@@ -61,6 +61,11 @@
             <artifactId>lavaplayer</artifactId>
             <version>jmusicbot-5ae34fd221-1</version>
 	    </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20231013</version>
+        </dependency>
         <!-- this is needed, but isn't actually hosted anywhere anymore... uh -->
         <!--dependency>
             <groupId>com.sedmelluq</groupId>

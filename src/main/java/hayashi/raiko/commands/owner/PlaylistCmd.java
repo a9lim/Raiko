@@ -17,6 +17,7 @@ package hayashi.raiko.commands.owner;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import hayashi.jdautilities.command.Command;
 import hayashi.jdautilities.command.CommandEvent;
@@ -28,6 +29,7 @@ import hayashi.raiko.playlist.PlaylistLoader.Playlist;
  * @author John Grosh <john.a.grosh@gmail.com>
  */
 public class PlaylistCmd extends OwnerCommand {
+    private static final Pattern PATTERN = Pattern.compile("[*?|\\/\":<>]");
     private final Bot bot;
 
     public PlaylistCmd(Bot bot) {
@@ -66,8 +68,8 @@ public class PlaylistCmd extends OwnerCommand {
 
         @Override
         protected void execute(CommandEvent event) {
-            String pname = event.getArgs().replaceAll("\\s+", "_");
-            pname = pname.replaceAll("[*?|\\/\":<>]", "");
+            String pname = COMPILE.matcher(event.getArgs()).replaceAll("_");
+            pname = PATTERN.matcher(pname).replaceAll("");
             if (pname.isEmpty()) {
                 event.replyError("Please provide a name for the playlist!");
                 return;
@@ -96,7 +98,7 @@ public class PlaylistCmd extends OwnerCommand {
 
         @Override
         protected void execute(CommandEvent event) {
-            String pname = event.getArgs().replaceAll("\\s+", "_");
+            String pname = COMPILE.matcher(event.getArgs()).replaceAll("_");
             if (bot.getPlaylistLoader().getPlaylist(pname) == null) {
                 event.reply(event.getClient().getError() + " Playlist `" + pname + "` doesn't exist!");
                 return;
@@ -121,7 +123,7 @@ public class PlaylistCmd extends OwnerCommand {
 
         @Override
         protected void execute(CommandEvent event) {
-            String[] parts = event.getArgs().split("\\s+", 2);
+            String[] parts = COMPILE.split(event.getArgs(), 2);
             if (parts.length < 2) {
                 event.reply(event.getClient().getError() + " Please include a playlist name and URLs to add!");
                 return;
@@ -137,7 +139,7 @@ public class PlaylistCmd extends OwnerCommand {
             String[] urls = parts[1].split("\\|");
             for (String url : urls) {
                 String u = url.trim();
-                if (u.startsWith("<") && u.endsWith(">"))
+                if (!u.isEmpty() && u.charAt(0) == '<' && u.charAt(u.length() - 1) == '>')
                     u = u.substring(1, u.length() - 1);
                 builder.append("\r\n").append(u);
             }

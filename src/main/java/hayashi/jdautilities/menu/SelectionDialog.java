@@ -46,14 +46,12 @@ import net.dv8tion.jda.internal.utils.Checks;
  */
 public class SelectionDialog extends Menu {
     private final List<String> choices;
-    private final String leftEnd, rightEnd;
-    private final String defaultLeft, defaultRight;
+    private final String leftEnd, rightEnd, defaultLeft, defaultRight;
     private final Function<Integer, Color> color;
-    private final boolean loop;
+    private final boolean loop, singleSelectionMode;
     private final Function<Integer, String> text;
     private final BiConsumer<Message, Integer> success;
     private final Consumer<Message> cancel;
-    private final boolean singleSelectionMode;
 
     public static final String UP = "\uD83D\uDD3C";
     public static final String DOWN = "\uD83D\uDD3D";
@@ -239,7 +237,7 @@ public class SelectionDialog extends Menu {
         private BiConsumer<Message, Integer> selection;
         private Consumer<Message> cancel = (m) -> {
         };
-        private boolean singleSelectionMode = false;
+        private boolean singleSelectionMode;
 
         /**
          * Builds the {@link SelectionDialog SelectionDialog}

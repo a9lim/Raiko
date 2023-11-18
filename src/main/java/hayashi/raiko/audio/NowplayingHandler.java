@@ -20,6 +20,7 @@ import hayashi.raiko.entities.Pair;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -59,13 +60,14 @@ public class NowplayingHandler {
     
     private void updateAll() {
         Set<Long> toRemove = new HashSet<>();
-        for(long guildId: lastNP.keySet()) {
+        for(Map.Entry<Long, Pair<Long, Long>> entry : lastNP.entrySet()) {
+            long guildId = entry.getKey();
             Guild guild = bot.getJDA().getGuildById(guildId);
             if(guild==null) {
                 toRemove.add(guildId);
                 continue;
             }
-            Pair<Long,Long> pair = lastNP.get(guildId);
+            Pair<Long,Long> pair = entry.getValue();
             TextChannel tc = guild.getTextChannelById(pair.key());
             if(tc==null) {
                 toRemove.add(guildId);
@@ -98,7 +100,7 @@ public class NowplayingHandler {
             if(topic==null || topic.isEmpty())
                 otherText = "\u200B";
             else if(topic.contains("\u200B"))
-                otherText = topic.substring(topic.lastIndexOf("\u200B"));
+                otherText = topic.substring(topic.lastIndexOf('\u200B'));
             else
                 otherText = "\u200B\n "+topic;
             String text = handler.getTopicFormat(bot.getJDA()) + otherText;

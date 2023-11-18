@@ -59,19 +59,11 @@ import net.dv8tion.jda.internal.utils.Checks;
 public class Paginator extends Menu {
     private final BiFunction<Integer, Integer, Color> color;
     private final BiFunction<Integer, Integer, String> text;
-    private final int columns;
-    private final int itemsPerPage;
-    private final boolean showPageNumbers;
-    private final boolean numberItems;
+    private final int columns, itemsPerPage, pages, bulkSkipNumber;
+    private final boolean showPageNumbers, numberItems, wrapPageEnds, waitOnSinglePage, allowTextInput;
     private final List<String> strings;
-    private final int pages;
     private final Consumer<Message> finalAction;
-    private final boolean waitOnSinglePage;
-    private final int bulkSkipNumber;
-    private final boolean wrapPageEnds;
-    private final String leftText;
-    private final String rightText;
-    private final boolean allowTextInput;
+    private final String leftText, rightText;
 
     public static final String BIG_LEFT = "\u23EA";
     public static final String LEFT = "\u25C0";
@@ -348,13 +340,9 @@ public class Paginator extends Menu {
         private int columns = 1;
         private int itemsPerPage = 12;
         private boolean showPageNumbers = true;
-        private boolean numberItems = false;
-        private boolean waitOnSinglePage = false;
+        private boolean numberItems,waitOnSinglePage, wrapPageEnds, allowTextInput;
         private int bulkSkipNumber = 1;
-        private boolean wrapPageEnds = false;
-        private String textToLeft = null;
-        private String textToRight = null;
-        private boolean allowTextInput = false;
+        private String textToLeft, textToRight;
 
         private final List<String> strings = new LinkedList<>();
 
