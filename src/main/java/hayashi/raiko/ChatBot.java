@@ -1,5 +1,6 @@
 package hayashi.raiko;
 
+import com.typesafe.config.ConfigException;
 import hayashi.jdautilities.command.Command;
 import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
@@ -16,12 +17,13 @@ public class ChatBot {
                 .writeTimeout(10, TimeUnit.MINUTES)
                 .build();
     private final String preprompt = "You are Raiko Horikawa, fun-loving, free spirited drum tsukumogami. You're having a chat with several humans!";
-    private String jsonhead;
+    private String jsonhead, model;
     private final String apiKey;
     private final MediaType mediaType = MediaType.parse("application/json");
-    public ChatBot(String apiKey) {
+    public ChatBot(String apiKey, String model) {
         clear();
         this.apiKey = apiKey;
+        setModel(model);
     }
     public String chat(String s) {
         jsonhead += "{\"role\": \"user\", \"content\": \"" + s.replace("\\","\\\\").replace("\"", "\\\"") + "\"}";
@@ -44,6 +46,15 @@ public class ChatBot {
         }
     }
     public void clear(){
-        jsonhead = "{\"model\": \"gpt-3.5-turbo-1106\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
+        jsonhead = "{\"model\": \"" + model + "\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
+    }
+
+    public void setModel(String s) throws ConfigException{
+        model = switch (s) {
+            case "cheap" -> "gpt-4-1106-preview";
+            case "standard" -> "gpt-3.5-turbo-1106";
+            case "expensive" -> "gpt-4";
+            default -> throw new ConfigException("Please input \"cheap\", \"standard\", or \"expensive\" for model!") {};
+        };
     }
 }

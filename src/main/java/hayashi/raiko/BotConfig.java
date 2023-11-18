@@ -40,7 +40,7 @@ public class BotConfig {
     private Path path = null;
     private String token, prefix, altprefix, helpWord, playlistsFolder,
             successEmoji, warningEmoji, errorEmoji, loadingEmoji, searchingEmoji,
-            cgpttoken;
+            cgpttoken, model;
     private boolean stayInChannel, songInGame, npImages, dbots;
     private long owner, maxSeconds, aloneTimeUntilStop;
     private OnlineStatus status;
@@ -86,6 +86,7 @@ public class BotConfig {
             playlistsFolder = config.getString("playlistsfolder");
             aliases = config.getConfig("aliases");
             cgpttoken = config.getString("gpttoken");
+            model = config.getString("model");
             dbots = owner == 113156185389092864L;
 
             // we may need to write a new config file
@@ -98,6 +99,18 @@ public class BotConfig {
                         Instructions for obtaining a token can be found here:
                         https://github.com/jagrosh/MusicBot/wiki/Getting-a-Bot-Token.
                         Bot Token:\s""");
+                if (token == null) {
+                    prompt.alert(Prompt.Level.WARNING, CONTEXT, "No token provided! Exiting.\n\nConfig Location: " + path.toAbsolutePath());
+                    return;
+                } else {
+                    write = true;
+                }
+            }
+
+            if (cgpttoken == null || cgpttoken.isEmpty() || cgpttoken.equalsIgnoreCase("CGPTTOKEN")) {
+                token = prompt.prompt("""
+                        Please provide an OpenAI token.
+                        OpenAI Token:\s""");
                 if (token == null) {
                     prompt.alert(Prompt.Level.WARNING, CONTEXT, "No token provided! Exiting.\n\nConfig Location: " + path.toAbsolutePath());
                     return;
@@ -130,6 +143,7 @@ public class BotConfig {
 
             // if we get through the whole config, it's good to go
             valid = true;
+
         } catch (ConfigException ex) {
             prompt.alert(Prompt.Level.ERROR, CONTEXT, ex + ": " + ex.getMessage() + "\n\nConfig Location: " + path.toAbsolutePath());
         }
@@ -280,5 +294,9 @@ public class BotConfig {
 
     public String getCgpttoken(){
         return cgpttoken;
+    }
+
+    public String getModel(){
+        return model;
     }
 }
