@@ -194,8 +194,7 @@ public class PlaylistLoader {
 
     public static final class PlaylistLoadError {
         private final int number;
-        private final String item;
-        private final String reason;
+        private final String item, reason;
 
         private PlaylistLoadError(int number, String item, String reason) {
             this.number = number;

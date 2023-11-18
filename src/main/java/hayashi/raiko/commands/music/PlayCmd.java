@@ -64,9 +64,9 @@ public class PlayCmd extends MusicCommand {
                 event.replySuccess("Resumed **" + handler.getPlayer().getPlayingTrack().getInfo().title + "**.");
                 return;
             }
-            StringBuilder builder = new StringBuilder(event.getClient().getWarning() + " Play Commands:\n");
-            builder.append("\n`").append(event.getClient().getPrefix()).append(name).append(" <song title>` - plays the first result from Youtube");
-            builder.append("\n`").append(event.getClient().getPrefix()).append(name).append(" <URL>` - plays the provided song, playlist, or stream");
+            StringBuilder builder = new StringBuilder(event.getClient().getWarning() + " Play Commands:\n")
+                    .append("\n`").append(event.getClient().getPrefix()).append(name).append(" <song title>` - plays the first result from Youtube")
+                    .append("\n`").append(event.getClient().getPrefix()).append(name).append(" <URL>` - plays the provided song, playlist, or stream");
             for (Command cmd : children)
                 builder.append("\n`").append(event.getClient().getPrefix()).append(name).append(" ").append(cmd.getName()).append(" ").append(cmd.getArguments()).append("` - ").append(cmd.getHelp());
             event.reply(builder.toString());
@@ -109,14 +109,12 @@ public class PlayCmd extends MusicCommand {
                     .setChoices(LOAD, CANCEL)
                     .setEventWaiter(bot.getWaiter())
                     .setTimeout(30, TimeUnit.SECONDS)
-                    .setAction(re ->
-                    {
+                    .setAction(re -> {
                         if (re.getName().equals(LOAD))
                             m.editMessage(addMsg + "\n" + event.getClient().getSuccess() + " Loaded **" + loadPlaylist(playlist, track) + "** additional tracks!").queue();
                         else
                             m.editMessage(addMsg).queue();
-                    }).setFinalAction(m ->
-                    {
+                    }).setFinalAction(m -> {
                         try {
                             m.clearReactions().queue();
                         } catch (PermissionException ignore) {}
@@ -150,8 +148,7 @@ public class PlayCmd extends MusicCommand {
                 return;
             }
             if (playlist.getSelectedTrack() != null) {
-                AudioTrack single = playlist.getSelectedTrack();
-                loadSingle(single, playlist);
+                loadSingle(playlist.getSelectedTrack(), playlist);
                 return;
             }
             int count = loadPlaylist(playlist, null);
