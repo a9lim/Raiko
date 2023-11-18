@@ -91,14 +91,9 @@ public class ButtonMenu extends Menu {
 
                     // If the reaction is an Emote we get the Snowflake,
                     // otherwise we get the unicode value.
-//                        String re = event.getReaction().getReactionEmote().isEmote()
-//                                ? event.getReaction().getReactionEmote().getId()
-//                                : event.getReaction().getReactionEmote().getName();
 
                     // If the value we got is not registered as a button to
                     // the ButtonMenu being displayed we return false.
-//                        if (!choices.contains(re))
-//                            return false;
 
                     // Last check is that the person who added the reaction
                     // is a valid user.
@@ -131,8 +126,7 @@ public class ButtonMenu extends Menu {
 
     public static class Builder extends Menu.Builder<Builder, ButtonMenu> {
         private Color color;
-        private String text;
-        private String description;
+        private String text, description;
         private final List<String> choices = new LinkedList<>();
         private Consumer<ReactionEmote> action;
         private Consumer<Message> finalAction = (m) -> {

@@ -20,11 +20,8 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.sharding.ShardManager;
 
 /**
  *
@@ -232,11 +229,11 @@ public abstract class Command {
             return true;
         if (topic.contains("{-" + lowerName + "}"))
             return false;
-        String lowerCat = category == null ? null : category.getName().toLowerCase();
-        if (lowerCat != null) {
-            if (topic.contains("{" + lowerCat + "}"))
+        lowerName = category == null ? null : category.getName().toLowerCase();
+        if (lowerName != null) {
+            if (topic.contains("{" + lowerName + "}"))
                 return true;
-            if (topic.contains("{-" + lowerCat + "}"))
+            if (topic.contains("{-" + lowerName + "}"))
                 return false;
         }
         return !topic.contains("{-all}");
@@ -338,8 +335,7 @@ public abstract class Command {
     }
 
     public static class Category {
-        private final String name;
-        private final String failResponse;
+        private final String name, failResponse;
         private final Predicate<CommandEvent> predicate;
 
         public Category(String name) {

@@ -135,9 +135,8 @@ public class TextAreaOutputStream extends OutputStream {
         // MUST BE THE ONLY METHOD THAT TOUCHES textArea!
         @Override
         public synchronized void run() {
-            if (clear) {
+            if (clear)
                 textArea.setText("");
-            }
             values.stream().peek((val) -> curLength += val.length()).peek((val) -> {
                 if (val.endsWith(EOL1) || val.endsWith(EOL2)) {
                     if (lengths.size() >= maxLines) {

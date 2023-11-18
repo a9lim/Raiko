@@ -15,8 +15,6 @@
  */
 package hayashi.jdautilities.command;
 
-import hayashi.jdautilities.command.annotation.JDACommand;
-import hayashi.jdautilities.command.impl.CommandClientImpl;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.time.OffsetDateTime;

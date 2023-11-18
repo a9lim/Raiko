@@ -31,7 +31,7 @@ public class SettingsManager implements GuildSettingsManager<Settings> {
     private final HashMap<Long, Settings> settings;
 
     public SettingsManager() {
-        this.settings = new HashMap<>();
+        settings = new HashMap<>();
         try {
             JSONObject loadedSettings = new JSONObject(new String(Files.readAllBytes(OtherUtil.getPath("serversettings.json"))));
             loadedSettings.keySet().forEach((id) -> {

@@ -80,7 +80,7 @@ public class TableBuilder {
                     String value = row[j];
                     int adjustment = maxLengths[j] - value.length();
                     StringBuilder newValue = new StringBuilder();
-                    this.setAlignment(adjustment, value, newValue);
+                    setAlignment(adjustment, value, newValue);
                     row[j] = newValue.toString();
                 }
             }
@@ -121,7 +121,7 @@ public class TableBuilder {
             builder.append("\n");
         }
 
-        this.appendRow(builder, firstRow); // header
+        appendRow(builder, firstRow); // header
 
         builder.append("\n");
 
@@ -149,7 +149,7 @@ public class TableBuilder {
         for (int i = 1; i < rows; i++) {
             String[] row = values[i];
 
-            this.appendRow(builder, row);
+            appendRow(builder, row);
 
             // delimiter
             if (i < values.length - 1) {

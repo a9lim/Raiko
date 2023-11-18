@@ -72,9 +72,8 @@ public class PlaynextCmd extends MusicCommand {
             }
             AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
             handler.pushTrack(new QueuedTrack(track, event.getAuthor()));
-            String addMsg = FormatUtil.filter(event.getClient().getSuccess() + " Added **" + track.getInfo().title
-                    + "** (`" + FormatUtil.formatTime(track.getDuration()) + "`) " + (handler.getQueue().size() < 2 ? "to begin playing" : " to the queue next"));
-            m.editMessage(addMsg).queue();
+            m.editMessage(FormatUtil.filter(event.getClient().getSuccess() + " Added **" + track.getInfo().title
+                    + "** (`" + FormatUtil.formatTime(track.getDuration()) + "`) " + (handler.getQueue().size() < 2 ? "to begin playing" : " to the queue next"))).queue();
         }
 
         @Override

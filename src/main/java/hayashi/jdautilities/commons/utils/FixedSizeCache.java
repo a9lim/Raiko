@@ -25,10 +25,10 @@ public class FixedSizeCache<K, V> {
 
     @SuppressWarnings("unchecked")
     public FixedSizeCache(int size) {
-        this.map = new HashMap<>();
+        map = new HashMap<>();
         if (size < 1)
             throw new IllegalArgumentException("Cache size must be at least 1!");
-        this.keys = (K[]) new Object[size];
+        keys = (K[]) new Object[size];
     }
 
     public void add(K key, V value) {

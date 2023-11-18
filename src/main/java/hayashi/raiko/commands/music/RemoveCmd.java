@@ -40,24 +40,24 @@ public class RemoveCmd extends MusicCommand {
             event.replyError("There is nothing in the queue!");
             return;
         }
+
+        int pos;
         if ("all".equalsIgnoreCase(event.getArgs())) {
-            int count = handler.getQueue().size();
+            pos = handler.getQueue().size();
             handler.getQueue().clear();
-            if (count == 0)
+            if (pos == 0)
                 event.replyWarning("There are no songs in the queue!");
             else
-                event.replySuccess("Successfully removed " + count + " entries.");
+                event.replySuccess("Successfully removed " + pos + " entries.");
             return;
         }
         if ("mine".equalsIgnoreCase(event.getArgs())) {
-            int count = handler.getQueue().removeAll(event.getAuthor().getIdLong());
-            if (count == 0)
+            if ((pos = handler.getQueue().removeAll(event.getAuthor().getIdLong())) == 0)
                 event.replyWarning("You don't have any songs in the queue!");
             else
-                event.replySuccess("Successfully removed your " + count + " entries.");
+                event.replySuccess("Successfully removed your " + pos + " entries.");
             return;
         }
-        int pos;
         try {
             pos = Integer.parseInt(event.getArgs());
         } catch (NumberFormatException e) {
@@ -77,8 +77,7 @@ public class RemoveCmd extends MusicCommand {
             event.replyError("Position must be a valid integer between 1 and " + handler.getQueue().size() + "!");
             return;
         }
-        QueuedTrack qt = handler.getQueue().get(pos);
-        handler.getQueue().remove(pos);
+        QueuedTrack qt = handler.getQueue().remove(pos);
         User u;
         try {
             u = event.getJDA().getUserById(qt.getIdentifier());

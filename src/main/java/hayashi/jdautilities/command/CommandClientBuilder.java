@@ -24,8 +24,6 @@ import hayashi.jdautilities.command.impl.CommandClientImpl;
 
 import java.util.concurrent.ScheduledExecutorService;
 
-import hayashi.jdautilities.command.annotation.JDACommand;
-import hayashi.jdautilities.commons.utils.FixedSizeCache;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 

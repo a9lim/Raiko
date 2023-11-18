@@ -15,11 +15,9 @@
  */
 package hayashi.jdautilities.command;
 
-import hayashi.jdautilities.command.annotation.JDACommand;
 import java.util.List;
 
 @FunctionalInterface
 public interface AnnotatedModuleCompiler {
-
     List<Command> compile(Object o);
 }

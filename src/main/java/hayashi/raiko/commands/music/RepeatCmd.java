@@ -34,9 +34,8 @@ public class RepeatCmd extends MusicCommand {
     // override musiccommand's execute because we don't actually care where this is used
     @Override
     protected void execute(CommandEvent event) {
-        String args = event.getArgs().toLowerCase();
         Settings settings = event.getClient().getSettingsFor(event.getGuild());
-        settings.setRepeatMode(switch(args) {
+        settings.setRepeatMode(switch(event.getArgs().toLowerCase()) {
             case "false", "off" -> RepeatMode.OFF;
             case "true", "on", "all" -> RepeatMode.ALL;
             case "one", "single" -> RepeatMode.SINGLE;

@@ -94,31 +94,15 @@ public class AnnotatedModuleCompilerImpl implements AnnotatedModuleCompiler {
         }
 
         // Guild Only
-        builder.setGuildOnly(properties.guildOnly());
-
-        // Required Role
-        builder.setRequiredRole(properties.requiredRole().trim().isEmpty() ? null : properties.requiredRole().trim());
-
-        // Owner Command
-        builder.setOwnerCommand(properties.ownerCommand());
-
-        // Cooldown Delay
-        builder.setCooldown(properties.cooldown().value());
-
-        // Cooldown Scope
-        builder.setCooldownScope(properties.cooldown().scope());
-
-        // Bot Permissions
-        builder.setBotPermissions(properties.botPermissions());
-
-        // User Permissions
-        builder.setUserPermissions(properties.userPermissions());
-
-        // Uses Topic Tags
-        builder.setUsesTopicTags(properties.useTopicTags());
-
-        // Hidden
-        builder.setHidden(properties.isHidden());
+        builder.setGuildOnly(properties.guildOnly())
+                .setRequiredRole(properties.requiredRole().trim().isEmpty() ? null : properties.requiredRole().trim())
+                .setOwnerCommand(properties.ownerCommand())
+                .setCooldown(properties.cooldown().value())
+                .setCooldownScope(properties.cooldown().scope())
+                .setBotPermissions(properties.botPermissions())
+                .setUserPermissions(properties.userPermissions())
+                .setUsesTopicTags(properties.useTopicTags())
+                .setHidden(properties.isHidden());
 
         // Child Commands
         if (properties.children().length > 0) {
