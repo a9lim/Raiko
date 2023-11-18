@@ -38,7 +38,7 @@ public class ShuffleCmd extends MusicCommand {
     public void doCommand(CommandEvent event) {
         AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
         int s;
-        if (event.getArgs().equalsIgnoreCase("mine")) {
+        if ("mine".equalsIgnoreCase(event.getArgs())) {
             if ((s = handler.getQueue().shuffle(event.getAuthor().getIdLong())) < 2)
                 event.replyError("You don't have enough songs in the queue!");
             else

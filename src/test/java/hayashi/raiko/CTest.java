@@ -23,11 +23,11 @@ public class CTest {
         final String apiKey = config.getCgpttoken();
         final MediaType mediaType = MediaType.parse("application/json");
         final Scanner s = new Scanner(System.in);
-        String model = config.getModel();
+        String model = "gpt-4-1106-preview";
 
-        String jsonhead = "{\"model\": \"gpt-4-1106-preview\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
+        StringBuilder jsonhead = new StringBuilder("{\"model\": \"gpt-4-1106-preview\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ");
         while (true) {
-            jsonhead += "{\"role\": \"user\", \"content\": \"" + s.nextLine().replace("\\","\\\\").replace("\"", "\\\"") + "\"}";
+            jsonhead.append("{\"role\": \"user\", \"content\": \"").append(s.nextLine().replace("\n", "\\n").replace("\"", "\\\"")).append("\"}");
             try {
                 String reply = (new JSONObject(client.newCall(new Request.Builder()
                                 .url("https://api.openai.com/v1/chat/completions")
@@ -38,11 +38,11 @@ public class CTest {
                         .execute().body().string())
                         .getJSONArray("choices").getJSONObject(0)
                         .getJSONObject("message").getString("content"));
-                jsonhead += ", {\"role\": \"assistant\", \"content\": \"" + reply.replace("\\","\\\\").replace("\"", "\\\"") + "\"}, ";
+                jsonhead.append(", {\"role\": \"assistant\", \"content\": \"").append(reply.replace("\n", "\\n").replace("\"", "\\\"")).append("\"}, ");
                 System.out.println(reply);
             } catch (Exception e){
-                System.out.println(e.toString());
-                jsonhead = "{\"model\": \"gpt-4-1106-preview\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
+                System.out.println(e);
+                jsonhead = new StringBuilder("{\"model\": \"gpt-4-1106-preview\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ");
                 System.out.println("huh");
             }
         }

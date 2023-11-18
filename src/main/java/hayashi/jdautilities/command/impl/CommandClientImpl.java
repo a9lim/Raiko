@@ -23,6 +23,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.ShutdownEvent;
@@ -48,13 +49,15 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static hayashi.jdautilities.command.Command.COMPILE;
+
 /**
  * An implementation of {@link CommandClient CommandClient} to be used by a bot.
  *
- * <p>This is a listener usable with {@link net.dv8tion.jda.api.JDA JDA}, as it implements
- * {@link net.dv8tion.jda.api.hooks.EventListener EventListener} in order to catch and use different kinds of
- * {@link net.dv8tion.jda.api.events.Event Event}s. The primary usage of this is where the CommandClient implementation
- * takes {@link net.dv8tion.jda.api.events.message.MessageReceivedEvent MessageReceivedEvent}s, and automatically
+ * <p>This is a listener usable with {@link JDA JDA}, as it implements
+ * {@link EventListener EventListener} in order to catch and use different kinds of
+ * {@link Event Event}s. The primary usage of this is where the CommandClient implementation
+ * takes {@link MessageReceivedEvent MessageReceivedEvent}s, and automatically
  * processes arguments, and provide them to a {@link Command Command} for
  * running and execution.
  *
@@ -67,30 +70,20 @@ public class CommandClientImpl implements CommandClient, EventListener {
     private final OffsetDateTime start;
     private final Activity activity;
     private final OnlineStatus status;
-    private final String ownerId;
     private final String[] coOwnerIds;
-    private final String prefix;
-    private final String altprefix;
-    private final String serverInvite;
-    private final HashMap<String, Integer> commandIndex;
+    private final String ownerId, prefix, altprefix, serverInvite, success, warning, error, botsKey, carbonKey, helpWord;
+    private final HashMap<String, Integer> commandIndex, uses;
     private final ArrayList<Command> commands;
-    private final String success;
-    private final String warning;
-    private final String error;
-    private final String botsKey, carbonKey;
     private final HashMap<String, OffsetDateTime> cooldowns;
-    private final HashMap<String, Integer> uses;
     private final FixedSizeCache<Long, Set<Message>> linkMap;
-    private final boolean useHelp;
-    private final boolean shutdownAutomatically;
+    private final boolean useHelp, shutdownAutomatically;
     private final Consumer<CommandEvent> helpConsumer;
-    private final String helpWord;
     private final ScheduledExecutorService executor;
     private final AnnotatedModuleCompiler compiler;
     private final GuildSettingsManager manager;
 
     private String textPrefix;
-    private CommandListener listener = null;
+    private CommandListener listener;
     private int totalGuilds;
 
     public CommandClientImpl(String ownerId, String[] coOwnerIds, String prefix, String altprefix, Activity activity, OnlineStatus status, String serverInvite,
@@ -435,10 +428,10 @@ public class CommandClientImpl implements CommandClient, EventListener {
         GuildSettingsProvider settings = event.isFromType(ChannelType.TEXT) ? provideSettings(event.getGuild()) : null;
 
         // Check for prefix or alternate prefix (@mention cases)
-        if ((prefix.equals(DEFAULT_PREFIX) || (altprefix != null && altprefix.equals(DEFAULT_PREFIX))) &&
+        if ((prefix.equals(DEFAULT_PREFIX) || (DEFAULT_PREFIX.equals(altprefix))) &&
             (rawContent.startsWith("<@" + event.getJDA().getSelfUser().getId() + ">") ||
                 rawContent.startsWith("<@!" + event.getJDA().getSelfUser().getId() + ">")))
-                parts = splitOnPrefixLength(rawContent, rawContent.indexOf(">") + 1);
+                parts = splitOnPrefixLength(rawContent, rawContent.indexOf('>') + 1);
         // Check for prefix
         if (parts == null && rawContent.toLowerCase().startsWith(prefix.toLowerCase()))
             parts = splitOnPrefixLength(rawContent, prefix.length());
@@ -473,7 +466,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
                 final Command command; // this will be null if it's not a command
                 synchronized (commandIndex) {
                     int i = commandIndex.getOrDefault(name.toLowerCase(), -1);
-                    command = i != -1 ? commands.get(i) : null;
+                    command = i == -1 ? null : commands.get(i);
                 }
 
                 if (command != null) {
@@ -586,7 +579,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
     }
 
     private static String[] splitOnPrefixLength(String rawContent, int length) {
-        return Arrays.copyOf(rawContent.substring(length).trim().split("\\s+", 2), 2);
+        return Arrays.copyOf(COMPILE.split(rawContent.substring(length).trim(), 2), 2);
     }
 
     /**

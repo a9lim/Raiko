@@ -28,10 +28,13 @@ import java.nio.file.Paths;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 
+import static hayashi.jdautilities.command.Command.COMPILE;
+
 /**
  * @author John Grosh <john.a.grosh@gmail.com>
  */
-public class OtherUtil {
+public enum OtherUtil {
+    ;
     private final static String WINDOWS_INVALID_PATH = "c:\\windows\\system32\\";
 
     /**
@@ -95,7 +98,7 @@ public class OtherUtil {
      * @return the parsed activity
      */
     public static Activity parseGame(String game) {
-        if (game == null || game.trim().isEmpty() || game.trim().equalsIgnoreCase("default"))
+        if (game == null || game.trim().isEmpty() || "default".equalsIgnoreCase(game.trim()))
             return null;
         String lower = game.toLowerCase();
         if (lower.startsWith("playing"))
@@ -107,7 +110,7 @@ public class OtherUtil {
         if (lower.startsWith("watching"))
             return Activity.watching(makeNonEmpty(game.substring(8).trim()));
         if (lower.startsWith("streaming")) {
-            String[] parts = game.substring(9).trim().split("\\s+", 2);
+            String[] parts = COMPILE.split(game.substring(9).trim(), 2);
             if (parts.length == 2) {
                 return Activity.streaming(makeNonEmpty(parts[1]), "https://twitch.tv/" + parts[0]);
             }

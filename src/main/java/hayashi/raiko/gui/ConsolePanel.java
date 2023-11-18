@@ -28,7 +28,6 @@ import javax.swing.JTextArea;
 public class ConsolePanel extends JPanel {
 
     public ConsolePanel() {
-        super();
         JTextArea text = new JTextArea();
         text.setLineWrap(true);
         text.setWrapStyleWord(true);
@@ -40,8 +39,8 @@ public class ConsolePanel extends JPanel {
         JScrollPane pane = new JScrollPane();
         pane.setViewportView(text);
 
-        super.setLayout(new GridLayout(1, 1));
-        super.add(pane);
-        super.setPreferredSize(new Dimension(400, 300));
+        setLayout(new GridLayout(1, 1));
+        add(pane);
+        setPreferredSize(new Dimension(400, 300));
     }
 }

@@ -53,7 +53,7 @@ public class Raiko {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        if (args.length > 0 && args[0].equalsIgnoreCase("generate-config")) {
+        if (args.length > 0 && "generate-config".equalsIgnoreCase(args[0])) {
             BotConfig.writeDefaultConfig();
             return;
         }
@@ -83,7 +83,9 @@ public class Raiko {
         aboutCommand.setIsAuthor(false);
         aboutCommand.setReplacementCharacter("\uD83C\uDFB6"); // 🎶
 
-        ChatBot chatBot = new ChatBot(config.getCgpttoken(), config.getModel());
+        ChatBot chatBot = new ChatBot(config.getCgpttoken());
+        if(config.getModel())
+            chatBot.toggleModel();
 
         // set up the command client
         CommandClientBuilder cb = new CommandClientBuilder()
@@ -130,14 +132,14 @@ public class Raiko {
 
                         new ChatCmd(chatBot,bot),
                         new ClearChatCmd(chatBot,bot),
-                        new SetModelCmd(chatBot,bot)
+                        new ToggleModelCmd(chatBot,bot)
                 );
         boolean nogame = false;
         if (config.getStatus() != OnlineStatus.UNKNOWN)
             cb.setStatus(config.getStatus());
         if (config.getGame() == null)
             cb.useDefaultGame();
-        else if (config.getGame().getName().equalsIgnoreCase("none")) {
+        else if ("none".equalsIgnoreCase(config.getGame().getName())) {
             cb.setActivity(null);
             nogame = true;
         } else

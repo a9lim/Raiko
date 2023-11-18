@@ -1,9 +1,4 @@
 package hayashi.raiko;
-
-import com.typesafe.config.ConfigException;
-import hayashi.jdautilities.command.Command;
-import hayashi.jdautilities.command.CommandEvent;
-import hayashi.raiko.Bot;
 import okhttp3.*;
 import org.json.JSONObject;
 import java.util.concurrent.TimeUnit;
@@ -16,19 +11,19 @@ public class ChatBot {
                 .readTimeout(10, TimeUnit.MINUTES)
                 .writeTimeout(10, TimeUnit.MINUTES)
                 .build();
-    private final String preprompt = "You are Raiko Horikawa, fun-loving, free spirited drum tsukumogami. You're having a chat with several humans!";
-    private String jsonhead, model;
+    private static final String preprompt = "You are Raiko Horikawa, fun-loving, free spirited drum tsukumogami. You're having a chat with several humans!";
+    private String jsonhead;
+    private boolean cheap;
     private final String apiKey;
     private final MediaType mediaType = MediaType.parse("application/json");
-    public ChatBot(String apiKey, String model) {
+    public ChatBot(String apiKey) {
         this.apiKey = apiKey;
-        setModel(model);
+        this.cheap = false;
         clear();
-        System.out.println("model:" + this.model);
-
     }
+
     public String chat(String s) {
-        jsonhead += "{\"role\": \"user\", \"content\": \"" + s.replace("\\","\\\\").replace("\"", "\\\"") + "\"}";
+        jsonhead += "{\"role\": \"user\", \"content\": \"" + s.replace("\n","\\n").replace("\"", "\\\"") + "\"}";
         try {
             String reply = (new JSONObject(client.newCall(new Request.Builder()
                             .url("https://api.openai.com/v1/chat/completions")
@@ -39,25 +34,20 @@ public class ChatBot {
                     .execute().body().string())
                     .getJSONArray("choices").getJSONObject(0)
                     .getJSONObject("message").getString("content"));
-            jsonhead += ", {\"role\": \"assistant\", \"content\": \"" + reply.replace("\\","\\\\").replace("\"", "\\\"") + "\"}, ";
+            jsonhead += ", {\"role\": \"assistant\", \"content\": \"" + reply.replace("\n","\\n").replace("\"", "\\\"") + "\"}, ";
             return reply;
         } catch (Exception e){
-            System.out.println(e.toString());
+            System.out.println(e);
             clear();
             return "Huh?";
         }
     }
     public void clear(){
-        jsonhead = "{\"model\": \"" + model + "\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
+        jsonhead = "{\"model\": \"" + (cheap ? "gpt-3.5-turbo-1106" : "gpt-4-1106-preview") + "\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
     }
 
-    public void setModel(String s) throws ConfigException{
-        model = switch (s) {
-            case "cheap" -> "gpt-3.5-turbo-1106";
-            case "standard" -> "gpt-4-1106-preview";
-            case "expensive" -> "gpt-4";
-            default -> throw new ConfigException("Please input \"cheap\", \"standard\", or \"expensive\" for model!") {};
-        };
+    public void toggleModel(){
+        this.cheap = !cheap;
         clear();
     }
 }

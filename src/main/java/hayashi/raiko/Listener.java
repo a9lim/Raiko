@@ -79,10 +79,10 @@ public class Listener extends ListenerAdapter {
     // make sure people aren't adding clones to dbots
     private void credit(JDA jda) {
         Guild dbots = jda.getGuildById(110373943822540800L);
-        if (dbots == null || bot.getConfig().getDBots())
-            return;
-        jda.getTextChannelById(119222314964353025L)
-                .sendMessage("This account is running Raiko. Please do not list bot clones on this server, <@" + bot.getConfig().getOwnerId() + ">.").complete();
-        dbots.leave().queue();
+        if (dbots != null && !bot.getConfig().getDBots()) {
+            jda.getTextChannelById(119222314964353025L)
+                    .sendMessage("This account is running Raiko. Please do not list bot clones on this server, <@" + bot.getConfig().getOwnerId() + ">.").complete();
+            dbots.leave().queue();
+        }
     }
 }

@@ -51,17 +51,12 @@ import net.dv8tion.jda.internal.utils.Checks;
  */
 public class Slideshow extends Menu {
     private final BiFunction<Integer, Integer, Color> color;
-    private final BiFunction<Integer, Integer, String> text;
-    private final BiFunction<Integer, Integer, String> description;
-    private final boolean showPageNumbers;
+    private final BiFunction<Integer, Integer, String> text, description;
+    private final boolean showPageNumbers, waitOnSinglePage, wrapPageEnds, allowTextInput;
     private final List<String> urls;
     private final Consumer<Message> finalAction;
-    private final boolean waitOnSinglePage;
     private final int bulkSkipNumber;
-    private final boolean wrapPageEnds;
-    private final String leftText;
-    private final String rightText;
-    private final boolean allowTextInput;
+    private final String leftText, rightText;
 
     public static final String BIG_LEFT = "\u23EA";
     public static final String LEFT = "\u25C0";
@@ -312,12 +307,9 @@ public class Slideshow extends Menu {
         private BiFunction<Integer, Integer, String> description = (page, pages) -> null;
         private Consumer<Message> finalAction = m -> m.delete().queue();
         private boolean showPageNumbers = true;
-        private boolean waitOnSinglePage = false;
+        private boolean waitOnSinglePage, wrapPageEnds, allowTextInput;
         private int bulkSkipNumber = 1;
-        private boolean wrapPageEnds = false;
-        private String textToLeft = null;
-        private String textToRight = null;
-        private boolean allowTextInput = false;
+        private String textToLeft, textToRight;
 
         private final List<String> strings = new LinkedList<>();
 

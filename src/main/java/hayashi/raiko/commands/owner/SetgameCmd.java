@@ -50,6 +50,7 @@ public class SetgameCmd extends OwnerCommand {
     }
 
     private static class SetstreamCmd extends OwnerCommand {
+
         private SetstreamCmd() {
             this.name = "stream";
             this.aliases = new String[]{"twitch", "streaming"};
@@ -60,7 +61,7 @@ public class SetgameCmd extends OwnerCommand {
 
         @Override
         protected void execute(CommandEvent event) {
-            String[] parts = event.getArgs().split("\\s+", 2);
+            String[] parts = COMPILE.split(event.getArgs(), 2);
             if (parts.length < 2) {
                 event.replyError("Please include a twitch username and the name of the game to 'stream'");
                 return;

@@ -32,7 +32,7 @@ import java.util.Map;
 public class FixedSizeCache<K, V> {
     private final Map<K, V> map;
     private final K[] keys;
-    private int currIndex = 0;
+    private int currIndex;
 
     /**
      * Constructs a new {@link FixedSizeCache FixedSizeCache}

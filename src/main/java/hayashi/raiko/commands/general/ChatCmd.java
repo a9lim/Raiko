@@ -1,12 +1,8 @@
 package hayashi.raiko.commands.general;
-import hayashi.jdautilities.command.Command;
 import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
 import hayashi.raiko.ChatBot;
 import hayashi.raiko.commands.ChatCommand;
-import okhttp3.*;
-import org.json.JSONObject;
-import java.util.concurrent.TimeUnit;
 
 public class ChatCmd extends ChatCommand {
 

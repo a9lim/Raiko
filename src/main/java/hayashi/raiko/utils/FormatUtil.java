@@ -24,7 +24,8 @@ import net.dv8tion.jda.api.entities.VoiceChannel;
 /**
  * @author John Grosh <john.a.grosh@gmail.com>
  */
-public class FormatUtil {
+public enum FormatUtil {
+    ;
 
     public static String formatTime(long duration) {
         if (duration == Long.MAX_VALUE)

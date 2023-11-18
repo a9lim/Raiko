@@ -46,7 +46,7 @@ public class Bot {
     private final NowplayingHandler nowplaying;
     private final AloneInVoiceHandler aloneInVoiceHandler;
 
-    private boolean shuttingDown = false;
+    private boolean shuttingDown;
     private JDA jda;
     private GUI gui;
 
@@ -107,7 +107,7 @@ public class Bot {
     }
 
     public void resetGame() {
-        Activity game = config.getGame() == null || config.getGame().getName().equalsIgnoreCase("none") ? null : config.getGame();
+        Activity game = config.getGame() == null || "none".equalsIgnoreCase(config.getGame().getName()) ? null : config.getGame();
         if (!Objects.equals(jda.getPresence().getActivity(), game))
             jda.getPresence().setActivity(game);
     }

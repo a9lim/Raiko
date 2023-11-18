@@ -40,6 +40,7 @@ import javax.annotation.Nullable;
  * implementation that doesn't require developer additions.
  * @since 2.0
  */
+@FunctionalInterface
 public interface GuildSettingsManager<T> {
     /**
      * Gets settings for a specified {@link net.dv8tion.jda.api.entities.Guild Guild}

@@ -43,7 +43,7 @@ public class RemoveCmd extends MusicCommand {
             event.replyError("There is nothing in the queue!");
             return;
         }
-        if (event.getArgs().equalsIgnoreCase("all")) {
+        if ("all".equalsIgnoreCase(event.getArgs())) {
             int count = handler.getQueue().size();
             handler.getQueue().clear();
             if (count == 0)
@@ -52,7 +52,7 @@ public class RemoveCmd extends MusicCommand {
                 event.replySuccess("Successfully removed " + count + " entries.");
             return;
         }
-        if (event.getArgs().equalsIgnoreCase("mine")) {
+        if ("mine".equalsIgnoreCase(event.getArgs())) {
             int count = handler.getQueue().removeAll(event.getAuthor().getIdLong());
             if (count == 0)
                 event.replyWarning("You don't have any songs in the queue!");

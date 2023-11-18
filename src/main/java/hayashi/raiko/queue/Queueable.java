@@ -19,6 +19,7 @@ package hayashi.raiko.queue;
  *
  * @author John Grosh <john.a.grosh@gmail.com>
  */
+@FunctionalInterface
 public interface Queueable {
     
     long getIdentifier();

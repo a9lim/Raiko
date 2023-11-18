@@ -31,6 +31,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static hayashi.jdautilities.command.Command.COMPILE;
+
 /**
  * @author John Grosh (john.a.grosh@gmail.com)
  */
@@ -83,9 +85,9 @@ public class PlaylistLoader {
                     String s = str.trim();
                     if (s.isEmpty())
                         return;
-                    if (s.startsWith("#") || s.startsWith("//")) {
-                        s = s.replaceAll("\\s+", "");
-                        if (s.equalsIgnoreCase("#shuffle") || s.equalsIgnoreCase("//shuffle"))
+                    if (s.charAt(0) == '#' || s.startsWith("//")) {
+                        s = COMPILE.matcher(s).replaceAll("");
+                        if ("#shuffle".equalsIgnoreCase(s) || "//shuffle".equalsIgnoreCase(s))
                             shuffle.set(true);
                     } else
                         list.add(s);
@@ -102,13 +104,13 @@ public class PlaylistLoader {
     }
 
 
-    public class Playlist {
+    public final class Playlist {
         private final String name;
         private final List<String> items;
         private final boolean shuffle;
         private final List<AudioTrack> tracks = new LinkedList<>();
         private final List<PlaylistLoadError> errors = new LinkedList<>();
-        private boolean loaded = false;
+        private boolean loaded;
 
         private Playlist(String name, List<String> items, boolean shuffle) {
             this.name = name;
@@ -195,7 +197,7 @@ public class PlaylistLoader {
         }
     }
 
-    public static class PlaylistLoadError {
+    public static final class PlaylistLoadError {
         private final int number;
         private final String item;
         private final String reason;

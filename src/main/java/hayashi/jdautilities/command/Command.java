@@ -19,12 +19,12 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 /**
  *
@@ -66,6 +66,7 @@ import net.dv8tion.jda.api.entities.VoiceChannel;
  * @author John Grosh (jagrosh)
  */
 public abstract class Command {
+    public static final Pattern COMPILE = Pattern.compile("\\s+");
     /**
      * The name of the command, allows the command to be called the format: {@code [prefix]<command name>}.
      */
@@ -77,18 +78,18 @@ public abstract class Command {
     protected String help = "no help available";
 
     /**
-     * The {@link Command.Category Category} of the command.
+     * The {@link Category Category} of the command.
      * <br>This can perform any other checks not completed by the default conditional fields.
      */
-    protected Category category = null;
+    protected Category category;
 
     /**
      * An arguments format String for the command, used in the default help builder.
      */
-    protected String arguments = null;
+    protected String arguments;
 
     /**
-     * {@code true} if the command may only be used in a {@link net.dv8tion.jda.api.entities.Guild Guild},
+     * {@code true} if the command may only be used in a {@link Guild Guild},
      * {@code false} if it may be used in both a Guild and a DM.
      * <br>Default {@code true}.
      */
@@ -97,29 +98,29 @@ public abstract class Command {
     /**
      * A String name of a role required to use this command.
      */
-    protected String requiredRole = null;
+    protected String requiredRole;
 
     /**
      * {@code true} if the command may only be used by a User with an ID matching the
      * Owners or any of the CoOwners.
      * <br>Default {@code false}.
      */
-    protected boolean ownerCommand = false;
+    protected boolean ownerCommand;
 
     /**
      * An {@code int} number of seconds users must wait before using this command again.
      */
-    protected int cooldown = 0;
+    protected int cooldown;
 
     /**
-     * Any {@link net.dv8tion.jda.api.Permission Permission}s a Member must have to use this command.
-     * <br>These are only checked in a {@link net.dv8tion.jda.api.entities.Guild Guild} environment.
+     * Any {@link Permission Permission}s a Member must have to use this command.
+     * <br>These are only checked in a {@link Guild Guild} environment.
      */
     protected Permission[] userPermissions = new Permission[0];
 
     /**
-     * Any {@link net.dv8tion.jda.api.Permission Permission}s the bot must have to use a command.
-     * <br>These are only checked in a {@link net.dv8tion.jda.api.entities.Guild Guild} environment.
+     * Any {@link Permission Permission}s the bot must have to use a command.
+     * <br>These are only checked in a {@link Guild Guild} environment.
      */
     protected Permission[] botPermissions = new Permission[0];
 
@@ -136,10 +137,10 @@ public abstract class Command {
     protected Command[] children = new Command[0];
 
     /**
-     * The {@link java.util.function.BiConsumer BiConsumer} for creating a help response to the format
+     * The {@link BiConsumer BiConsumer} for creating a help response to the format
      * {@code [prefix]<command name> help}.
      */
-    protected BiConsumer<CommandEvent, Command> helpBiConsumer = null;
+    protected BiConsumer<CommandEvent, Command> helpBiConsumer;
 
     /**
      * {@code true} if this command checks a channel topic for topic-tags.
@@ -153,12 +154,12 @@ public abstract class Command {
      * {@code true} if this command should be hidden from the help.
      * <br>Default {@code false}
      */
-    protected boolean hidden = false;
+    protected boolean hidden;
 
     /**
-     * The {@link Command.CooldownScope CooldownScope}
+     * The {@link CooldownScope CooldownScope}
      * of the command. This defines how far of a scope cooldowns have.
-     * <br>Default {@link Command.CooldownScope#USER CooldownScope.USER}.
+     * <br>Default {@link CooldownScope#USER CooldownScope.USER}.
      */
     protected CooldownScope cooldownScope = CooldownScope.USER;
 
@@ -185,7 +186,7 @@ public abstract class Command {
     public final void run(CommandEvent event) {
         // child check
         if (!event.getArgs().isEmpty()) {
-            String[] parts = Arrays.copyOf(event.getArgs().split("\\s+", 2), 2);
+            String[] parts = Arrays.copyOf(COMPILE.split(event.getArgs(), 2), 2);
             if (helpBiConsumer != null && parts[0].equalsIgnoreCase(event.getClient().getHelpWord())) {
                 helpBiConsumer.accept(event, this);
                 return;
@@ -308,11 +309,11 @@ public abstract class Command {
     }
 
     /**
-     * Checks whether a command is allowed in a {@link net.dv8tion.jda.api.entities.TextChannel TextChannel}
+     * Checks whether a command is allowed in a {@link TextChannel TextChannel}
      * by searching the channel topic for topic tags relating to the command.
      *
      * <p>{-{@link Command#name name}},
-     * {-{@link Command.Category category name}}, or {-{@code all}}
+     * {-{@link Category category name}}, or {-{@code all}}
      * are valid examples of ways that this method would return {@code false} if placed in a channel topic.
      *
      * <p><b>NOTE:</b>Topic tags are <b>case sensitive</b> and proper usage must be in lower case!
@@ -383,7 +384,7 @@ public abstract class Command {
     }
 
     /**
-     * Checks if this Command can only be used in a {@link net.dv8tion.jda.api.entities.Guild Guild}.
+     * Checks if this Command can only be used in a {@link Guild Guild}.
      *
      * @return {@code true} if this Command can only be used in a Guild, else {@code false} if it can
      * be used outside of one
@@ -512,12 +513,12 @@ public abstract class Command {
         if (remaining <= 0)
             return null;
         String front = event.getClient().getWarning() + " That command is on cooldown for " + remaining + " more seconds";
-        if (cooldownScope.equals(CooldownScope.USER))
+        if (cooldownScope == CooldownScope.USER)
             return front + "!";
         if(event.getGuild() == null) {
-            if (cooldownScope.equals(CooldownScope.USER_GUILD))
+            if (cooldownScope == CooldownScope.USER_GUILD)
                 return front + " " + CooldownScope.USER_CHANNEL.errorSpecification + "!";
-            if (cooldownScope.equals(CooldownScope.GUILD))
+            if (cooldownScope == CooldownScope.GUILD)
                 return front + " " + CooldownScope.CHANNEL.errorSpecification + "!";
         }
         return front + " " + cooldownScope.errorSpecification + "!";
@@ -548,10 +549,10 @@ public abstract class Command {
         }
 
         /**
-         * A Command Category containing a name and a {@link java.util.function.Predicate}.
+         * A Command Category containing a name and a {@link Predicate}.
          *
          * <p>The command will be terminated if
-         * {@link Command.Category#test(CommandEvent)}
+         * {@link Category#test(CommandEvent)}
          * returns {@code false}.
          *
          * @param name      The name of the Category
@@ -564,11 +565,11 @@ public abstract class Command {
         }
 
         /**
-         * A Command Category containing a name, a {@link java.util.function.Predicate},
+         * A Command Category containing a name, a {@link Predicate},
          * and a failure response.
          *
          * <p>The command will be terminated if
-         * {@link Command.Category#test(CommandEvent)}
+         * {@link Category#test(CommandEvent)}
          * returns {@code false}, and the failure response will be sent.
          *
          * @param name         The name of the Category
@@ -600,7 +601,7 @@ public abstract class Command {
         }
 
         /**
-         * Runs a test of the provided {@link java.util.function.Predicate}.
+         * Runs a test of the provided {@link Predicate}.
          *
          * @param event The {@link CommandEvent CommandEvent}
          *              that was called when this method is invoked
@@ -629,7 +630,7 @@ public abstract class Command {
     }
 
     /**
-     * A series of {@link java.lang.Enum Enum}s used for defining the scope size for a
+     * A series of {@link Enum Enum}s used for defining the scope size for a
      * {@link Command Command}'s cooldown.
      *
      * <p>The purpose for these values is to allow easy, refined, and generally convenient keys
@@ -644,17 +645,17 @@ public abstract class Command {
      * be called in a non-guild environment, causing errors internally.
      * <br>To prevent this, all of the values that contain "{@code GUILD}" in their name default
      * to their "{@code CHANNEL}" counterparts when commands using them are called outside of a
-     * {@link net.dv8tion.jda.api.entities.Guild Guild} environment.
+     * {@link Guild Guild} environment.
      * <ul>
-     *     <li>{@link Command.CooldownScope#GUILD GUILD} defaults to
-     *     {@link Command.CooldownScope#CHANNEL CHANNEL}.</li>
-     *     <li>{@link Command.CooldownScope#USER_GUILD USER_GUILD} defaults to
-     *     {@link Command.CooldownScope#USER_CHANNEL USER_CHANNEL}.</li>
+     *     <li>{@link CooldownScope#GUILD GUILD} defaults to
+     *     {@link CooldownScope#CHANNEL CHANNEL}.</li>
+     *     <li>{@link CooldownScope#USER_GUILD USER_GUILD} defaults to
+     *     {@link CooldownScope#USER_CHANNEL USER_CHANNEL}.</li>
      * </ul>
      * <p>
      * These are effective across a single instance of JDA, and not multiple
      * ones, save when multiple shards run on a single JVM and under a
-     * {@link net.dv8tion.jda.api.sharding.ShardManager ShardManager}.
+     * {@link ShardManager ShardManager}.
      * <br>There is no shard magic, and no guarantees for a 100% "global"
      * cooldown, unless all shards of the bot run under the same ShardManager,
      * and/or via some external system unrelated to JDA-Utilities.
@@ -665,7 +666,7 @@ public abstract class Command {
      */
     public enum CooldownScope {
         /**
-         * Applies the cooldown to the calling {@link net.dv8tion.jda.api.entities.User User} across all
+         * Applies the cooldown to the calling {@link User User} across all
          * locations on this instance (IE: TextChannels, PrivateChannels, etc).
          *
          * <p>The key for this is generated in the format
@@ -673,7 +674,7 @@ public abstract class Command {
         USER("U:%d", ""),
 
         /**
-         * Applies the cooldown to the {@link net.dv8tion.jda.api.entities.MessageChannel MessageChannel} the
+         * Applies the cooldown to the {@link MessageChannel MessageChannel} the
          * command is called in.
          *
          * <p>The key for this is generated in the format
@@ -681,31 +682,31 @@ public abstract class Command {
         CHANNEL("C:%d", "in this channel"),
 
         /**
-         * Applies the cooldown to the calling {@link net.dv8tion.jda.api.entities.User User} local to the
-         * {@link net.dv8tion.jda.api.entities.MessageChannel MessageChannel} the command is called in.
+         * Applies the cooldown to the calling {@link User User} local to the
+         * {@link MessageChannel MessageChannel} the command is called in.
          *
          */
         USER_CHANNEL("U:%d|C:%d", "in this channel"),
 
         /**
-         * Applies the cooldown to the {@link net.dv8tion.jda.api.entities.Guild Guild} the command is called in.
+         * Applies the cooldown to the {@link Guild Guild} the command is called in.
          *
          * <p>The key for this is generated in the format
-         * <p><b>NOTE:</b> This will automatically default back to {@link Command.CooldownScope#CHANNEL CooldownScope.CHANNEL}
+         * <p><b>NOTE:</b> This will automatically default back to {@link CooldownScope#CHANNEL CooldownScope.CHANNEL}
          * when called in a private channel.  This is done in order to prevent internal
-         * {@link java.lang.NullPointerException NullPointerException}s from being thrown while generating cooldown keys!
+         * {@link NullPointerException NullPointerException}s from being thrown while generating cooldown keys!
          */
         GUILD("G:%d", "in this server"),
 
         /**
-         * Applies the cooldown to the calling {@link net.dv8tion.jda.api.entities.User User} local to the
-         * {@link net.dv8tion.jda.api.entities.Guild Guild} the command is called in.
+         * Applies the cooldown to the calling {@link User User} local to the
+         * {@link Guild Guild} the command is called in.
          *
          * <p>The key for this is generated in the format
          *
-         * <p><b>NOTE:</b> This will automatically default back to {@link Command.CooldownScope#CHANNEL CooldownScope.CHANNEL}
+         * <p><b>NOTE:</b> This will automatically default back to {@link CooldownScope#CHANNEL CooldownScope.CHANNEL}
          * when called in a private channel. This is done in order to prevent internal
-         * {@link java.lang.NullPointerException NullPointerException}s from being thrown while generating cooldown keys!
+         * {@link NullPointerException NullPointerException}s from being thrown while generating cooldown keys!
          */
         USER_GUILD("U:%d|G:%d", "in this server"),
 
@@ -714,22 +715,22 @@ public abstract class Command {
          *
          * <p>The key for this is generated in the format
 
-         * <p><b>NOTE:</b> This will automatically default back to {@link Command.CooldownScope#GLOBAL CooldownScope.GLOBAL}
-         * when {@link net.dv8tion.jda.api.JDA#getShardInfo() JDA#getShardInfo()} returns {@code null}.
-         * This is done in order to prevent internal {@link java.lang.NullPointerException NullPointerException}s
+         * <p><b>NOTE:</b> This will automatically default back to {@link CooldownScope#GLOBAL CooldownScope.GLOBAL}
+         * when {@link JDA#getShardInfo() JDA#getShardInfo()} returns {@code null}.
+         * This is done in order to prevent internal {@link NullPointerException NullPointerException}s
          * from being thrown while generating cooldown keys!
          */
         SHARD("S:%d", "on this shard"),
 
         /**
-         * Applies the cooldown to the calling {@link net.dv8tion.jda.api.entities.User User} on the Shard
+         * Applies the cooldown to the calling {@link User User} on the Shard
          * the command is called on.
          *
          * <p>The key for this is generated in the format
          *
-         * <p><b>NOTE:</b> This will automatically default back to {@link Command.CooldownScope#USER CooldownScope.USER}
-         * when {@link net.dv8tion.jda.api.JDA#getShardInfo() JDA#getShardInfo()} returns {@code null}.
-         * This is done in order to prevent internal {@link java.lang.NullPointerException NullPointerException}s
+         * <p><b>NOTE:</b> This will automatically default back to {@link CooldownScope#USER CooldownScope.USER}
+         * when {@link JDA#getShardInfo() JDA#getShardInfo()} returns {@code null}.
+         * This is done in order to prevent internal {@link NullPointerException NullPointerException}s
          * from being thrown while generating cooldown keys!
          */
         USER_SHARD("U:%d|S:%d", "on this shard"),
@@ -738,7 +739,7 @@ public abstract class Command {
          * Applies this cooldown globally.
          *
          * <p>As this implies: the command will be unusable on the instance of JDA in all types of
-         * {@link net.dv8tion.jda.api.entities.MessageChannel MessageChannel}s until the cooldown has ended.
+         * {@link MessageChannel MessageChannel}s until the cooldown has ended.
          *
          * <p>The key for this is {@code <command-name>|globally}
          */
@@ -757,7 +758,7 @@ public abstract class Command {
         }
 
         String genKey(String name, long idOne, long idTwo) {
-            return name + "|" + (this.equals(GLOBAL) ? format :
+            return name + "|" + (this == GLOBAL ? format :
                 (idTwo == -1 ? String.format(format, idOne) : String.format(format, idOne, idTwo) ) );
         }
     }

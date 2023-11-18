@@ -68,7 +68,7 @@ public class AboutCommand extends Command {
                 .append(JDAInfo.VERSION).append(")\nType `").append(event.getClient().getTextualPrefix()).append(event.getClient().getHelpWord())
                 .append("` to see my commands!").append(join || inv ? invline : "").append("\n\nSome of my features include: ```css");
         for (String feature : features)
-            descr.append("\n").append(event.getClient().getSuccess().startsWith("<") ? REPLACEMENT_ICON : event.getClient().getSuccess()).append(" ").append(feature);
+            descr.append("\n").append(!event.getClient().getSuccess().isEmpty() && event.getClient().getSuccess().charAt(0) == '<' ? REPLACEMENT_ICON : event.getClient().getSuccess()).append(" ").append(feature);
         descr.append(" ```");
         builder.setDescription(descr);
         if (event.getJDA().getShardInfo() == null) {

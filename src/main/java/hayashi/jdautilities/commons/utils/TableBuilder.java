@@ -42,14 +42,12 @@ import java.util.Objects;
 public class TableBuilder {
 
     private String[][] values;
-    private String[] headers;
-    private String[] rowNames;
+    private String[] headers, rowNames;
     private Borders borders;
     private String tableName = "";
     private Alignment alignment = Alignment.CENTER;
     private int padding = 1;
-    private boolean codeblock = false;
-    private boolean frame = false;
+    private boolean codeblock, frame;
     private boolean autoAdjust = true;
 
     /**
@@ -284,7 +282,7 @@ public class TableBuilder {
                 newValueBuilder.append(" ".repeat(Math.max(0, adjustment)));
                 break;
             case CENTER:
-                boolean even = adjustment % 2 == 0;
+                boolean odd = adjustment % 2 != 0;
                 int half = adjustment / 2;
                 // append one half of black spaces
                 newValueBuilder.append(" ".repeat(Math.max(0, half)));
@@ -294,7 +292,7 @@ public class TableBuilder {
                 // append other half of blank spaces
                 newValueBuilder.append(" ".repeat(Math.max(0, half)));
 
-                if (!even) // if the number wasn't event, one blank space is still missing
+                if (odd) // if the number wasn't event, one blank space is still missing
                     newValueBuilder.append(" ");
                 break;
         }

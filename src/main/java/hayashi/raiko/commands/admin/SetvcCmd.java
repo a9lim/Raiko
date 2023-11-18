@@ -43,7 +43,7 @@ public class SetvcCmd extends AdminCommand {
             return;
         }
         Settings s = event.getClient().getSettingsFor(event.getGuild());
-        if (event.getArgs().equalsIgnoreCase("none")) {
+        if ("none".equalsIgnoreCase(event.getArgs())) {
             s.setVoiceChannel(null);
             event.reply(event.getClient().getSuccess() + " Music can now be played in any channel");
             return;

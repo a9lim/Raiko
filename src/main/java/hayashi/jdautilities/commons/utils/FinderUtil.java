@@ -65,7 +65,8 @@ import java.util.stream.Collectors;
  * @since 1.3
  */
 @SuppressWarnings("Duplicates")
-public final class FinderUtil {
+public enum FinderUtil {
+    ;
     public final static Pattern DISCORD_ID = Pattern.compile("\\d{17,20}"); // ID
     public final static Pattern FULL_USER_REF = Pattern.compile("(\\S.{0,30}\\S)\\s*#(\\d{4})"); // $1 -> username, $2 -> discriminator
     public final static Pattern USER_MENTION = Pattern.compile("<@!?(\\d{17,20})>"); // $1 -> ID
@@ -750,7 +751,4 @@ public final class FinderUtil {
         return Collections.unmodifiableList(contains);
     }
 
-    // Prevent instantiation
-    private FinderUtil() {
-    }
 }

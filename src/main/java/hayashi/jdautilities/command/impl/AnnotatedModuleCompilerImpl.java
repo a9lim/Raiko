@@ -65,7 +65,7 @@ public class AnnotatedModuleCompilerImpl implements AnnotatedModuleCompiler {
         return list;
     }
 
-    private Command compileMethod(Object o, Method method) throws MalformedParametersException {
+    private static Command compileMethod(Object o, Method method) throws MalformedParametersException {
         JDACommand properties = method.getAnnotation(JDACommand.class);
         if (properties == null)
             throw new IllegalArgumentException("Method named " + method.getName() + " is not annotated with JDACommand!");

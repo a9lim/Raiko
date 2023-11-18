@@ -44,8 +44,7 @@ import net.dv8tion.jda.internal.utils.Checks;
  */
 public class ButtonMenu extends Menu {
     private final Color color;
-    private final String text;
-    private final String description;
+    private final String text, description;
     private final List<String> choices;
     private final Consumer<ReactionEmote> action;
     private final Consumer<Message> finalAction;

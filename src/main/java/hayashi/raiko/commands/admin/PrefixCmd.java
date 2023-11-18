@@ -39,7 +39,7 @@ public class PrefixCmd extends AdminCommand {
         }
 
         Settings s = event.getClient().getSettingsFor(event.getGuild());
-        if (event.getArgs().equalsIgnoreCase("none")) {
+        if ("none".equalsIgnoreCase(event.getArgs())) {
             s.setPrefix(null);
             event.replySuccess("Prefix cleared.");
         } else {

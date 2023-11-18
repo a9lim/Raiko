@@ -26,7 +26,7 @@ public class MoveTrackCmd extends MusicCommand {
     public void doCommand(CommandEvent event) {
         int from, to;
 
-        String[] parts = event.getArgs().split("\\s+", 2);
+        String[] parts = COMPILE.split(event.getArgs(), 2);
         try {
             // Validate the args
             from = Integer.parseInt(parts[0]);

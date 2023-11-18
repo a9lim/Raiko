@@ -22,13 +22,10 @@ import hayashi.raiko.audio.RequestMetadata;
 import hayashi.raiko.commands.MusicCommand;
 
 /**
- *
  * @author John Grosh <john.a.grosh@gmail.com>
  */
-public class SkipCmd extends MusicCommand
-{
-    public SkipCmd(Bot bot)
-    {
+public class SkipCmd extends MusicCommand {
+    public SkipCmd(Bot bot) {
         super(bot);
         this.name = "skip";
         this.help = "skips songs";
@@ -38,21 +35,20 @@ public class SkipCmd extends MusicCommand
     }
 
     @Override
-    public void doCommand(CommandEvent event) 
-    {
+    public void doCommand(CommandEvent event) {
         int index;
-        AudioHandler handler = (AudioHandler)event.getGuild().getAudioManager().getSendingHandler();
+        AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
         try {
             index = Integer.parseInt(event.getArgs());
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             RequestMetadata rm = handler.getRequestMetadata();
-            event.reply(event.getClient().getSuccess()+" Skipped **"+handler.getPlayer().getPlayingTrack().getInfo().title
-                    +"** "+(rm.getOwner() == 0L ? "(autoplay)" : "(requested by **" + rm.user.username + "**)"));
+            event.reply(event.getClient().getSuccess() + " Skipped **" + handler.getPlayer().getPlayingTrack().getInfo().title
+                    + "** " + (rm.getOwner() == 0L ? "(autoplay)" : "(requested by **" + rm.user.username + "**)"));
             handler.getPlayer().stopTrack();
             return;
         }
-        if(index<1 || index>handler.getQueue().size()) {
-            event.reply(event.getClient().getError()+" Position must be a valid integer between 1 and "+handler.getQueue().size()+"!");
+        if (index < 1 || index > handler.getQueue().size()) {
+            event.reply(event.getClient().getError() + " Position must be a valid integer between 1 and " + handler.getQueue().size() + "!");
             return;
         }
         handler.getQueue().skip(index - 1);

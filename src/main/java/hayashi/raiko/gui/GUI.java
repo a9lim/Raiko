@@ -32,7 +32,6 @@ public class GUI extends JFrame {
     private final Bot bot;
 
     public GUI(Bot bot) {
-        super();
         this.bot = bot;
         console = new ConsolePanel();
     }
