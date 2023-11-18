@@ -3,16 +3,15 @@ import hayashi.jdautilities.command.Command;
 import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
 import hayashi.raiko.ChatBot;
+import hayashi.raiko.commands.ChatCommand;
 import okhttp3.*;
 import org.json.JSONObject;
 import java.util.concurrent.TimeUnit;
 
-public class ChatCmd extends Command {
-
-    private final ChatBot chatBot;
+public class ChatCmd extends ChatCommand {
 
     public ChatCmd(ChatBot chatBot, Bot bot) {
-        this.chatBot = chatBot;
+        super(chatBot);
         this.name = "chat";
         this.help = "talk to raiko";
         this.arguments = "<text>";

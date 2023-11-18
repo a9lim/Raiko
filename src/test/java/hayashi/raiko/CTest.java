@@ -10,19 +10,20 @@ import java.util.concurrent.TimeUnit;
 public class CTest {
     public static void main(String[] args) throws IOException {
 
-        BotConfig config = new BotConfig(new Prompt("Raiko"));
+        final BotConfig config = new BotConfig(new Prompt("Raiko"));
         config.load();
 
-        OkHttpClient client = new OkHttpClient.Builder()
+        final OkHttpClient client = new OkHttpClient.Builder()
                 .callTimeout(10, TimeUnit.MINUTES)
                 .readTimeout(10, TimeUnit.MINUTES)
                 .writeTimeout(10, TimeUnit.MINUTES)
                 .build();
 
-        String preprompt = "You are Raiko Horikawa, fun-loving, free spirited drum tsukumogami. You're having a chat with several humans!";
-        String apiKey = config.getCgpttoken();
-        MediaType mediaType = MediaType.parse("application/json");
-        Scanner s = new Scanner(System.in);
+        final String preprompt = "You are Raiko Horikawa, fun-loving, free spirited drum tsukumogami. You're having a chat with several humans!";
+        final String apiKey = config.getCgpttoken();
+        final MediaType mediaType = MediaType.parse("application/json");
+        final Scanner s = new Scanner(System.in);
+        String model = config.getModel();
 
         String jsonhead = "{\"model\": \"gpt-3.5-turbo-1106\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
         while (true) {
@@ -41,7 +42,7 @@ public class CTest {
                 System.out.println(reply);
             } catch (Exception e){
                 System.out.println(e.toString());
-                jsonhead = "{\"model\": \"gpt-3.5-turbo-1106\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
+                jsonhead = "{\"model\": \"" + model + "\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
                 System.out.println("huh");
             }
         }

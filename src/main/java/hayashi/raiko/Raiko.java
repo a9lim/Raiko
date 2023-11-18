@@ -83,7 +83,7 @@ public class Raiko {
         aboutCommand.setIsAuthor(false);
         aboutCommand.setReplacementCharacter("\uD83C\uDFB6"); // 🎶
 
-        ChatBot chatBot = new ChatBot(config.getCgpttoken());
+        ChatBot chatBot = new ChatBot(config.getCgpttoken(), config.getModel());
 
         // set up the command client
         CommandClientBuilder cb = new CommandClientBuilder()
@@ -129,7 +129,8 @@ public class Raiko {
                         new ShutdownCmd(bot),
 
                         new ChatCmd(chatBot,bot),
-                        new ClearChatCmd(chatBot,bot)
+                        new ClearChatCmd(chatBot,bot),
+                        new SetModelCmd(chatBot,bot)
                 );
         boolean nogame = false;
         if (config.getStatus() != OnlineStatus.UNKNOWN)
