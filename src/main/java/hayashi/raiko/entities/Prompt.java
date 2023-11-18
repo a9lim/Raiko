@@ -22,8 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Prompt {
-    private final String title;
-    private final String noguiMessage;
+    private final String title, noguiMessage;
 
     private boolean nogui;
     private final boolean noprompt;
@@ -52,15 +51,9 @@ public class Prompt {
         if (nogui) {
             Logger log = LoggerFactory.getLogger(context);
             switch (level) {
-                case WARNING:
-                    log.warn(message);
-                    break;
-                case ERROR:
-                    log.error(message);
-                    break;
-                default:
-                    log.info(message);
-                    break;
+                case WARNING -> log.warn(message);
+                case ERROR -> log.error(message);
+                default -> log.info(message);
             }
             return;
         }
@@ -88,12 +81,11 @@ public class Prompt {
                 System.out.println(content);
                 if (scanner.hasNextLine())
                     return scanner.nextLine();
-                return null;
             } catch (Exception e) {
                 alert(Level.ERROR, title, "Unable to read input from command line.");
                 e.printStackTrace();
-                return null;
             }
+            return null;
         }
         try {
             return JOptionPane.showInputDialog(null, content, title, JOptionPane.QUESTION_MESSAGE);
