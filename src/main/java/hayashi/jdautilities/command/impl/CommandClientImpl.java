@@ -540,8 +540,8 @@ public class CommandClientImpl implements CommandClient, EventListener {
             if (linkMap.contains(event.getMessageIdLong())) {
                 Set<Message> messages = linkMap.get(event.getMessageIdLong());
                 if (messages.size() > 1 && event.getGuild().getSelfMember()
-                    .hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE))
-                    event.getChannel().asGuildMessageChannel().deleteMessages(messages).queue(unused -> {
+                    .hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_MANAGE))
+                    event.getChannel().asTextChannel().deleteMessages(messages).queue(unused -> {
                     }, ignored -> {
                     });
                 else if (!messages.isEmpty())

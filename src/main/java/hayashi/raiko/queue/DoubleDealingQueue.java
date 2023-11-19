@@ -6,7 +6,15 @@ package hayashi.raiko.queue;
 import java.util.*;
 
 public class DoubleDealingQueue<T extends Queueable> {
-    private final Deque<T> deque = new ArrayDeque<>();
+    private final Deque<T> deque;
+
+    public DoubleDealingQueue(){
+         deque = new ArrayDeque<>();
+    }
+
+    public DoubleDealingQueue(int i){
+        deque = new ArrayDeque<>(i);
+    }
 
     public void add(T item) {
         deque.add(item);
@@ -16,7 +24,7 @@ public class DoubleDealingQueue<T extends Queueable> {
         deque.push(item);
     }
 
-    public void addAt(int i, T item) {
+    public void add(int i, T item) {
         if (i >= deque.size()) {
             deque.add(item);
             return;
@@ -37,7 +45,7 @@ public class DoubleDealingQueue<T extends Queueable> {
         return deque.size();
     }
 
-    public T pull() {
+    public T pop() {
         return deque.pop();
     }
 
@@ -118,6 +126,11 @@ public class DoubleDealingQueue<T extends Queueable> {
             deque.pop();
     }
 
+    public void backskip(int number) {
+        while (--number > 0)
+            deque.removeLast();
+    }
+
     public T moveItem(int from, int to) {
         int i;
         ArrayDeque<T> helper = new ArrayDeque<>(to);
@@ -157,5 +170,12 @@ public class DoubleDealingQueue<T extends Queueable> {
         deque.push(A);
         for (T t : helper)
             deque.push(t);
+    }
+
+    public String toString(){
+        StringBuilder out = new StringBuilder();
+        for(T t: deque)
+            out.append(t);
+        return out.toString();
     }
 }

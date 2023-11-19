@@ -1,7 +1,7 @@
 package hayashi.raiko.commands.chat;
 import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
-import hayashi.raiko.ChatBot;
+import hayashi.raiko.chat.ChatBot;
 import hayashi.raiko.commands.ChatCommand;
 
 public class ChatCmd extends ChatCommand {
@@ -15,6 +15,6 @@ public class ChatCmd extends ChatCommand {
     }
     @Override
     protected void execute(CommandEvent event) {
-        event.reply(chatBot.chat(event.getArgs()));
+        event.reply(chatBot.chat(event.getArgs(), event.getAuthor().getIdLong()));
     }
 }

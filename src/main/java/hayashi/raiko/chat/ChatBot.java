@@ -1,6 +1,8 @@
-package hayashi.raiko;
+package hayashi.raiko.chat;
+import hayashi.raiko.queue.DoubleDealingQueue;
 import okhttp3.*;
 import org.json.JSONObject;
+
 import java.util.concurrent.TimeUnit;
 
 //limit ought to be 12
@@ -12,29 +14,35 @@ public class ChatBot {
                 .writeTimeout(10, TimeUnit.MINUTES)
                 .build();
     private static final String preprompt = "You are Raiko Horikawa, fun-loving, free spirited drum tsukumogami. You're having a chat with several humans!";
-    private String jsonhead;
+    private String head;
+    private static final int capacity = 10;
+    private final DoubleDealingQueue<QueuedChat> chathist = new DoubleDealingQueue<>(capacity);
+    private String jsonhead = "";
     private boolean cheap;
     private final String apiKey;
     private final MediaType mediaType = MediaType.parse("application/json");
-    public ChatBot(String apik) {
+    public ChatBot(String apik, boolean c) {
         apiKey = apik;
-        cheap = false;
-        clear();
+        cheap = c;
+        clearHead();
     }
 
-    public String chat(String s) {
+    public String chat(String s, long l) {
         jsonhead += "{\"role\": \"user\", \"content\": \"" + s.replace("\n","\\n").replace("\"", "\\\"") + "\"}";
+        if(chathist.size() == capacity)
+            chathist.pop();
+        chathist.add(new QueuedChat(jsonhead,l));
         try {
             String reply = (new JSONObject(client.newCall(new Request.Builder()
                             .url("https://api.openai.com/v1/chat/completions")
-                            .post(RequestBody.create(jsonhead + "]}",mediaType))
+                            .post(RequestBody.create(head + chathist + "]}",mediaType))
                             .addHeader("Authorization", "Bearer " + apiKey)
                             .addHeader("Content-Type", "application/json")
                             .build())
                     .execute().body().string())
                     .getJSONArray("choices").getJSONObject(0)
                     .getJSONObject("message").getString("content"));
-            jsonhead += ", {\"role\": \"assistant\", \"content\": \"" + reply.replace("\n","\\n").replace("\"", "\\\"") + "\"}, ";
+            jsonhead = ", {\"role\": \"assistant\", \"content\": \"" + reply.replace("\n","\\n").replace("\"", "\\\"") + "\"}, ";
             return reply;
         } catch (Exception e){
             System.out.println(e);
@@ -43,11 +51,24 @@ public class ChatBot {
         }
     }
     public void clear(){
-        jsonhead = "{\"model\": \"" + (cheap ? "gpt-3.5-turbo-1106" : "gpt-4-1106-preview") + "\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
+        chathist.clear();
+    }
+
+    public void remove(int i){
+        chathist.remove(capacity - i);
+    }
+
+    public void rewind(int i){
+        chathist.backskip(i);
     }
 
     public void toggleModel(){
         cheap = !cheap;
-        clear();
+        clearHead();
+    }
+
+    public void clearHead(){
+        head = "{\"model\": \"" + (cheap ? "gpt-3.5-turbo-1106" : "gpt-4-1106-preview") +
+                "\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
     }
 }

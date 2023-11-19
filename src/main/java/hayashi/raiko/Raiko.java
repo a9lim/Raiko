@@ -17,6 +17,7 @@ package hayashi.raiko;
 
 import hayashi.jdautilities.command.CommandClientBuilder;
 import hayashi.jdautilities.commons.waiter.EventWaiter;
+import hayashi.raiko.chat.ChatBot;
 import hayashi.raiko.commands.chat.ChatCmd;
 import hayashi.raiko.commands.chat.ClearChatCmd;
 import hayashi.raiko.commands.chat.ToggleModelCmd;
@@ -80,9 +81,7 @@ public class Raiko {
         aboutCommand.setIsAuthor(false);
         aboutCommand.setReplacementCharacter("\uD83C\uDFB6"); // 🎶
 
-        ChatBot chatBot = new ChatBot(config.getCgpttoken());
-        if(config.getModel())
-            chatBot.toggleModel();
+        ChatBot chatBot = new ChatBot(config.getCgpttoken(), config.getModel());
 
         // set up the command client
         CommandClientBuilder cb = new CommandClientBuilder()
