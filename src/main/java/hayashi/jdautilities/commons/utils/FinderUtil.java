@@ -26,8 +26,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("Duplicates")
-public enum FinderUtil {
-    ;
+public class FinderUtil {
     public final static Pattern DISCORD_ID = Pattern.compile("\\d{17,20}"); // ID
     public final static Pattern FULL_USER_REF = Pattern.compile("(\\S.{0,30}\\S)\\s*#(\\d{4})"); // $1 -> username, $2 -> discriminator
     public final static Pattern USER_MENTION = Pattern.compile("<@!?(\\d{17,20})>"); // $1 -> ID
@@ -55,11 +54,9 @@ public enum FinderUtil {
             if (user != null)
                 return Collections.singletonList(user);
         } else if (fullRefMatch.matches()) {
-            String lowerName = fullRefMatch.group(1).toLowerCase();
-            String discrim = fullRefMatch.group(2);
             List<User> users = (manager != null ? manager.getUserCache() : jda.getUserCache())
-                .stream().filter(user -> user.getName().toLowerCase().equals(lowerName)
-                    && user.getDiscriminator().equals(discrim))
+                .stream().filter(user -> user.getName().equalsIgnoreCase(fullRefMatch.group(1))
+                    && user.getDiscriminator().equals(fullRefMatch.group(2)))
                 .collect(Collectors.toList());
             if (!users.isEmpty())
                 return users;
@@ -160,11 +157,9 @@ public enum FinderUtil {
             if (member != null)
                 return Collections.singletonList(member);
         } else if (fullRefMatch.matches()) {
-            String lowerName = fullRefMatch.group(1).toLowerCase();
-            String discrim = fullRefMatch.group(2);
             List<Member> members = guild.getMemberCache().stream()
-                .filter(member -> member.getUser().getName().toLowerCase().equals(lowerName)
-                    && member.getUser().getDiscriminator().equals(discrim))
+                .filter(member -> member.getUser().getName().equalsIgnoreCase(fullRefMatch.group(1))
+                    && member.getUser().getDiscriminator().equals(fullRefMatch.group(2)))
                 .collect(Collectors.toList());
             if (!members.isEmpty())
                 return members;

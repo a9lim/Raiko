@@ -29,10 +29,10 @@ public abstract class MusicCommand extends Command {
     protected final Bot bot;
     protected boolean bePlaying, beListening;
 
-    public MusicCommand(Bot bot) {
-        this.bot = bot;
-        this.guildOnly = true;
-        this.category = new Category("Music");
+    public MusicCommand(Bot b) {
+        bot = b;
+        guildOnly = true;
+        category = new Category("Music");
     }
 
     @Override

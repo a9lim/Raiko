@@ -16,9 +16,9 @@ public class ChatBot {
     private boolean cheap;
     private final String apiKey;
     private final MediaType mediaType = MediaType.parse("application/json");
-    public ChatBot(String apiKey) {
-        this.apiKey = apiKey;
-        this.cheap = false;
+    public ChatBot(String apik) {
+        apiKey = apik;
+        cheap = false;
         clear();
     }
 
@@ -47,7 +47,7 @@ public class ChatBot {
     }
 
     public void toggleModel(){
-        this.cheap = !cheap;
+        cheap = !cheap;
         clear();
     }
 }

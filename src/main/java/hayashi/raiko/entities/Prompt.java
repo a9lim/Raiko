@@ -36,11 +36,11 @@ public class Prompt {
         this(title, noguiMessage, "true".equalsIgnoreCase(System.getProperty("nogui")), "true".equalsIgnoreCase(System.getProperty("noprompt")));
     }
 
-    public Prompt(String title, String noguiMessage, boolean nogui, boolean noprompt) {
-        this.title = title;
-        this.noguiMessage = noguiMessage == null ? "Switching to nogui mode. You can manually start in nogui mode by including the -Dnogui=true flag." : noguiMessage;
-        this.nogui = nogui;
-        this.noprompt = noprompt;
+    public Prompt(String s, String ng, boolean b, boolean b1) {
+        title = s;
+        noguiMessage = ng == null ? "Switching to nogui mode. You can manually start in nogui mode by including the -Dnogui=true flag." : ng;
+        nogui = b;
+        noprompt = b1;
     }
 
     public boolean isNoGUI() {
@@ -58,12 +58,12 @@ public class Prompt {
             return;
         }
         try {
-            int option = switch (level) {
-                case INFO -> JOptionPane.INFORMATION_MESSAGE;
-                case WARNING -> JOptionPane.WARNING_MESSAGE;
-                case ERROR -> JOptionPane.ERROR_MESSAGE;
-            };
-            JOptionPane.showMessageDialog(null, "<html><body><p style='width: 400px;'>" + message, title, option);
+            JOptionPane.showMessageDialog(null, "<html><body><p style='width: 400px;'>" + message, title,
+                    switch (level) {
+                        case INFO -> JOptionPane.INFORMATION_MESSAGE;
+                        case WARNING -> JOptionPane.WARNING_MESSAGE;
+                        case ERROR -> JOptionPane.ERROR_MESSAGE;
+                    });
         } catch (Exception e) {
             nogui = true;
             alert(Level.WARNING, context, noguiMessage);

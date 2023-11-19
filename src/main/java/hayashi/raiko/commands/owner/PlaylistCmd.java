@@ -29,14 +29,14 @@ public class PlaylistCmd extends OwnerCommand {
     private static final Pattern PATTERN = Pattern.compile("[*?|\\/\":<>]");
     private final Bot bot;
 
-    public PlaylistCmd(Bot bot) {
-        this.bot = bot;
-        this.guildOnly = false;
-        this.name = "playlist";
-        this.arguments = "<append|delete|make|setdefault>";
-        this.help = "playlist management";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.children = new OwnerCommand[]{
+    public PlaylistCmd(Bot b) {
+        bot = b;
+        guildOnly = false;
+        name = "playlist";
+        arguments = "<append|delete|make|setdefault>";
+        help = "playlist management";
+        aliases = bot.getConfig().getAliases(name);
+        children = new OwnerCommand[]{
                 new ListCmd(),
                 new AppendlistCmd(),
                 new DeletelistCmd(),
@@ -48,7 +48,7 @@ public class PlaylistCmd extends OwnerCommand {
     @Override
     public void execute(CommandEvent event) {
         StringBuilder builder = new StringBuilder(event.getClient().getWarning() + " Playlist Management Commands:\n");
-        for (Command cmd : this.children)
+        for (Command cmd : children)
             builder.append("\n`").append(event.getClient().getPrefix()).append(name).append(" ").append(cmd.getName())
                     .append(" ").append(cmd.getArguments() == null ? "" : cmd.getArguments()).append("` - ").append(cmd.getHelp());
         event.reply(builder.toString());
@@ -56,11 +56,11 @@ public class PlaylistCmd extends OwnerCommand {
 
     public class MakelistCmd extends OwnerCommand {
         public MakelistCmd() {
-            this.name = "make";
-            this.aliases = new String[]{"create"};
-            this.help = "makes a new playlist";
-            this.arguments = "<name>";
-            this.guildOnly = false;
+            name = "make";
+            aliases = new String[]{"create"};
+            help = "makes a new playlist";
+            arguments = "<name>";
+            guildOnly = false;
         }
 
         @Override
@@ -86,11 +86,11 @@ public class PlaylistCmd extends OwnerCommand {
 
     public class DeletelistCmd extends OwnerCommand {
         public DeletelistCmd() {
-            this.name = "delete";
-            this.aliases = new String[]{"remove"};
-            this.help = "deletes an existing playlist";
-            this.arguments = "<name>";
-            this.guildOnly = false;
+            name = "delete";
+            aliases = new String[]{"remove"};
+            help = "deletes an existing playlist";
+            arguments = "<name>";
+            guildOnly = false;
         }
 
         @Override
@@ -111,11 +111,11 @@ public class PlaylistCmd extends OwnerCommand {
 
     public class AppendlistCmd extends OwnerCommand {
         public AppendlistCmd() {
-            this.name = "append";
-            this.aliases = new String[]{"add"};
-            this.help = "appends songs to an existing playlist";
-            this.arguments = "<name> <URL> | <URL> | ...";
-            this.guildOnly = false;
+            name = "append";
+            aliases = new String[]{"add"};
+            help = "appends songs to an existing playlist";
+            arguments = "<name> <URL> | <URL> | ...";
+            guildOnly = false;
         }
 
         @Override
@@ -152,19 +152,19 @@ public class PlaylistCmd extends OwnerCommand {
     public static class DefaultlistCmd extends AutoplaylistCmd {
         public DefaultlistCmd(Bot bot) {
             super(bot);
-            this.name = "setdefault";
-            this.aliases = new String[]{"default"};
-            this.arguments = "<playlistname|NONE>";
-            this.guildOnly = true;
+            name = "setdefault";
+            aliases = new String[]{"default"};
+            arguments = "<playlistname|NONE>";
+            guildOnly = true;
         }
     }
 
     public class ListCmd extends OwnerCommand {
         public ListCmd() {
-            this.name = "all";
-            this.aliases = new String[]{"available", "list"};
-            this.help = "lists all available playlists";
-            this.guildOnly = true;
+            name = "all";
+            aliases = new String[]{"available", "list"};
+            help = "lists all available playlists";
+            guildOnly = true;
         }
 
         @Override

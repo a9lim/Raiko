@@ -32,12 +32,12 @@ public abstract class Menu {
     protected final long timeout;
     protected final TimeUnit unit;
 
-    protected Menu(EventWaiter waiter, Set<User> users, Set<Role> roles, long timeout, TimeUnit unit) {
-        this.waiter = waiter;
-        this.users = users;
-        this.roles = roles;
-        this.timeout = timeout;
-        this.unit = unit;
+    protected Menu(EventWaiter w, Set<User> u, Set<Role> r, long t, TimeUnit unidad) {
+        waiter = w;
+        users = u;
+        roles = r;
+        timeout = t;
+        unit = unidad;
     }
 
     public abstract void display(MessageChannel channel);
@@ -69,36 +69,36 @@ public abstract class Menu {
 
         public abstract V build();
 
-        public final T setEventWaiter(EventWaiter waiter) {
-            this.waiter = waiter;
+        public final T setEventWaiter(EventWaiter w) {
+            waiter = w;
             return (T) this;
         }
 
-        public final T addUsers(User... users) {
-            this.users.addAll(Arrays.asList(users));
+        public final T addUsers(User... u) {
+            users.addAll(Arrays.asList(u));
             return (T) this;
         }
 
-        public final T setUsers(User... users) {
-            this.users.clear();
-            this.users.addAll(Arrays.asList(users));
+        public final T setUsers(User... u) {
+            users.clear();
+            users.addAll(Arrays.asList(u));
             return (T) this;
         }
 
-        public final T addRoles(Role... roles) {
-            this.roles.addAll(Arrays.asList(roles));
+        public final T addRoles(Role... r) {
+            roles.addAll(Arrays.asList(r));
             return (T) this;
         }
 
-        public final T setRoles(Role... roles) {
-            this.roles.clear();
-            this.roles.addAll(Arrays.asList(roles));
+        public final T setRoles(Role... r) {
+            roles.clear();
+            roles.addAll(Arrays.asList(r));
             return (T) this;
         }
 
-        public final T setTimeout(long timeout, TimeUnit unit) {
-            this.timeout = timeout;
-            this.unit = unit;
+        public final T setTimeout(long t, TimeUnit u) {
+            timeout = t;
+            unit = u;
             return (T) this;
         }
     }

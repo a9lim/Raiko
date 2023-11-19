@@ -40,14 +40,14 @@ public class SearchCmd extends MusicCommand {
 
     public SearchCmd(Bot bot) {
         super(bot);
-        this.searchingEmoji = bot.getConfig().getSearching();
-        this.name = "search";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.arguments = "<query>";
-        this.help = "searches Youtube for a provided query";
-        this.beListening = true;
-        this.bePlaying = false;
-        this.botPermissions = new Permission[]{Permission.MESSAGE_EMBED_LINKS};
+        searchingEmoji = bot.getConfig().getSearching();
+        name = "search";
+        aliases = bot.getConfig().getAliases(name);
+        arguments = "<query>";
+        help = "searches Youtube for a provided query";
+        beListening = true;
+        bePlaying = false;
+        botPermissions = new Permission[]{Permission.MESSAGE_EMBED_LINKS};
         builder = new OrderedMenu.Builder()
                 .allowTextInput(true)
                 .useNumbers()
@@ -70,9 +70,9 @@ public class SearchCmd extends MusicCommand {
         private final Message m;
         private final CommandEvent event;
 
-        private ResultHandler(Message m, CommandEvent event) {
-            this.m = m;
-            this.event = event;
+        private ResultHandler(Message mess, CommandEvent e) {
+            m = mess;
+            event = e;
         }
 
         @Override

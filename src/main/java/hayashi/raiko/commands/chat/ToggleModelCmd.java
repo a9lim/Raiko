@@ -1,4 +1,4 @@
-package hayashi.raiko.commands.general;
+package hayashi.raiko.commands.chat;
 import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
 import hayashi.raiko.ChatBot;
@@ -8,9 +8,9 @@ public class ToggleModelCmd extends ChatCommand {
 
     public ToggleModelCmd(ChatBot chatBot, Bot bot) {
         super(chatBot);
-        this.name = "setmodel";
-        this.help = "toggle";
-        this.aliases = bot.getConfig().getAliases(this.name);
+        name = "setmodel";
+        help = "toggle";
+        aliases = bot.getConfig().getAliases(name);
     }
     @Override
     protected void execute(CommandEvent event) {

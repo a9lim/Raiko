@@ -20,9 +20,9 @@ import hayashi.raiko.Bot;
 public class SCSearchCmd extends SearchCmd {
     public SCSearchCmd(Bot bot) {
         super(bot);
-        this.searchPrefix = "scsearch:";
-        this.name = "scsearch";
-        this.help = "searches Soundcloud for a provided query";
-        this.aliases = bot.getConfig().getAliases(this.name);
+        searchPrefix = "scsearch:";
+        name = "scsearch";
+        help = "searches Soundcloud for a provided query";
+        aliases = bot.getConfig().getAliases(name);
     }
 }

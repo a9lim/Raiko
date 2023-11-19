@@ -25,8 +25,8 @@ import net.dv8tion.jda.api.entities.Guild;
 public class PlayerManager extends DefaultAudioPlayerManager {
     private final Bot bot;
 
-    public PlayerManager(Bot bot) {
-        this.bot = bot;
+    public PlayerManager(Bot b) {
+        bot = b;
     }
 
     public void init() {

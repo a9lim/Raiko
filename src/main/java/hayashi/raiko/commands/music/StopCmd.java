@@ -23,10 +23,10 @@ import hayashi.raiko.commands.MusicCommand;
 public class StopCmd extends MusicCommand {
     public StopCmd(Bot bot) {
         super(bot);
-        this.name = "stop";
-        this.help = "stops the current song and clears the queue";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.bePlaying = false;
+        name = "stop";
+        help = "stops the current song and clears the queue";
+        aliases = bot.getConfig().getAliases(name);
+        bePlaying = false;
     }
 
     @Override

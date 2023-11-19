@@ -17,6 +17,9 @@ package hayashi.raiko;
 
 import hayashi.jdautilities.command.CommandClientBuilder;
 import hayashi.jdautilities.commons.waiter.EventWaiter;
+import hayashi.raiko.commands.chat.ChatCmd;
+import hayashi.raiko.commands.chat.ClearChatCmd;
+import hayashi.raiko.commands.chat.ToggleModelCmd;
 import hayashi.raiko.commands.music.*;
 import hayashi.raiko.commands.owner.*;
 import hayashi.raiko.commands.general.*;

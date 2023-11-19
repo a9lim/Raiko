@@ -45,8 +45,8 @@ public class BotConfig {
     private Activity game;
     private Config aliases;
 
-    public BotConfig(Prompt prompt) {
-        this.prompt = prompt;
+    public BotConfig(Prompt p) {
+        prompt = p;
     }
 
     public void load() {
@@ -160,7 +160,7 @@ public class BotConfig {
 
     //uhh
     private static String loadDefaultConfig() {
-        String original = OtherUtil.loadResource(new Raiko(), "/reference.conf");
+        String original = OtherUtil.loadResource("/reference.conf");
         return original == null
                 ? "token = BOT_TOKEN_HERE\r\nowner = 0 // OWNER ID"
                 : original.substring(original.indexOf(START_TOKEN) + START_TOKEN.length(), original.indexOf(END_TOKEN)).trim();

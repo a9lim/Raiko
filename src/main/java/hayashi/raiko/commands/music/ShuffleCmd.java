@@ -23,12 +23,12 @@ import hayashi.raiko.commands.MusicCommand;
 public class ShuffleCmd extends MusicCommand {
     public ShuffleCmd(Bot bot) {
         super(bot);
-        this.name = "shuffle";
-        this.help = "shuffles the queue";
-        this.arguments = "<MINE|ALL>";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.beListening = true;
-        this.bePlaying = true;
+        name = "shuffle";
+        help = "shuffles the queue";
+        arguments = "<MINE|ALL>";
+        aliases = bot.getConfig().getAliases(name);
+        beListening = true;
+        bePlaying = true;
     }
 
     @Override

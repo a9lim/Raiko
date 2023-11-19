@@ -22,8 +22,8 @@ public class RequestMetadata {
 
     public final UserInfo user;
 
-    public RequestMetadata(User user) {
-        this.user = user == null ? null : new UserInfo(user.getIdLong(), user.getName(), user.getDiscriminator(), user.getEffectiveAvatarUrl());
+    public RequestMetadata(User u) {
+        user = u == null ? null : new UserInfo(u.getIdLong(), u.getName(), u.getDiscriminator(), u.getEffectiveAvatarUrl());
     }
 
     public long getOwner() {
@@ -33,9 +33,9 @@ public class RequestMetadata {
     public static class RequestInfo {
         public final String query, url;
 
-        private RequestInfo(String query, String url) {
-            this.query = query;
-            this.url = url;
+        private RequestInfo(String q, String u) {
+            query = q;
+            url = u;
         }
     }
 
@@ -43,11 +43,11 @@ public class RequestMetadata {
         public final long id;
         public final String username, discrim, avatar;
 
-        private UserInfo(long id, String username, String discrim, String avatar) {
-            this.id = id;
-            this.username = username;
-            this.discrim = discrim;
-            this.avatar = avatar;
+        private UserInfo(long l, String u, String d, String a) {
+            id = l;
+            username = u;
+            discrim = d;
+            avatar = a;
         }
     }
 }

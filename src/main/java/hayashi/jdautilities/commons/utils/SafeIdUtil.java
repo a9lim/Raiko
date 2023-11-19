@@ -15,8 +15,7 @@
  */
 package hayashi.jdautilities.commons.utils;
 
-public enum SafeIdUtil {
-    ;
+public class SafeIdUtil {
 
     public static long safeConvert(String id) {
         try {

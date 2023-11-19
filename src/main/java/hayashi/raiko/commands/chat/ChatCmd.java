@@ -1,4 +1,4 @@
-package hayashi.raiko.commands.general;
+package hayashi.raiko.commands.chat;
 import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
 import hayashi.raiko.ChatBot;
@@ -8,10 +8,10 @@ public class ChatCmd extends ChatCommand {
 
     public ChatCmd(ChatBot chatBot, Bot bot) {
         super(chatBot);
-        this.name = "chat";
-        this.help = "talk to raiko";
-        this.arguments = "<text>";
-        this.aliases = bot.getConfig().getAliases(this.name);
+        name = "chat";
+        help = "talk to raiko";
+        arguments = "<text>";
+        aliases = bot.getConfig().getAliases(name);
     }
     @Override
     protected void execute(CommandEvent event) {

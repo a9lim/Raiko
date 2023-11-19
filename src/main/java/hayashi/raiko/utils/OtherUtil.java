@@ -20,7 +20,6 @@ import hayashi.raiko.Raiko;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,8 +29,7 @@ import net.dv8tion.jda.api.entities.Activity;
 
 import static hayashi.jdautilities.command.Command.COMPILE;
 
-public enum OtherUtil {
-    ;
+public class OtherUtil {
     private final static String WINDOWS_INVALID_PATH = "c:\\windows\\system32\\";
 
     public static Path getPath(String path) {
@@ -44,8 +42,8 @@ public enum OtherUtil {
         return result;
     }
 
-    public static String loadResource(Object clazz, String name) {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(clazz.getClass().getResourceAsStream(name)))) {
+    public static String loadResource(String name) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Raiko.class.getResourceAsStream(name)))) {
             StringBuilder sb = new StringBuilder();
             reader.lines().forEach(line -> sb.append("\r\n").append(line));
             return sb.toString().trim();
@@ -58,8 +56,7 @@ public enum OtherUtil {
         if (url == null)
             return null;
         try {
-            URL u = new URI(url).toURL();
-            URLConnection urlConnection = u.openConnection();
+            URLConnection urlConnection = new URI(url).toURL().openConnection();
             urlConnection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36");
             return urlConnection.getInputStream();
         } catch (Exception ignore) {

@@ -29,12 +29,12 @@ public class DebugCmd extends OwnerCommand {
 
     private final Bot bot;
 
-    public DebugCmd(Bot bot) {
-        this.bot = bot;
-        this.name = "debug";
-        this.help = "shows debug info";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.guildOnly = false;
+    public DebugCmd(Bot b) {
+        bot = b;
+        name = "debug";
+        help = "shows debug info";
+        aliases = bot.getConfig().getAliases(name);
+        guildOnly = false;
     }
 
     @Override

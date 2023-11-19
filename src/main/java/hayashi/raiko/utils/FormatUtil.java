@@ -21,8 +21,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 
-public enum FormatUtil {
-    ;
+public class FormatUtil {
 
     public static String formatTime(long duration) {
         if (duration == Long.MAX_VALUE)

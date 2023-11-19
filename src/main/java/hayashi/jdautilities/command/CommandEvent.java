@@ -35,18 +35,18 @@ public class CommandEvent {
     private String args;
     private final CommandClient client;
 
-    public CommandEvent(MessageReceivedEvent event, String args, CommandClient client) {
-        this.event = event;
-        this.args = args == null ? "" : args;
-        this.client = client;
+    public CommandEvent(MessageReceivedEvent e, String a, CommandClient c) {
+        event = e;
+        args = a == null ? "" : a;
+        client = c;
     }
 
     public String getArgs() {
         return args;
     }
 
-    void setArgs(String args) {
-        this.args = args;
+    void setArgs(String a) {
+        args = a;
     }
 
     public MessageReceivedEvent getEvent() {
@@ -273,7 +273,8 @@ public class CommandEvent {
 
     private void sendMessage(MessageChannel chan, String message) {
         ArrayList<String> messages = splitMessage(message);
-        for (int i = 0; i < MAX_MESSAGES && i < messages.size(); i++) {
+        int min = Math.min(MAX_MESSAGES,messages.size());
+        for (int i = 0; i < min; i++) {
             chan.sendMessage(messages.get(i)).queue(m -> {
                 if (event.isFromType(ChannelType.TEXT))
                     linkId(m);
@@ -283,8 +284,9 @@ public class CommandEvent {
 
     private void sendMessage(MessageChannel chan, String message, Consumer<Message> success) {
         ArrayList<String> messages = splitMessage(message);
-        for (int i = 0; i < MAX_MESSAGES && i < messages.size(); i++) {
-            if (i + 1 == MAX_MESSAGES || i + 1 == messages.size()) {
+        int mindec = Math.min(MAX_MESSAGES,messages.size())-1;
+        for (int i = 0; i <= mindec; i++) {
+            if (i == mindec) {
                 chan.sendMessage(messages.get(i)).queue(m -> {
                     if (event.isFromType(ChannelType.TEXT))
                         linkId(m);
@@ -301,8 +303,9 @@ public class CommandEvent {
 
     private void sendMessage(MessageChannel chan, String message, Consumer<Message> success, Consumer<Throwable> failure) {
         ArrayList<String> messages = splitMessage(message);
-        for (int i = 0; i < MAX_MESSAGES && i < messages.size(); i++) {
-            if (i + 1 == MAX_MESSAGES || i + 1 == messages.size()) {
+        int mindec = Math.min(MAX_MESSAGES,messages.size())-1;
+        for (int i = 0; i <= mindec; i++) {
+            if (i == mindec) {
                 chan.sendMessage(messages.get(i)).queue(m -> {
                     if (event.isFromType(ChannelType.TEXT))
                         linkId(m);
@@ -351,11 +354,11 @@ public class CommandEvent {
     }
 
     public boolean isOwner() {
-        if (event.getAuthor().getId().equals(this.client.getOwnerId()))
+        if (event.getAuthor().getId().equals(client.getOwnerId()))
             return true;
-        if (this.client.getCoOwnerIds() == null)
+        if (client.getCoOwnerIds() == null)
             return false;
-        for (String id : this.client.getCoOwnerIds())
+        for (String id : client.getCoOwnerIds())
             if (id.equals(event.getAuthor().getId()))
                 return true;
         return false;

@@ -45,9 +45,7 @@ public interface GuildSettingsManager<T> {
     @Nullable
     T getSettings(Guild guild);
 
-    default void init() {
-    }
+    default void init() {}
 
-    default void shutdown() {
-    }
+    default void shutdown() {}
 }

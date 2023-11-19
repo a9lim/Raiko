@@ -36,8 +36,8 @@ import static hayashi.jdautilities.command.Command.COMPILE;
 public class PlaylistLoader {
     private final BotConfig config;
 
-    public PlaylistLoader(BotConfig config) {
-        this.config = config;
+    public PlaylistLoader(BotConfig c) {
+        config = c;
     }
 
     public List<String> getPlaylistNames() {
@@ -107,10 +107,10 @@ public class PlaylistLoader {
         private final List<PlaylistLoadError> errors = new LinkedList<>();
         private boolean loaded;
 
-        private Playlist(String name, List<String> items, boolean shuffle) {
-            this.name = name;
-            this.items = items;
-            this.shuffle = shuffle;
+        private Playlist(String n, List<String> list, boolean b) {
+            name = n;
+            items = list;
+            shuffle = b;
         }
 
         public void loadTracks(AudioPlayerManager manager, Consumer<AudioTrack> consumer, Runnable callback) {
@@ -196,10 +196,10 @@ public class PlaylistLoader {
         private final int number;
         private final String item, reason;
 
-        private PlaylistLoadError(int number, String item, String reason) {
-            this.number = number;
-            this.item = item;
-            this.reason = reason;
+        private PlaylistLoadError(int i, String s, String r) {
+            number = i;
+            item = s;
+            reason = r;
         }
 
         public int getIndex() {

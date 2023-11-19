@@ -18,8 +18,8 @@ public class TestQueuable<T> implements Queueable{
         return s;
     }
 
-    public void setS(T s) {
-        this.s = s;
+    public void setS(T ss) {
+        s = ss;
     }
 
     @Override

@@ -22,12 +22,12 @@ import hayashi.raiko.commands.OwnerCommand;
 public class ShutdownCmd extends OwnerCommand {
     private final Bot bot;
 
-    public ShutdownCmd(Bot bot) {
-        this.bot = bot;
-        this.name = "shutdown";
-        this.help = "safely shuts down";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.guildOnly = false;
+    public ShutdownCmd(Bot b) {
+        bot = b;
+        name = "shutdown";
+        help = "safely shuts down";
+        aliases = bot.getConfig().getAliases(name);
+        guildOnly = false;
     }
 
     @Override

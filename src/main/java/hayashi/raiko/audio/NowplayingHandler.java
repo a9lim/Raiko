@@ -36,9 +36,9 @@ public class NowplayingHandler {
     private final Bot bot;
     private final HashMap<Long, Pair<Long,Long>> lastNP; // guild -> channel,message
     
-    public NowplayingHandler(Bot bot) {
-        this.bot = bot;
-        this.lastNP = new HashMap<>();
+    public NowplayingHandler(Bot b) {
+        bot = b;
+        lastNP = new HashMap<>();
     }
     
     public void init() {

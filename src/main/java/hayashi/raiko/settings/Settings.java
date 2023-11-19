@@ -30,32 +30,34 @@ public class Settings implements GuildSettingsProvider {
     private int volume;
     private String defaultPlaylist, prefix;
     private RepeatMode repeatMode;
-    public Settings(SettingsManager manager, String textId, String voiceId, int volume, String defaultPlaylist, RepeatMode repeatMode, String prefix) {
-        this.manager = manager;
+
+    // why isnt this super
+    public Settings(SettingsManager man, String tid, String vid, int v, String dp, RepeatMode rm, String p) {
+        manager = man;
         try {
-            this.textId = Long.parseLong(textId);
+            textId = Long.parseLong(tid);
         } catch (NumberFormatException e) {
-            this.textId = 0;
+            textId = 0;
         }
         try {
-            this.voiceId = Long.parseLong(voiceId);
+            voiceId = Long.parseLong(vid);
         } catch (NumberFormatException e) {
-            this.voiceId = 0;
+            voiceId = 0;
         }
-        this.volume = volume;
-        this.defaultPlaylist = defaultPlaylist;
-        this.repeatMode = repeatMode;
-        this.prefix = prefix;
+        volume = v;
+        defaultPlaylist = dp;
+        repeatMode = rm;
+        prefix = p;
     }
 
-    public Settings(SettingsManager manager, long textId, long voiceId, int volume, String defaultPlaylist, RepeatMode repeatMode, String prefix) {
-        this.manager = manager;
-        this.textId = textId;
-        this.voiceId = voiceId;
-        this.volume = volume;
-        this.defaultPlaylist = defaultPlaylist;
-        this.repeatMode = repeatMode;
-        this.prefix = prefix;
+    public Settings(SettingsManager man, long tid, long vid, int v, String dp, RepeatMode rm, String p) {
+        manager = man;
+        textId = tid;
+        voiceId = vid;
+        volume = v;
+        defaultPlaylist = dp;
+        repeatMode = rm;
+        prefix = p;
     }
 
     // Getters
@@ -90,33 +92,33 @@ public class Settings implements GuildSettingsProvider {
 
     // Setters
     public void setTextChannel(TextChannel tc) {
-        this.textId = tc == null ? 0 : tc.getIdLong();
-        this.manager.writeSettings();
+        textId = tc == null ? 0 : tc.getIdLong();
+        manager.writeSettings();
     }
 
     public void setVoiceChannel(VoiceChannel vc) {
-        this.voiceId = vc == null ? 0 : vc.getIdLong();
-        this.manager.writeSettings();
+        voiceId = vc == null ? 0 : vc.getIdLong();
+        manager.writeSettings();
     }
 
-    public void setVolume(int volume) {
-        this.volume = volume;
-        this.manager.writeSettings();
+    public void setVolume(int v) {
+        volume = v;
+        manager.writeSettings();
     }
 
-    public void setDefaultPlaylist(String defaultPlaylist) {
-        this.defaultPlaylist = defaultPlaylist;
-        this.manager.writeSettings();
+    public void setDefaultPlaylist(String dp) {
+        defaultPlaylist = dp;
+        manager.writeSettings();
     }
 
     public void setRepeatMode(RepeatMode mode) {
-        this.repeatMode = mode;
-        this.manager.writeSettings();
+        repeatMode = mode;
+        manager.writeSettings();
     }
 
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-        this.manager.writeSettings();
+    public void setPrefix(String p) {
+        prefix = p;
+        manager.writeSettings();
     }
 
 }

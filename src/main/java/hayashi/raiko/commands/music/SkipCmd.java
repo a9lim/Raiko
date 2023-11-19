@@ -24,11 +24,11 @@ import hayashi.raiko.commands.MusicCommand;
 public class SkipCmd extends MusicCommand {
     public SkipCmd(Bot bot) {
         super(bot);
-        this.name = "skip";
-        this.help = "skips songs";
-        this.arguments = "<position>";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.bePlaying = true;
+        name = "skip";
+        help = "skips songs";
+        arguments = "<position>";
+        aliases = bot.getConfig().getAliases(name);
+        bePlaying = true;
     }
 
     @Override

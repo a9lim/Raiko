@@ -1,4 +1,4 @@
-package hayashi.raiko.commands.general;
+package hayashi.raiko.commands.chat;
 
 import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
@@ -9,9 +9,9 @@ public class ClearChatCmd extends ChatCommand {
 
     public ClearChatCmd(ChatBot chatBot, Bot bot) {
         super(chatBot);
-        this.name = "clearchat";
-        this.help = "wipe raiko's memory";
-        this.aliases = bot.getConfig().getAliases(this.name);
+        name = "clearchat";
+        help = "wipe raiko's memory";
+        aliases = bot.getConfig().getAliases(name);
     }
     @Override
     protected void execute(CommandEvent event) {
