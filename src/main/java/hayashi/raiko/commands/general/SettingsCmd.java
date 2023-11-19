@@ -30,22 +30,22 @@ public class SettingsCmd extends Command {
     private final static String EMOJI = "\uD83C\uDFA7"; // 🎧
 
     public SettingsCmd(Bot bot) {
-        this.name = "settings";
-        this.help = "shows the bots settings";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.guildOnly = true;
+        name = "settings";
+        help = "shows the bots settings";
+        aliases = bot.getConfig().getAliases(name);
+        guildOnly = true;
     }
 
     @Override
     protected void execute(CommandEvent event) {
         Settings s = event.getClient().getSettingsFor(event.getGuild());
-        MessageBuilder builder = new MessageBuilder()
-                .append(EMOJI + " **")
-                .append(FormatUtil.filter(event.getSelfUser().getName()))
-                .append("** settings:");
         TextChannel tchan = s.getTextChannel(event.getGuild());
         VoiceChannel vchan = s.getVoiceChannel(event.getGuild());
-        EmbedBuilder ebuilder = new EmbedBuilder()
+        event.getChannel().sendMessage(new MessageBuilder()
+                .append(EMOJI + " **")
+                .append(FormatUtil.filter(event.getSelfUser().getName()))
+                .append("** settings:")
+                .setEmbeds(new EmbedBuilder()
                 .setColor(event.getSelfMember().getColor())
                 .setDescription("Text Channel: " + (tchan == null ? "Any" : "**#" + tchan.getName() + "**")
                         + "\nVoice Channel: " + (vchan == null ? "Any" : vchan.getAsMention())
@@ -57,8 +57,7 @@ public class SettingsCmd extends Command {
                 )
                 .setFooter(event.getJDA().getGuilds().size() + " servers | "
                         + event.getJDA().getGuilds().stream().filter(g -> g.getSelfMember().getVoiceState().inVoiceChannel()).count()
-                        + " audio connections", null);
-        event.getChannel().sendMessage(builder.setEmbeds(ebuilder.build()).build()).queue();
+                        + " audio connections", null).build()).build()).queue();
     }
 
 }

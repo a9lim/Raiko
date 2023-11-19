@@ -56,15 +56,15 @@ public class TableBuilder {
             System.arraycopy(headers, 0, newValues[0], 0, columns);
             System.arraycopy(values, 0, newValues, 1, rows - 1);
         } else {
-            newValues = this.values;
+            newValues = values;
         }
 
-        this.values = newValues;
+        values = newValues;
 
         if (autoAdjust) {
             // find the max. value for each column
             int[] maxLengths = new int[columns];
-            Arrays.fill(maxLengths, 0);
+//            Arrays.fill(maxLengths, 0);
 
             for (String[] row : values) {
                 for (int i = 0; i < row.length; i++) {
@@ -218,18 +218,17 @@ public class TableBuilder {
         newValueBuilder.append(" ".repeat(Math.max(0, padding)));
 
         switch (alignment) {
-            case RIGHT:
+            case RIGHT -> {
                 // first black spaces
                 newValueBuilder.append(" ".repeat(Math.max(0, adjustment)));
                 newValueBuilder.append(oldValue); // then value
-                break;
-            case LEFT:
+            }
+            case LEFT -> {
                 newValueBuilder.append(oldValue); // first value
                 // then blank spaces
                 newValueBuilder.append(" ".repeat(Math.max(0, adjustment)));
-                break;
-            case CENTER:
-                boolean odd = adjustment % 2 != 0;
+            }
+            case CENTER -> {
                 int half = adjustment / 2;
                 // append one half of black spaces
                 newValueBuilder.append(" ".repeat(Math.max(0, half)));
@@ -239,62 +238,62 @@ public class TableBuilder {
                 // append other half of blank spaces
                 newValueBuilder.append(" ".repeat(Math.max(0, half)));
 
-                if (odd) // if the number wasn't event, one blank space is still missing
+                if (adjustment % 2 != 0) // if the number wasn't event, one blank space is still missing
                     newValueBuilder.append(" ");
-                break;
+            }
         }
 
         // padding right
         newValueBuilder.append(" ".repeat(Math.max(0, padding)));
     }
 
-    public TableBuilder addHeaders(String... headers) {
-        this.headers = headers;
+    public TableBuilder addHeaders(String... h) {
+        headers = h;
         return this;
     }
 
     public TableBuilder addRowNames(String... rows) {
-        this.rowNames = rows;
+        rowNames = rows;
         return this;
     }
 
-    public TableBuilder setValues(String[][] values) {
-        this.values = values;
+    public TableBuilder setValues(String[][] v) {
+        values = v;
         return this;
     }
 
-    public TableBuilder setBorders(Borders borders) {
-        this.borders = borders;
+    public TableBuilder setBorders(Borders b) {
+        borders = b;
         return this;
     }
 
-    public TableBuilder setName(String tableName) {
-        this.tableName = tableName;
+    public TableBuilder setName(String tn) {
+        tableName = tn;
         return this;
     }
 
-    public TableBuilder setAlignment(Alignment alignment) {
-        this.alignment = alignment;
+    public TableBuilder setAlignment(Alignment al) {
+        alignment = al;
         return this;
     }
 
-    public TableBuilder setPadding(int padding) {
-        this.padding = padding;
+    public TableBuilder setPadding(int p) {
+        padding = p;
         return this;
     }
 
-    public TableBuilder codeblock(boolean codeblock) {
-        this.codeblock = codeblock;
+    public TableBuilder codeblock(boolean cb) {
+        codeblock = cb;
         return this;
     }
 
-    public TableBuilder frame(boolean frame) {
-        this.frame = frame;
+    public TableBuilder frame(boolean f) {
+        frame = f;
         return this;
     }
 
-    public TableBuilder autoAdjust(boolean autoAdjust) {
-        this.autoAdjust = autoAdjust;
+    public TableBuilder autoAdjust(boolean b) {
+        autoAdjust = b;
         return this;
     }
 
@@ -302,7 +301,7 @@ public class TableBuilder {
         LEFT, RIGHT, CENTER
     }
 
-    public static class Borders {
+    public static final class Borders {
 
         public static final Borders HEADER_ROW_FRAME = newHeaderRowNamesFrameBorders("─", "│", "┼",
             "├", "┤", "┬", "┴", "┌", "┐", "└",
@@ -332,34 +331,34 @@ public class TableBuilder {
             firstColumnLowerIntersection, headerColumnCrossDelimiter, horizontalOutline, verticalOutline;
 
         // framing + headers + rows
-        private Borders(String rowDelimiter, String columnDelimiter, String crossDelimiter, String leftIntersection,
-                        String rightIntersection, String upperIntersection, String lowerIntersection, String upLeftCorner,
-                        String upRightCorner, String lowLeftCorner, String lowRightCorner, String headerDelimiter,
-                        String headerCrossDelimiter, String headerLeftIntersection, String headerRightIntersection,
-                        String firstColumnDelimiter, String firstColumnCrossDelimiter, String firstColumnUpperIntersection,
-                        String firstColumnLowerIntersection, String headerColumnCrossDelimiter, String horizontalOutline, String verticalOutline) {
-            this.rowDelimiter = rowDelimiter;
-            this.columnDelimiter = columnDelimiter;
-            this.crossDelimiter = crossDelimiter;
-            this.leftIntersection = leftIntersection;
-            this.rightIntersection = rightIntersection;
-            this.upperIntersection = upperIntersection;
-            this.lowerIntersection = lowerIntersection;
-            this.upLeftCorner = upLeftCorner;
-            this.upRightCorner = upRightCorner;
-            this.lowLeftCorner = lowLeftCorner;
-            this.lowRightCorner = lowRightCorner;
-            this.headerDelimiter = headerDelimiter;
-            this.headerCrossDelimiter = headerCrossDelimiter;
-            this.headerLeftIntersection = headerLeftIntersection;
-            this.headerRightIntersection = headerRightIntersection;
-            this.firstColumnDelimiter = firstColumnDelimiter;
-            this.firstColumnCrossDelimiter = firstColumnCrossDelimiter;
-            this.firstColumnUpperIntersection = firstColumnUpperIntersection;
-            this.firstColumnLowerIntersection = firstColumnLowerIntersection;
-            this.headerColumnCrossDelimiter = headerColumnCrossDelimiter;
-            this.horizontalOutline = horizontalOutline;
-            this.verticalOutline = verticalOutline;
+        private Borders(String rd, String cd, String crd, String li,
+                        String ri, String ui, String le, String ul,
+                        String ur, String ll, String lr, String hd,
+                        String hcd, String hli, String hri,
+                        String fcd, String fccd, String fcui,
+                        String fcli, String hccd, String ho, String vo) {
+            rowDelimiter = rd;
+            columnDelimiter = cd;
+            crossDelimiter = crd;
+            leftIntersection = li;
+            rightIntersection = ri;
+            upperIntersection = ui;
+            lowerIntersection = le;
+            upLeftCorner = ul;
+            upRightCorner = ur;
+            lowLeftCorner = ll;
+            lowRightCorner = lr;
+            headerDelimiter = hd;
+            headerCrossDelimiter = hcd;
+            headerLeftIntersection = hli;
+            headerRightIntersection = hri;
+            firstColumnDelimiter = fcd;
+            firstColumnCrossDelimiter = fccd;
+            firstColumnUpperIntersection = fcui;
+            firstColumnLowerIntersection = fcli;
+            headerColumnCrossDelimiter = hccd;
+            horizontalOutline = ho;
+            verticalOutline = vo;
         }
 
         // framing + headers

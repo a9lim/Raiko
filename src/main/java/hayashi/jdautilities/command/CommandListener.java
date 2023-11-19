@@ -24,20 +24,16 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
  * @author John Grosh (jagrosh)
  */
 public interface CommandListener {
-    default void onCommand(CommandEvent event, Command command) {
-    }
+    default void onCommand(CommandEvent event, Command command) {}
 
-    default void onCompletedCommand(CommandEvent event, Command command) {
-    }
+    default void onCompletedCommand(CommandEvent event, Command command) {}
 
-    default void onTerminatedCommand(CommandEvent event, Command command) {
-    }
+    default void onTerminatedCommand(CommandEvent event, Command command) {}
 
-    default void onNonCommandMessage(MessageReceivedEvent event) {
-    }
+    default void onNonCommandMessage(MessageReceivedEvent event) {}
 
     default void onCommandException(CommandEvent event, Command command, Throwable throwable) {
         // Default rethrow as a runtime exception.
-        throw throwable instanceof RuntimeException ? (RuntimeException) throwable : new RuntimeException(throwable);
+        throw throwable instanceof RuntimeException r ? r : new RuntimeException(throwable);
     }
 }

@@ -54,26 +54,26 @@ public class Paginator extends Menu {
     public static final String BIG_RIGHT = "\u23E9";
 
     Paginator(EventWaiter waiter, Set<User> users, Set<Role> roles, long timeout, TimeUnit unit,
-              BiFunction<Integer, Integer, Color> color, BiFunction<Integer, Integer, String> text,
-              Consumer<Message> finalAction, int columns, int itemsPerPage, boolean showPageNumbers,
-              boolean numberItems, List<String> items, boolean waitOnSinglePage, int bulkSkipNumber,
-              boolean wrapPageEnds, String leftText, String rightText, boolean allowTextInput) {
+              BiFunction<Integer, Integer, Color> c, BiFunction<Integer, Integer, String> function,
+              Consumer<Message> consumer, int i, int i1, boolean b,
+              boolean b1, List<String> items, boolean b2, int i2,
+              boolean b3, String lt, String rt, boolean b4) {
         super(waiter, users, roles, timeout, unit);
-        this.color = color;
-        this.text = text;
-        this.columns = columns;
-        this.itemsPerPage = itemsPerPage;
-        this.showPageNumbers = showPageNumbers;
-        this.numberItems = numberItems;
-        this.strings = items;
-        this.pages = (int) Math.ceil((double) strings.size() / itemsPerPage);
-        this.finalAction = finalAction;
-        this.waitOnSinglePage = waitOnSinglePage;
-        this.bulkSkipNumber = bulkSkipNumber;
-        this.wrapPageEnds = wrapPageEnds;
-        this.leftText = leftText;
-        this.rightText = rightText;
-        this.allowTextInput = allowTextInput;
+        color = c;
+        text = function;
+        columns = i;
+        itemsPerPage = i1;
+        showPageNumbers = b;
+        numberItems = b1;
+        strings = items;
+        pages = (int) Math.ceil((double) strings.size() / i1);
+        finalAction = consumer;
+        waitOnSinglePage = b2;
+        bulkSkipNumber = i2;
+        wrapPageEnds = b3;
+        leftText = lt;
+        rightText = rt;
+        allowTextInput = b4;
     }
 
     @Override
@@ -91,8 +91,7 @@ public class Paginator extends Menu {
             pageNum = 1;
         else if (pageNum > pages)
             pageNum = pages;
-        Message msg = renderPage(pageNum);
-        initialize(channel.sendMessage(msg), pageNum);
+        initialize(channel.sendMessage(renderPage(pageNum)), pageNum);
     }
 
     public void paginate(Message message, int pageNum) {
@@ -100,8 +99,7 @@ public class Paginator extends Menu {
             pageNum = 1;
         else if (pageNum > pages)
             pageNum = pages;
-        Message msg = renderPage(pageNum);
-        initialize(message.editMessage(msg), pageNum);
+        initialize(message.editMessage(renderPage(pageNum)), pageNum);
     }
 
     private void initialize(RestAction<Message> action, int pageNum) {
@@ -136,8 +134,8 @@ public class Paginator extends Menu {
 
     private void paginationWithTextInput(Message message, int pageNum) {
         waiter.waitForEvent(GenericMessageEvent.class, event -> {
-            if (event instanceof MessageReactionAddEvent)
-                return checkReaction((MessageReactionAddEvent) event, message.getIdLong());
+            if (event instanceof MessageReactionAddEvent e)
+                return checkReaction(e, message.getIdLong());
             else if (event instanceof MessageReceivedEvent mre) {
                 // Wrong channel
                 if (!mre.getChannel().equals(message.getChannel()))
@@ -158,10 +156,10 @@ public class Paginator extends Menu {
             // Default return false
             return false;
         }, event -> {
-            if (event instanceof MessageReactionAddEvent) {
-                handleMessageReactionAddAction((MessageReactionAddEvent) event, message, pageNum);
+            if (event instanceof MessageReactionAddEvent e) {
+                handleMessageReactionAddAction(e, message, pageNum);
             } else {
-                MessageReceivedEvent mre = ((MessageReceivedEvent) event);
+                MessageReceivedEvent mre = (MessageReceivedEvent) event;
                 String rawContent = mre.getMessage().getContentRaw().trim();
 
                 final int targetPage = (rawContent.equalsIgnoreCase(leftText) && (1 < pageNum || wrapPageEnds)) ?
@@ -202,19 +200,19 @@ public class Paginator extends Menu {
     private void handleMessageReactionAddAction(MessageReactionAddEvent event, Message message, int pageNum) {
         int newPageNum = pageNum;
         switch (event.getReaction().getReactionEmote().getName()) {
-            case LEFT:
+            case LEFT -> {
                 if (newPageNum == 1 && wrapPageEnds)
                     newPageNum = pages + 1;
                 if (newPageNum > 1)
                     newPageNum--;
-                break;
-            case RIGHT:
+            }
+            case RIGHT -> {
                 if (newPageNum == pages && wrapPageEnds)
                     newPageNum = 0;
                 if (newPageNum < pages)
                     newPageNum++;
-                break;
-            case BIG_LEFT:
+            }
+            case BIG_LEFT -> {
                 if (newPageNum > 1 || wrapPageEnds) {
                     for (int i = 1; (newPageNum > 1 || wrapPageEnds) && i < bulkSkipNumber; i++) {
                         if (newPageNum == 1 && wrapPageEnds)
@@ -222,8 +220,8 @@ public class Paginator extends Menu {
                         newPageNum--;
                     }
                 }
-                break;
-            case BIG_RIGHT:
+            }
+            case BIG_RIGHT -> {
                 if (newPageNum < pages || wrapPageEnds) {
                     for (int i = 1; (newPageNum < pages || wrapPageEnds) && i < bulkSkipNumber; i++) {
                         if (newPageNum == pages && wrapPageEnds)
@@ -231,10 +229,11 @@ public class Paginator extends Menu {
                         newPageNum++;
                     }
                 }
-                break;
-            case STOP:
+            }
+            case STOP -> {
                 finalAction.accept(message);
                 return;
+            }
         }
 
         try {
@@ -297,57 +296,57 @@ public class Paginator extends Menu {
                 bulkSkipNumber, wrapPageEnds, textToLeft, textToRight, allowTextInput);
         }
 
-        public Builder setColor(Color color) {
-            this.color = (i0, i1) -> color;
+        public Builder setColor(Color c) {
+            color = (i0, i1) -> c;
             return this;
         }
 
         public Builder setColor(BiFunction<Integer, Integer, Color> colorBiFunction) {
-            this.color = colorBiFunction;
+            color = colorBiFunction;
             return this;
         }
 
-        public Builder setText(String text) {
-            this.text = (i0, i1) -> text;
+        public Builder setText(String t) {
+            text = (i0, i1) -> t;
             return this;
         }
 
         public Builder setText(BiFunction<Integer, Integer, String> textBiFunction) {
-            this.text = textBiFunction;
+            text = textBiFunction;
             return this;
         }
 
-        public Builder setFinalAction(Consumer<Message> finalAction) {
-            this.finalAction = finalAction;
+        public Builder setFinalAction(Consumer<Message> consumer) {
+            finalAction = consumer;
             return this;
         }
 
-        public Builder setColumns(int columns) {
-            if (columns < 1 || columns > 3)
+        public Builder setColumns(int i) {
+            if (i < 1 || i > 3)
                 throw new IllegalArgumentException("Only 1, 2, or 3 columns are supported");
-            this.columns = columns;
+            columns = i;
             return this;
         }
 
         public Builder setItemsPerPage(int num) {
             if (num < 1)
                 throw new IllegalArgumentException("There must be at least one item per page");
-            this.itemsPerPage = num;
+            itemsPerPage = num;
             return this;
         }
 
         public Builder showPageNumbers(boolean show) {
-            this.showPageNumbers = show;
+            showPageNumbers = show;
             return this;
         }
 
         public Builder useNumberedItems(boolean number) {
-            this.numberItems = number;
+            numberItems = number;
             return this;
         }
 
         public Builder waitOnSinglePage(boolean wait) {
-            this.waitOnSinglePage = wait;
+            waitOnSinglePage = wait;
             return this;
         }
 
@@ -367,18 +366,18 @@ public class Paginator extends Menu {
             return this;
         }
 
-        public Builder setBulkSkipNumber(int bulkSkipNumber) {
-            this.bulkSkipNumber = Math.max(bulkSkipNumber, 1);
+        public Builder setBulkSkipNumber(int number) {
+            bulkSkipNumber = Math.max(number, 1);
             return this;
         }
 
-        public Builder wrapPageEnds(boolean wrapPageEnds) {
-            this.wrapPageEnds = wrapPageEnds;
+        public Builder wrapPageEnds(boolean b) {
+            wrapPageEnds = b;
             return this;
         }
 
-        public Builder allowTextInput(boolean allowTextInput) {
-            this.allowTextInput = allowTextInput;
+        public Builder allowTextInput(boolean b) {
+            allowTextInput = b;
             return this;
         }
 

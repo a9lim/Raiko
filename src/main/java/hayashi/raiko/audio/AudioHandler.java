@@ -53,10 +53,10 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
 
     private AudioFrame lastFrame;
 
-    protected AudioHandler(PlayerManager manager, Guild guild, AudioPlayer player) {
-        this.manager = manager;
-        this.audioPlayer = player;
-        this.guildId = guild.getIdLong();
+    protected AudioHandler(PlayerManager man, Guild guild, AudioPlayer player) {
+        manager = man;
+        audioPlayer = player;
+        guildId = guild.getIdLong();
     }
 
     public void pushTrack(QueuedTrack qtrack) {

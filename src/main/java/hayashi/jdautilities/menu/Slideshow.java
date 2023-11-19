@@ -54,24 +54,24 @@ public class Slideshow extends Menu {
     public static final String BIG_RIGHT = "\u23E9";
 
     Slideshow(EventWaiter waiter, Set<User> users, Set<Role> roles, long timeout, TimeUnit unit,
-              BiFunction<Integer, Integer, Color> color, BiFunction<Integer, Integer, String> text,
-              BiFunction<Integer, Integer, String> description, Consumer<Message> finalAction,
-              boolean showPageNumbers, List<String> items, boolean waitOnSinglePage,
-              int bulkSkipNumber, boolean wrapPageEnds, String leftText, String rightText,
-              boolean allowTextInput) {
+              BiFunction<Integer, Integer, Color> c, BiFunction<Integer, Integer, String> t,
+              BiFunction<Integer, Integer, String> d, Consumer<Message> consumer,
+              boolean spn, List<String> items, boolean b,
+              int i, boolean b1, String lt, String rt,
+              boolean b2) {
         super(waiter, users, roles, timeout, unit);
-        this.color = color;
-        this.text = text;
-        this.description = description;
-        this.showPageNumbers = showPageNumbers;
-        this.urls = items;
-        this.finalAction = finalAction;
-        this.waitOnSinglePage = waitOnSinglePage;
-        this.bulkSkipNumber = bulkSkipNumber;
-        this.wrapPageEnds = wrapPageEnds;
-        this.leftText = leftText;
-        this.rightText = rightText;
-        this.allowTextInput = allowTextInput;
+        color = c;
+        text = t;
+        description = d;
+        showPageNumbers = spn;
+        urls = items;
+        finalAction = consumer;
+        waitOnSinglePage = b;
+        bulkSkipNumber = i;
+        wrapPageEnds = b1;
+        leftText = lt;
+        rightText = rt;
+        allowTextInput = b2;
     }
 
     @Override
@@ -130,8 +130,8 @@ public class Slideshow extends Menu {
 
     private void paginationWithTextInput(Message message, int pageNum) {
         waiter.waitForEvent(GenericMessageEvent.class, event -> {
-            if (event instanceof MessageReactionAddEvent)
-                return checkReaction((MessageReactionAddEvent) event, message.getIdLong());
+            if (event instanceof MessageReactionAddEvent e)
+                return checkReaction(e, message.getIdLong());
             else if (event instanceof MessageReceivedEvent mre) {
                 // Wrong channel
                 if (!mre.getChannel().equals(message.getChannel()))
@@ -152,8 +152,8 @@ public class Slideshow extends Menu {
             // Default return false
             return false;
         }, event -> {
-            if (event instanceof MessageReactionAddEvent) {
-                handleMessageReactionAddAction((MessageReactionAddEvent) event, message, pageNum);
+            if (event instanceof MessageReactionAddEvent e) {
+                handleMessageReactionAddAction(e, message, pageNum);
             } else {
                 MessageReceivedEvent mre = ((MessageReceivedEvent) event);
                 String rawContent = mre.getMessage().getContentRaw().trim();
@@ -198,19 +198,19 @@ public class Slideshow extends Menu {
         int newPageNum = pageNum;
         int pages = urls.size();
         switch (event.getReaction().getReactionEmote().getName()) {
-            case LEFT:
+            case LEFT -> {
                 if (newPageNum == 1 && wrapPageEnds)
                     newPageNum = pages + 1;
                 if (newPageNum > 1)
                     newPageNum--;
-                break;
-            case RIGHT:
+            }
+            case RIGHT -> {
                 if (newPageNum == pages && wrapPageEnds)
                     newPageNum = 0;
                 if (newPageNum < pages)
                     newPageNum++;
-                break;
-            case BIG_LEFT:
+            }
+            case BIG_LEFT -> {
                 if (newPageNum > 1 || wrapPageEnds) {
                     for (int i = 1; (newPageNum > 1 || wrapPageEnds) && i < bulkSkipNumber; i++) {
                         if (newPageNum == 1 && wrapPageEnds)
@@ -218,8 +218,8 @@ public class Slideshow extends Menu {
                         newPageNum--;
                     }
                 }
-                break;
-            case BIG_RIGHT:
+            }
+            case BIG_RIGHT -> {
                 if (newPageNum < pages || wrapPageEnds) {
                     for (int i = 1; (newPageNum < pages || wrapPageEnds) && i < bulkSkipNumber; i++) {
                         if (newPageNum == pages && wrapPageEnds)
@@ -227,16 +227,16 @@ public class Slideshow extends Menu {
                         newPageNum++;
                     }
                 }
-                break;
-            case STOP:
+            }
+            case STOP -> {
                 finalAction.accept(message);
                 return;
+            }
         }
 
         try {
             event.getReaction().removeReaction(event.getUser()).queue();
-        } catch (PermissionException ignored) {
-        }
+        } catch (PermissionException ignored) {}
 
         int n = newPageNum;
         message.editMessage(renderPage(newPageNum)).queue(m -> pagination(m, n));
@@ -256,12 +256,6 @@ public class Slideshow extends Menu {
         return mbuilder.build();
     }
 
-    /**
-     * The {@link Menu.Builder Menu.Builder} for
-     * a {@link Slideshow Slideshow}.
-     *
-     * @author John Grosh
-     */
     public static class Builder extends Menu.Builder<Builder, Slideshow> {
         private BiFunction<Integer, Integer, Color> color = (page, pages) -> null;
         private BiFunction<Integer, Integer, String> text = (page, pages) -> null;
@@ -285,48 +279,48 @@ public class Slideshow extends Menu {
                 textToLeft, textToRight, allowTextInput);
         }
 
-        public Builder setColor(Color color) {
-            this.color = (i0, i1) -> color;
+        public Builder setColor(Color c) {
+            color = (i0, i1) -> c;
             return this;
         }
 
         public Builder setColor(BiFunction<Integer, Integer, Color> colorBiFunction) {
-            this.color = colorBiFunction;
+            color = colorBiFunction;
             return this;
         }
 
-        public Builder setText(String text) {
-            this.text = (i0, i1) -> text;
+        public Builder setText(String t) {
+            text = (i0, i1) -> t;
             return this;
         }
 
         public Builder setText(BiFunction<Integer, Integer, String> textBiFunction) {
-            this.text = textBiFunction;
+            text = textBiFunction;
             return this;
         }
 
-        public Builder setDescription(String description) {
-            this.description = (i0, i1) -> description;
+        public Builder setDescription(String d) {
+            description = (i0, i1) -> d;
             return this;
         }
 
         public Builder setDescription(BiFunction<Integer, Integer, String> descriptionBiFunction) {
-            this.description = descriptionBiFunction;
+            description = descriptionBiFunction;
             return this;
         }
 
-        public Builder setFinalAction(Consumer<Message> finalAction) {
-            this.finalAction = finalAction;
+        public Builder setFinalAction(Consumer<Message> consumer) {
+            finalAction = consumer;
             return this;
         }
 
         public Builder showPageNumbers(boolean show) {
-            this.showPageNumbers = show;
+            showPageNumbers = show;
             return this;
         }
 
         public Builder waitOnSinglePage(boolean wait) {
-            this.waitOnSinglePage = wait;
+            waitOnSinglePage = wait;
             return this;
         }
 
@@ -341,18 +335,18 @@ public class Slideshow extends Menu {
             return this;
         }
 
-        public Builder setBulkSkipNumber(int bulkSkipNumber) {
-            this.bulkSkipNumber = Math.max(bulkSkipNumber, 1);
+        public Builder setBulkSkipNumber(int bsn) {
+            bulkSkipNumber = Math.max(bsn, 1);
             return this;
         }
 
-        public Builder wrapPageEnds(boolean wrapPageEnds) {
-            this.wrapPageEnds = wrapPageEnds;
+        public Builder wrapPageEnds(boolean b) {
+            wrapPageEnds = b;
             return this;
         }
 
-        public Builder allowTextInput(boolean allowTextInput) {
-            this.allowTextInput = allowTextInput;
+        public Builder allowTextInput(boolean ati) {
+            allowTextInput = ati;
             return this;
         }
 

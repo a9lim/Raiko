@@ -22,11 +22,11 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 
 public class SetnameCmd extends OwnerCommand {
     public SetnameCmd(Bot bot) {
-        this.name = "setname";
-        this.help = "sets the name of the bot";
-        this.arguments = "<name>";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.guildOnly = false;
+        name = "setname";
+        help = "sets the name of the bot";
+        arguments = "<name>";
+        aliases = bot.getConfig().getAliases(name);
+        guildOnly = false;
     }
 
     @Override

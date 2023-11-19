@@ -43,14 +43,14 @@ public class ButtonMenu extends Menu {
     private final Consumer<Message> finalAction;
 
     ButtonMenu(EventWaiter waiter, Set<User> users, Set<Role> roles, long timeout, TimeUnit unit,
-               Color color, String text, String description, List<String> choices, Consumer<ReactionEmote> action, Consumer<Message> finalAction) {
+               Color incolor, String intext, String desc, List<String> inchoices, Consumer<ReactionEmote> inaction, Consumer<Message> infinalAction) {
         super(waiter, users, roles, timeout, unit);
-        this.color = color;
-        this.text = text;
-        this.description = description;
-        this.choices = choices;
-        this.action = action;
-        this.finalAction = finalAction;
+        color = incolor;
+        text = intext;
+        description = desc;
+        choices = inchoices;
+        action = inaction;
+        finalAction = infinalAction;
     }
 
     @Override
@@ -129,8 +129,7 @@ public class ButtonMenu extends Menu {
         private String text, description;
         private final List<String> choices = new LinkedList<>();
         private Consumer<ReactionEmote> action;
-        private Consumer<Message> finalAction = (m) -> {
-        };
+        private Consumer<Message> finalAction = (m) -> {};
 
         @Override
         public ButtonMenu build() {
@@ -142,33 +141,33 @@ public class ButtonMenu extends Menu {
             return new ButtonMenu(waiter, users, roles, timeout, unit, color, text, description, choices, action, finalAction);
         }
 
-        public Builder setColor(Color color) {
-            this.color = color;
+        public Builder setColor(Color c) {
+            color = c;
             return this;
         }
 
-        public Builder setText(String text) {
-            this.text = text;
+        public Builder setText(String t) {
+            text = t;
             return this;
         }
 
-        public Builder setDescription(String description) {
-            this.description = description;
+        public Builder setDescription(String desc) {
+            description = desc;
             return this;
         }
 
-        public Builder setAction(Consumer<ReactionEmote> action) {
-            this.action = action;
+        public Builder setAction(Consumer<ReactionEmote> consumer) {
+            action = consumer;
             return this;
         }
 
-        public Builder setFinalAction(Consumer<Message> finalAction) {
-            this.finalAction = finalAction;
+        public Builder setFinalAction(Consumer<Message> consumer) {
+            finalAction = consumer;
             return this;
         }
 
         public Builder addChoice(String emoji) {
-            this.choices.add(emoji);
+            choices.add(emoji);
             return this;
         }
 
@@ -189,12 +188,12 @@ public class ButtonMenu extends Menu {
         }
 
         public Builder setChoices(String... emojis) {
-            this.choices.clear();
+            choices.clear();
             return addChoices(emojis);
         }
 
         public Builder setChoices(Emote... emotes) {
-            this.choices.clear();
+            choices.clear();
             return addChoices(emotes);
         }
     }

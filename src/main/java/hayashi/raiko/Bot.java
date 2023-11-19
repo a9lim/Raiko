@@ -47,18 +47,18 @@ public class Bot {
     private JDA jda;
     private GUI gui;
 
-    public Bot(EventWaiter waiter, BotConfig config, SettingsManager settings) {
-        this.waiter = waiter;
-        this.config = config;
-        this.settings = settings;
-        this.playlists = new PlaylistLoader(config);
-        this.threadpool = Executors.newSingleThreadScheduledExecutor();
-        this.players = new PlayerManager(this);
-        this.players.init();
-        this.nowplaying = new NowplayingHandler(this);
-        this.nowplaying.init();
-        this.aloneInVoiceHandler = new AloneInVoiceHandler(this);
-        this.aloneInVoiceHandler.init();
+    public Bot(EventWaiter inwaiter, BotConfig inconfig, SettingsManager insettings) {
+        waiter = inwaiter;
+        config = inconfig;
+        settings = insettings;
+        playlists = new PlaylistLoader(inconfig);
+        threadpool = Executors.newSingleThreadScheduledExecutor();
+        players = new PlayerManager(this);
+        players.init();
+        nowplaying = new NowplayingHandler(this);
+        nowplaying.init();
+        aloneInVoiceHandler = new AloneInVoiceHandler(this);
+        aloneInVoiceHandler.init();
     }
 
     public BotConfig getConfig() {
@@ -131,11 +131,11 @@ public class Bot {
         System.exit(0);
     }
 
-    public void setJDA(JDA jda) {
-        this.jda = jda;
+    public void setJDA(JDA j) {
+        jda = j;
     }
 
-    public void setGUI(GUI gui) {
-        this.gui = gui;
+    public void setGUI(GUI g) {
+        gui = g;
     }
 }

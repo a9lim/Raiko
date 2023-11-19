@@ -38,63 +38,63 @@ public class CommandBuilder {
     private boolean usesTopicTags = true;
     private Command.CooldownScope cooldownScope = Command.CooldownScope.USER;
 
-    public CommandBuilder setName(String name) {
-        this.name = name != null ? name : "null";
+    public CommandBuilder setName(String n) {
+        name = n != null ? n : "null";
         return this;
     }
 
-    public CommandBuilder setHelp(String help) {
-        this.help = help != null ? help : "no help available";
+    public CommandBuilder setHelp(String h) {
+        help = h != null ? h : "no help available";
         return this;
     }
 
-    public CommandBuilder setCategory(Command.Category category) {
-        this.category = category;
+    public CommandBuilder setCategory(Command.Category cat) {
+        category = cat;
         return this;
     }
 
-    public CommandBuilder setArguments(String arguments) {
-        this.arguments = arguments;
+    public CommandBuilder setArguments(String args) {
+        arguments = args;
         return this;
     }
 
-    public CommandBuilder setGuildOnly(boolean guildOnly) {
-        this.guildOnly = guildOnly;
+    public CommandBuilder setGuildOnly(boolean b) {
+        guildOnly = b;
         return this;
     }
 
-    public CommandBuilder setRequiredRole(String requiredRole) {
-        this.requiredRole = requiredRole;
+    public CommandBuilder setRequiredRole(String role) {
+        requiredRole = role;
         return this;
     }
 
-    public CommandBuilder setOwnerCommand(boolean ownerCommand) {
-        this.ownerCommand = ownerCommand;
+    public CommandBuilder setOwnerCommand(boolean b) {
+        ownerCommand = b;
         return this;
     }
 
-    public CommandBuilder setCooldown(int cooldown) {
-        this.cooldown = cooldown;
+    public CommandBuilder setCooldown(int i) {
+        cooldown = i;
         return this;
     }
 
-    public CommandBuilder setUserPermissions(Permission... userPermissions) {
-        this.userPermissions = userPermissions != null ? userPermissions : new Permission[0];
+    public CommandBuilder setUserPermissions(Permission... permissions) {
+        userPermissions = permissions != null ? permissions : new Permission[0];
         return this;
     }
 
-    public CommandBuilder setUserPermissions(Collection<Permission> userPermissions) {
-        this.userPermissions = userPermissions != null ? (Permission[]) userPermissions.toArray() : new Permission[0];
+    public CommandBuilder setUserPermissions(Collection<Permission> permissions) {
+        userPermissions = permissions != null ? (Permission[]) permissions.toArray() : new Permission[0];
         return this;
     }
 
-    public CommandBuilder setBotPermissions(Permission... botPermissions) {
-        this.botPermissions = botPermissions != null ? botPermissions : new Permission[0];
+    public CommandBuilder setBotPermissions(Permission... permissions) {
+        botPermissions = permissions != null ? permissions : new Permission[0];
         return this;
     }
 
-    public CommandBuilder setBotPermissions(Collection<Permission> botPermissions) {
-        this.botPermissions = botPermissions != null ? (Permission[]) botPermissions.toArray() : new Permission[0];
+    public CommandBuilder setBotPermissions(Collection<Permission> permissions) {
+        botPermissions = permissions != null ? (Permission[]) permissions.toArray() : new Permission[0];
         return this;
     }
 
@@ -103,24 +103,24 @@ public class CommandBuilder {
         return this;
     }
 
-    public CommandBuilder addAliases(String... aliases) {
-        for (String alias : aliases)
+    public CommandBuilder addAliases(String... strings) {
+        for (String alias : strings)
             addAlias(alias);
         return this;
     }
 
-    public CommandBuilder setAliases(String... aliases) {
-        this.aliases.clear();
-        if (aliases != null)
-            for (String alias : aliases)
+    public CommandBuilder setAliases(String... strings) {
+        aliases.clear();
+        if (strings != null)
+            for (String alias : strings)
                 addAlias(alias);
         return this;
     }
 
-    public CommandBuilder setAliases(Collection<String> aliases) {
-        this.aliases.clear();
-        if (aliases != null)
-            this.aliases.addAll(aliases);
+    public CommandBuilder setAliases(Collection<String> strings) {
+        aliases.clear();
+        if (strings != null)
+            aliases.addAll(strings);
         return this;
     }
 
@@ -129,44 +129,44 @@ public class CommandBuilder {
         return this;
     }
 
-    public CommandBuilder addChildren(Command... children) {
-        for (Command child : children)
+    public CommandBuilder addChildren(Command... commands) {
+        for (Command child : commands)
             addChild(child);
         return this;
     }
 
-    public CommandBuilder setChildren(Command... children) {
-        this.children.clear();
-        if (children != null)
-            for (Command child : children)
+    public CommandBuilder setChildren(Command... commands) {
+        children.clear();
+        if (commands != null)
+            for (Command child : commands)
                 addChild(child);
         return this;
     }
 
-    public CommandBuilder setChildren(Collection<Command> children) {
-        this.children.clear();
-        if (children != null)
-            this.children.addAll(children);
+    public CommandBuilder setChildren(Collection<Command> commands) {
+        children.clear();
+        if (commands != null)
+            children.addAll(commands);
         return this;
     }
 
-    public CommandBuilder setHelpBiConsumer(BiConsumer<CommandEvent, Command> helpBiConsumer) {
-        this.helpBiConsumer = helpBiConsumer;
+    public CommandBuilder setHelpBiConsumer(BiConsumer<CommandEvent, Command> consumer) {
+        helpBiConsumer = consumer;
         return this;
     }
 
-    public CommandBuilder setUsesTopicTags(boolean usesTopicTags) {
-        this.usesTopicTags = usesTopicTags;
+    public CommandBuilder setUsesTopicTags(boolean b) {
+        usesTopicTags = b;
         return this;
     }
 
-    public CommandBuilder setCooldownScope(Command.CooldownScope cooldownScope) {
-        this.cooldownScope = cooldownScope != null ? cooldownScope : Command.CooldownScope.USER;
+    public CommandBuilder setCooldownScope(Command.CooldownScope scope) {
+        cooldownScope = scope != null ? scope : Command.CooldownScope.USER;
         return this;
     }
 
-    public CommandBuilder setHidden(boolean hidden) {
-        this.hidden = hidden;
+    public CommandBuilder setHidden(boolean h) {
+        hidden = h;
         return this;
     }
 
@@ -188,28 +188,28 @@ public class CommandBuilder {
     }
 
     private abstract static class BlankCommand extends Command {
-        BlankCommand(String name, String help, Category category,
-                     String arguments, boolean guildOnly, String requiredRole,
-                     boolean ownerCommand, int cooldown, Permission[] userPermissions,
-                     Permission[] botPermissions, String[] aliases, Command[] children,
-                     BiConsumer<CommandEvent, Command> helpBiConsumer,
-                     boolean usesTopicTags, CooldownScope cooldownScope, boolean hidden) {
-            this.name = name;
-            this.help = help;
-            this.category = category;
-            this.arguments = arguments;
-            this.guildOnly = guildOnly;
-            this.requiredRole = requiredRole;
-            this.ownerCommand = ownerCommand;
-            this.cooldown = cooldown;
-            this.userPermissions = userPermissions;
-            this.botPermissions = botPermissions;
-            this.aliases = aliases;
-            this.children = children;
-            this.helpBiConsumer = helpBiConsumer;
-            this.usesTopicTags = usesTopicTags;
-            this.cooldownScope = cooldownScope;
-            this.hidden = hidden;
+        BlankCommand(String n, String h, Category cat,
+                     String args, boolean b1, String role,
+                     boolean b2, int c, Permission[] uperms,
+                     Permission[] bperms, String[] al, Command[] commands,
+                     BiConsumer<CommandEvent, Command> consumer,
+                     boolean b3, CooldownScope scope, boolean b4) {
+            name = n;
+            help = h;
+            category = cat;
+            arguments = args;
+            guildOnly = b1;
+            requiredRole = role;
+            ownerCommand = b2;
+            cooldown = c;
+            userPermissions = uperms;
+            botPermissions = bperms;
+            aliases = al;
+            children = commands;
+            helpBiConsumer = consumer;
+            usesTopicTags = b3;
+            cooldownScope = scope;
+            hidden = b4;
         }
     }
 }

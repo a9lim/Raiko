@@ -23,13 +23,13 @@ import hayashi.raiko.settings.Settings;
 public class AutoplaylistCmd extends OwnerCommand {
     private final Bot bot;
 
-    public AutoplaylistCmd(Bot bot) {
-        this.bot = bot;
-        this.guildOnly = true;
-        this.name = "autoplaylist";
-        this.arguments = "<name|NONE>";
-        this.help = "sets the default playlist for the server";
-        this.aliases = bot.getConfig().getAliases(this.name);
+    public AutoplaylistCmd(Bot b) {
+        bot = b;
+        guildOnly = true;
+        name = "autoplaylist";
+        arguments = "<name|NONE>";
+        help = "sets the default playlist for the server";
+        aliases = bot.getConfig().getAliases(name);
     }
 
     @Override

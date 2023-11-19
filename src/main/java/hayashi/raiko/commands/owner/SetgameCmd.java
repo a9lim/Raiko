@@ -22,12 +22,12 @@ import net.dv8tion.jda.api.entities.Activity;
 
 public class SetgameCmd extends OwnerCommand {
     public SetgameCmd(Bot bot) {
-        this.name = "setgame";
-        this.help = "sets the game the bot is playing";
-        this.arguments = "[action] [game]";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.guildOnly = false;
-        this.children = new OwnerCommand[]{
+        name = "setgame";
+        help = "sets the game the bot is playing";
+        arguments = "[action] [game]";
+        aliases = bot.getConfig().getAliases(name);
+        guildOnly = false;
+        children = new OwnerCommand[]{
                 new SetlistenCmd(),
                 new SetstreamCmd(),
                 new SetwatchCmd()
@@ -49,11 +49,11 @@ public class SetgameCmd extends OwnerCommand {
     private static class SetstreamCmd extends OwnerCommand {
 
         private SetstreamCmd() {
-            this.name = "stream";
-            this.aliases = new String[]{"twitch", "streaming"};
-            this.help = "sets the game the bot is playing to a stream";
-            this.arguments = "<username> <game>";
-            this.guildOnly = false;
+            name = "stream";
+            aliases = new String[]{"twitch", "streaming"};
+            help = "sets the game the bot is playing to a stream";
+            arguments = "<username> <game>";
+            guildOnly = false;
         }
 
         @Override
@@ -75,11 +75,11 @@ public class SetgameCmd extends OwnerCommand {
 
     private static class SetlistenCmd extends OwnerCommand {
         private SetlistenCmd() {
-            this.name = "listen";
-            this.aliases = new String[]{"listening"};
-            this.help = "sets the game the bot is listening to";
-            this.arguments = "<title>";
-            this.guildOnly = false;
+            name = "listen";
+            aliases = new String[]{"listening"};
+            help = "sets the game the bot is listening to";
+            arguments = "<title>";
+            guildOnly = false;
         }
 
         @Override
@@ -100,11 +100,11 @@ public class SetgameCmd extends OwnerCommand {
 
     private static class SetwatchCmd extends OwnerCommand {
         private SetwatchCmd() {
-            this.name = "watch";
-            this.aliases = new String[]{"watching"};
-            this.help = "sets the game the bot is watching";
-            this.arguments = "<title>";
-            this.guildOnly = false;
+            name = "watch";
+            aliases = new String[]{"watching"};
+            help = "sets the game the bot is watching";
+            arguments = "<title>";
+            guildOnly = false;
         }
 
         @Override

@@ -52,21 +52,21 @@ public class SelectionDialog extends Menu {
     public static final String CANCEL = "\u274E";
 
     SelectionDialog(EventWaiter waiter, Set<User> users, Set<Role> roles, long timeout, TimeUnit unit,
-                    List<String> choices, String leftEnd, String rightEnd, String defaultLeft, String defaultRight,
-                    Function<Integer, Color> color, boolean loop, BiConsumer<Message, Integer> success,
-                    Consumer<Message> cancel, Function<Integer, String> text, boolean singleSelectionMode) {
+                    List<String> c, String le, String re, String dl, String dr,
+                    Function<Integer, Color> co, boolean l, BiConsumer<Message, Integer> succ,
+                    Consumer<Message> can, Function<Integer, String> t, boolean b) {
         super(waiter, users, roles, timeout, unit);
-        this.choices = choices;
-        this.leftEnd = leftEnd;
-        this.rightEnd = rightEnd;
-        this.defaultLeft = defaultLeft;
-        this.defaultRight = defaultRight;
-        this.color = color;
-        this.loop = loop;
-        this.success = success;
-        this.cancel = cancel;
-        this.text = text;
-        this.singleSelectionMode = singleSelectionMode;
+        choices = c;
+        leftEnd = le;
+        rightEnd = re;
+        defaultLeft = dl;
+        defaultRight = dr;
+        color = co;
+        loop = l;
+        success = succ;
+        cancel = can;
+        text = t;
+        singleSelectionMode = b;
     }
 
     @Deprecated
@@ -92,8 +92,7 @@ public class SelectionDialog extends Menu {
             selection = 1;
         else if (selection > choices.size())
             selection = choices.size();
-        Message msg = render(selection);
-        initialize(channel.sendMessage(msg), selection);
+        initialize(channel.sendMessage(render(selection)), selection);
     }
 
     public void showDialog(Message message, int selection) {
@@ -101,8 +100,7 @@ public class SelectionDialog extends Menu {
             selection = 1;
         else if (selection > choices.size())
             selection = choices.size();
-        Message msg = render(selection);
-        initialize(message.editMessage(msg), selection);
+        initialize(message.editMessage(render(selection)), selection);
     }
 
     private void initialize(RestAction<Message> action, int selection) {
@@ -132,26 +130,27 @@ public class SelectionDialog extends Menu {
         }, event -> {
             int newSelection = selection;
             switch (event.getReaction().getReactionEmote().getName()) {
-                case UP:
+                case UP -> {
                     if (newSelection > 1)
                         newSelection--;
                     else if (loop)
                         newSelection = choices.size();
-                    break;
-                case DOWN:
+                }
+                case DOWN -> {
                     if (newSelection < choices.size())
                         newSelection++;
                     else if (loop)
                         newSelection = 1;
-                    break;
-                case SELECT:
+                }
+                case SELECT -> {
                     success.accept(message, selection);
                     if (singleSelectionMode)
                         return;
-                    break;
-                case CANCEL:
+                }
+                case CANCEL -> {
                     cancel.accept(message);
                     return;
+                }
             }
             try {
                 event.getReaction().removeReaction(event.getUser()).queue();
@@ -163,13 +162,14 @@ public class SelectionDialog extends Menu {
 
     private Message render(int selection) {
         StringBuilder sbuilder = new StringBuilder();
+        selection--;
         for (int i = 0; i < choices.size(); i++)
-            if (i + 1 == selection)
+            if (i == selection)
                 sbuilder.append("\n").append(leftEnd).append(choices.get(i)).append(rightEnd);
             else
                 sbuilder.append("\n").append(defaultLeft).append(choices.get(i)).append(defaultRight);
         MessageBuilder mbuilder = new MessageBuilder();
-        String content = text.apply(selection);
+        String content = text.apply(++selection);
         if (content != null)
             mbuilder.append(content);
         return mbuilder.setEmbeds(new EmbedBuilder()
@@ -188,8 +188,7 @@ public class SelectionDialog extends Menu {
         private boolean loop = true;
         private Function<Integer, String> text = i -> null;
         private BiConsumer<Message, Integer> selection;
-        private Consumer<Message> cancel = (m) -> {
-        };
+        private Consumer<Message> cancel = (m) -> {};
         private boolean singleSelectionMode;
 
         @Override
@@ -202,71 +201,71 @@ public class SelectionDialog extends Menu {
                 defaultLeft, defaultRight, color, loop, selection, cancel, text, singleSelectionMode);
         }
 
-        public Builder setColor(Color color) {
-            this.color = i -> color;
+        public Builder setColor(Color c) {
+            color = i -> c;
             return this;
         }
 
-        public Builder setColor(Function<Integer, Color> color) {
-            this.color = color;
+        public Builder setColor(Function<Integer, Color> c) {
+            color = c;
             return this;
         }
 
-        public Builder setText(String text) {
-            this.text = i -> text;
+        public Builder setText(String t) {
+            text = i -> t;
             return this;
         }
 
-        public Builder setText(Function<Integer, String> text) {
-            this.text = text;
+        public Builder setText(Function<Integer, String> t) {
+            text = t;
             return this;
         }
 
         public Builder setSelectedEnds(String left, String right) {
-            this.leftEnd = left;
-            this.rightEnd = right;
+            leftEnd = left;
+            rightEnd = right;
             return this;
         }
 
         public Builder setDefaultEnds(String left, String right) {
-            this.defaultLeft = left;
-            this.defaultRight = right;
+            defaultLeft = left;
+            defaultRight = right;
             return this;
         }
 
-        public Builder useLooping(boolean loop) {
-            this.loop = loop;
+        public Builder useLooping(boolean l) {
+            loop = l;
             return this;
         }
 
-        public Builder useSingleSelectionMode(boolean singleSelectionMode) {
-            this.singleSelectionMode = singleSelectionMode;
+        public Builder useSingleSelectionMode(boolean b) {
+            singleSelectionMode = b;
             return this;
         }
 
-        public Builder setSelectionConsumer(BiConsumer<Message, Integer> selection) {
-            this.selection = selection;
+        public Builder setSelectionConsumer(BiConsumer<Message, Integer> consumer) {
+            selection = consumer;
             return this;
         }
 
-        public Builder setCanceled(Consumer<Message> cancel) {
-            this.cancel = cancel;
+        public Builder setCanceled(Consumer<Message> consumer) {
+            cancel = consumer;
             return this;
         }
 
         public Builder clearChoices() {
-            this.choices.clear();
+            choices.clear();
             return this;
         }
 
-        public Builder setChoices(String... choices) {
-            this.choices.clear();
-            this.choices.addAll(Arrays.asList(choices));
+        public Builder setChoices(String... c) {
+            choices.clear();
+            choices.addAll(Arrays.asList(c));
             return this;
         }
 
-        public Builder addChoices(String... choices) {
-            this.choices.addAll(Arrays.asList(choices));
+        public Builder addChoices(String... c) {
+            choices.addAll(Arrays.asList(c));
             return this;
         }
     }

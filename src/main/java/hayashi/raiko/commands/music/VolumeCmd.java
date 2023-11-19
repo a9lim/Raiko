@@ -25,10 +25,10 @@ import hayashi.raiko.utils.FormatUtil;
 public class VolumeCmd extends MusicCommand {
     public VolumeCmd(Bot bot) {
         super(bot);
-        this.name = "volume";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.help = "sets or shows volume";
-        this.arguments = "[0-150]";
+        name = "volume";
+        aliases = bot.getConfig().getAliases(name);
+        help = "sets or shows volume";
+        arguments = "[0-150]";
     }
 
     @Override

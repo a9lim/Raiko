@@ -57,18 +57,18 @@ public class OrderedMenu extends Menu {
     public final static String CANCEL = "\u274C";
 
     OrderedMenu(EventWaiter waiter, Set<User> users, Set<Role> roles, long timeout, TimeUnit unit,
-                Color color, String text, String description, List<String> choices, BiConsumer<Message, Integer> action,
-                Consumer<Message> cancel, boolean useLetters, boolean allowTypedInput, boolean useCancel) {
+                Color c, String t, String d, List<String> ch, BiConsumer<Message, Integer> biConsumer,
+                Consumer<Message> consumer, boolean b, boolean b1, boolean b2) {
         super(waiter, users, roles, timeout, unit);
-        this.color = color;
-        this.text = text;
-        this.description = description;
-        this.choices = choices;
-        this.action = action;
-        this.cancel = cancel;
-        this.useLetters = useLetters;
-        this.allowTypedInput = allowTypedInput;
-        this.useCancel = useCancel;
+        color = c;
+        text = t;
+        description = d;
+        choices = ch;
+        action = biConsumer;
+        cancel = consumer;
+        useLetters = b;
+        allowTypedInput = b1;
+        useCancel = b2;
     }
 
     @Override
@@ -153,13 +153,12 @@ public class OrderedMenu extends Menu {
             // If we're dealing with a message reaction being added we return whether it's valid
             // If we're dealing with a received message being added we return whether it's valid
             // Otherwise return false
-            return (e instanceof MessageReactionAddEvent && isValidReaction(m, (MessageReactionAddEvent) e)) ||
-                (e instanceof MessageReceivedEvent && isValidMessage(m, (MessageReceivedEvent) e));
+            return (e instanceof MessageReactionAddEvent h && isValidReaction(m, h)) ||
+                (e instanceof MessageReceivedEvent i && isValidMessage(m, i));
         }, e -> {
             m.delete().queue();
             // If it's a valid MessageReactionAddEvent
-            if (e instanceof MessageReactionAddEvent) {
-                MessageReactionAddEvent event = (MessageReactionAddEvent) e;
+            if (e instanceof MessageReactionAddEvent event) {
                 // Process which reaction it is
                 if (event.getReaction().getReactionEmote().getName().equals(CANCEL))
                     cancel.accept(m);
@@ -170,8 +169,7 @@ public class OrderedMenu extends Menu {
                     action.accept(m, getNumber(event.getReaction().getReactionEmote().getName()));
             }
             // If it's a valid MessageReceivedEvent
-            else if (e instanceof MessageReceivedEvent) {
-                MessageReceivedEvent event = (MessageReceivedEvent) e;
+            else if (e instanceof MessageReceivedEvent event) {
                 // Get the number in the message and process
                 int num = getMessageNumber(event.getMessage().getContentRaw());
                 if (num < 0 || num > choices.size())
@@ -280,55 +278,55 @@ public class OrderedMenu extends Menu {
                 selection, cancel, useLetters, allowTypedInput, addCancel);
         }
 
-        public Builder setColor(Color color) {
-            this.color = color;
+        public Builder setColor(Color c) {
+            color = c;
             return this;
         }
 
         public Builder useLetters() {
-            this.useLetters = true;
+            useLetters = true;
             return this;
         }
 
         public Builder useNumbers() {
-            this.useLetters = false;
+            useLetters = false;
             return this;
         }
 
         public Builder allowTextInput(boolean allow) {
-            this.allowTypedInput = allow;
+            allowTypedInput = allow;
             return this;
         }
 
         public Builder useCancelButton(boolean use) {
-            this.addCancel = use;
+            addCancel = use;
             return this;
         }
 
-        public Builder setText(String text) {
-            this.text = text;
+        public Builder setText(String t) {
+            text = t;
             return this;
         }
 
-        public Builder setDescription(String description) {
-            this.description = description;
+        public Builder setDescription(String d) {
+            description = d;
             return this;
         }
 
-        public Builder setSelection(BiConsumer<Message, Integer> selection) {
-            this.selection = selection;
+        public Builder setSelection(BiConsumer<Message, Integer> consumer) {
+            selection = consumer;
             return this;
         }
 
-        public Builder setCancel(Consumer<Message> cancel) {
-            this.cancel = cancel;
+        public Builder setCancel(Consumer<Message> consumer) {
+            cancel = consumer;
             return this;
         }
 
         public Builder addChoice(String choice) {
             Checks.check(choices.size() < 10, "Cannot set more than 10 choices");
 
-            this.choices.add(choice);
+            choices.add(choice);
             return this;
         }
 
@@ -344,7 +342,7 @@ public class OrderedMenu extends Menu {
         }
 
         public Builder clearChoices() {
-            this.choices.clear();
+            choices.clear();
             return this;
         }
     }

@@ -51,65 +51,65 @@ public class CommandClientBuilder {
         return client;
     }
 
-    public CommandClientBuilder setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
+    public CommandClientBuilder setOwnerId(String o) {
+        ownerId = o;
         return this;
     }
 
-    public CommandClientBuilder setCoOwnerIds(String... coOwnerIds) {
-        this.coOwnerIds = coOwnerIds;
+    public CommandClientBuilder setCoOwnerIds(String... co) {
+        coOwnerIds = co;
         return this;
     }
 
-    public CommandClientBuilder setPrefix(String prefix) {
-        this.prefix = prefix;
+    public CommandClientBuilder setPrefix(String p) {
+        prefix = p;
         return this;
     }
 
     public CommandClientBuilder setAlternativePrefix(String prefix) {
-        this.altprefix = prefix;
+        altprefix = prefix;
         return this;
     }
 
-    public CommandClientBuilder useHelpBuilder(boolean useHelp) {
-        this.useHelp = useHelp;
+    public CommandClientBuilder useHelpBuilder(boolean b) {
+        useHelp = b;
         return this;
     }
 
-    public CommandClientBuilder setHelpConsumer(Consumer<CommandEvent> helpConsumer) {
-        this.helpConsumer = helpConsumer;
+    public CommandClientBuilder setHelpConsumer(Consumer<CommandEvent> consumer) {
+        helpConsumer = consumer;
         return this;
     }
 
-    public CommandClientBuilder setHelpWord(String helpWord) {
-        this.helpWord = helpWord;
+    public CommandClientBuilder setHelpWord(String h) {
+        helpWord = h;
         return this;
     }
 
-    public CommandClientBuilder setServerInvite(String serverInvite) {
-        this.serverInvite = serverInvite;
+    public CommandClientBuilder setServerInvite(String s) {
+        serverInvite = s;
         return this;
     }
 
-    public CommandClientBuilder setEmojis(String success, String warning, String error) {
-        this.success = success;
-        this.warning = warning;
-        this.error = error;
+    public CommandClientBuilder setEmojis(String succ, String war, String err) {
+        success = succ;
+        warning = war;
+        error = err;
         return this;
     }
 
-    public CommandClientBuilder setActivity(Activity activity) {
-        this.activity = activity;
+    public CommandClientBuilder setActivity(Activity a) {
+        activity = a;
         return this;
     }
 
     public CommandClientBuilder useDefaultGame() {
-        this.activity = Activity.playing("default");
+        activity = Activity.playing("default");
         return this;
     }
 
-    public CommandClientBuilder setStatus(OnlineStatus status) {
-        this.status = status;
+    public CommandClientBuilder setStatus(OnlineStatus stat) {
+        status = stat;
         return this;
     }
 
@@ -120,12 +120,12 @@ public class CommandClientBuilder {
 
     public CommandClientBuilder addCommands(Command... commands) {
         for (Command command : commands)
-            this.addCommand(command);
+            addCommand(command);
         return this;
     }
 
     public CommandClientBuilder addAnnotatedModule(Object module) {
-        this.commands.addAll(compiler.compile(module));
+        commands.addAll(compiler.compile(module));
         return this;
     }
 
@@ -135,49 +135,43 @@ public class CommandClientBuilder {
         return this;
     }
 
-    public CommandClientBuilder setAnnotatedCompiler(AnnotatedModuleCompiler compiler) {
-        this.compiler = compiler;
+    public CommandClientBuilder setAnnotatedCompiler(AnnotatedModuleCompiler comp) {
+        compiler = comp;
         return this;
     }
 
     public CommandClientBuilder setCarbonitexKey(String key) {
-        this.carbonKey = key;
+        carbonKey = key;
         return this;
     }
 
     public CommandClientBuilder setDiscordBotsKey(String key) {
-        this.botsKey = key;
+        botsKey = key;
         return this;
     }
 
-    @Deprecated
-    public CommandClientBuilder setDiscordBotListKey(String key) {
-        // this.botsOrgKey = key;
+    public CommandClientBuilder setListener(CommandListener list) {
+        listener = list;
         return this;
     }
 
-    public CommandClientBuilder setListener(CommandListener listener) {
-        this.listener = listener;
+    public CommandClientBuilder setScheduleExecutor(ScheduledExecutorService service) {
+        executor = service;
         return this;
     }
 
-    public CommandClientBuilder setScheduleExecutor(ScheduledExecutorService executor) {
-        this.executor = executor;
+    public CommandClientBuilder setShutdownAutomatically(boolean b) {
+        shutdownAutomatically = b;
         return this;
     }
 
-    public CommandClientBuilder setShutdownAutomatically(boolean shutdownAutomatically) {
-        this.shutdownAutomatically = shutdownAutomatically;
+    public CommandClientBuilder setLinkedCacheSize(int size) {
+        linkedCacheSize = size;
         return this;
     }
 
-    public CommandClientBuilder setLinkedCacheSize(int linkedCacheSize) {
-        this.linkedCacheSize = linkedCacheSize;
-        return this;
-    }
-
-    public CommandClientBuilder setGuildSettingsManager(GuildSettingsManager manager) {
-        this.manager = manager;
+    public CommandClientBuilder setGuildSettingsManager(GuildSettingsManager man) {
+        manager = man;
         return this;
     }
 }

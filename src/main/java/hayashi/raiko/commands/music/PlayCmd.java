@@ -45,14 +45,14 @@ public class PlayCmd extends MusicCommand {
 
     public PlayCmd(Bot bot) {
         super(bot);
-        this.loadingEmoji = bot.getConfig().getLoading();
-        this.name = "play";
-        this.arguments = "<title|URL|subcommand>";
-        this.help = "plays the provided song";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.beListening = true;
-        this.bePlaying = false;
-        this.children = new Command[]{new PlaylistCmd(bot)};
+        loadingEmoji = bot.getConfig().getLoading();
+        name = "play";
+        arguments = "<title|URL|subcommand>";
+        help = "plays the provided song";
+        aliases = bot.getConfig().getAliases(name);
+        beListening = true;
+        bePlaying = false;
+        children = new Command[]{new PlaylistCmd(bot)};
     }
 
     @Override
@@ -83,10 +83,10 @@ public class PlayCmd extends MusicCommand {
         private final CommandEvent event;
         private final boolean ytsearch;
 
-        private ResultHandler(Message m, CommandEvent event, boolean ytsearch) {
-            this.m = m;
-            this.event = event;
-            this.ytsearch = ytsearch;
+        private ResultHandler(Message message, CommandEvent e, boolean b) {
+            m = message;
+            event = e;
+            ytsearch = b;
         }
 
         private void loadSingle(AudioTrack track, AudioPlaylist playlist) {
@@ -188,12 +188,12 @@ public class PlayCmd extends MusicCommand {
     public class PlaylistCmd extends MusicCommand {
         public PlaylistCmd(Bot bot) {
             super(bot);
-            this.name = "playlist";
-            this.aliases = new String[]{"pl"};
-            this.arguments = "<name>";
-            this.help = "plays the provided playlist";
-            this.beListening = true;
-            this.bePlaying = false;
+            name = "playlist";
+            aliases = new String[]{"pl"};
+            arguments = "<name>";
+            help = "plays the provided playlist";
+            beListening = true;
+            bePlaying = false;
         }
 
         @Override

@@ -44,12 +44,12 @@ public class EventWaiter implements EventListener {
         this(Executors.newSingleThreadScheduledExecutor(), true);
     }
 
-    public EventWaiter(ScheduledExecutorService threadpool, boolean shutdownAutomatically) {
-        Checks.notNull(threadpool, "ScheduledExecutorService");
-        Checks.check(!threadpool.isShutdown(), "Cannot construct EventWaiter with a closed ScheduledExecutorService!");
+    public EventWaiter(ScheduledExecutorService tp, boolean b) {
+        Checks.notNull(tp, "ScheduledExecutorService");
+        Checks.check(!tp.isShutdown(), "Cannot construct EventWaiter with a closed ScheduledExecutorService!");
 
-        this.waitingEvents = new HashMap<>();
-        this.threadpool = threadpool;
+        waitingEvents = new HashMap<>();
+        threadpool = tp;
 
         // "Why is there no default constructor?"
         //
@@ -62,7 +62,8 @@ public class EventWaiter implements EventListener {
         // if you use this executor for other things and set this true.
         //
         // NOT MINE
-        this.shutdownAutomatically = shutdownAutomatically;
+        // bro said you problem
+        shutdownAutomatically = b;
     }
 
     public boolean isShutdown() {

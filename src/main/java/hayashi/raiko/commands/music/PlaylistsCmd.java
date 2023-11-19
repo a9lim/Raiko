@@ -24,11 +24,11 @@ import hayashi.raiko.commands.MusicCommand;
 public class PlaylistsCmd extends MusicCommand {
     public PlaylistsCmd(Bot bot) {
         super(bot);
-        this.name = "playlists";
-        this.help = "shows the available playlists";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.guildOnly = true;
-        this.beListening = false;
+        name = "playlists";
+        help = "shows the available playlists";
+        aliases = bot.getConfig().getAliases(name);
+        guildOnly = true;
+        beListening = false;
     }
 
     @Override

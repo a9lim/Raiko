@@ -28,9 +28,9 @@ public class QueuedTrack implements Queueable {
         this(track, new RequestMetadata(owner));
     }
 
-    public QueuedTrack(AudioTrack track, RequestMetadata rm) {
-        this.track = track;
-        this.track.setUserData(rm);
+    public QueuedTrack(AudioTrack t, RequestMetadata rm) {
+        track = t;
+        track.setUserData(rm);
     }
 
     @Override

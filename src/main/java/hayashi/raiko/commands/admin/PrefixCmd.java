@@ -22,10 +22,10 @@ import hayashi.raiko.settings.Settings;
 
 public class PrefixCmd extends AdminCommand {
     public PrefixCmd(Bot bot) {
-        this.name = "prefix";
-        this.help = "sets a server-specific prefix";
-        this.arguments = "<prefix|NONE>";
-        this.aliases = bot.getConfig().getAliases(this.name);
+        name = "prefix";
+        help = "sets a server-specific prefix";
+        arguments = "<prefix|NONE>";
+        aliases = bot.getConfig().getAliases(name);
     }
 
     @Override

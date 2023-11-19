@@ -22,9 +22,9 @@ public enum RepeatMode {
 
     private final String emoji, userFriendlyName;
 
-    RepeatMode(String emoji, String userFriendlyName) {
-        this.emoji = emoji;
-        this.userFriendlyName = userFriendlyName;
+    RepeatMode(String e, String s) {
+        emoji = e;
+        userFriendlyName = s;
     }
 
     public String getEmoji() {

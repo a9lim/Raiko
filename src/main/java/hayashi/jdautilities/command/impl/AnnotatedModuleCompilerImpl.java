@@ -39,16 +39,15 @@ public class AnnotatedModuleCompilerImpl implements AnnotatedModuleCompiler {
         if (module.value().length < 1)
             throw new IllegalArgumentException("Object provided is annotated with an empty command module!");
 
-        List<Method> commands = collect((Method method) -> {
+
+        List<Command> list = new ArrayList<>();
+        collect((Method method) -> {
             for (String name : module.value()) {
                 if (name.equalsIgnoreCase(method.getName()))
                     return true;
             }
             return false;
-        }, o.getClass().getMethods());
-
-        List<Command> list = new ArrayList<>();
-        commands.forEach(method -> {
+        }, o.getClass().getMethods()).forEach(method -> {
             try {
                 list.add(compileMethod(o, method));
             } catch (MalformedParametersException e) {

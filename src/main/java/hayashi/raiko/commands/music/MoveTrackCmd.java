@@ -12,11 +12,11 @@ public class MoveTrackCmd extends MusicCommand {
 
     public MoveTrackCmd(Bot bot) {
         super(bot);
-        this.name = "movetrack";
-        this.help = "move a track in the current queue to a different position";
-        this.arguments = "<from> <to>";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.bePlaying = true;
+        name = "movetrack";
+        help = "move a track in the current queue to a different position";
+        arguments = "<from> <to>";
+        aliases = bot.getConfig().getAliases(name);
+        bePlaying = true;
     }
 
     @Override
@@ -37,8 +37,7 @@ public class MoveTrackCmd extends MusicCommand {
             return;
         }
         // Validate that from and to are available
-        AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
-        DoubleDealingQueue<QueuedTrack> queue = handler.getQueue();
+        DoubleDealingQueue<QueuedTrack> queue = ((AudioHandler) event.getGuild().getAudioManager().getSendingHandler()).getQueue();
         if (isUnavailablePosition(queue, from) || isUnavailablePosition(queue, to)) {
             event.replyError("Provide a valid position in the queue!");
         } else {

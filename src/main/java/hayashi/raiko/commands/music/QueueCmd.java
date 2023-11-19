@@ -38,12 +38,12 @@ public class QueueCmd extends MusicCommand {
 
     public QueueCmd(Bot bot) {
         super(bot);
-        this.name = "queue";
-        this.help = "shows the current queue";
-        this.arguments = "[pagenum]";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.bePlaying = true;
-        this.botPermissions = new Permission[]{Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS};
+        name = "queue";
+        help = "shows the current queue";
+        arguments = "[pagenum]";
+        aliases = bot.getConfig().getAliases(name);
+        bePlaying = true;
+        botPermissions = new Permission[]{Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS};
         builder = new Paginator.Builder()
                 .setColumns(1)
                 .setFinalAction(m -> {
@@ -70,10 +70,9 @@ public class QueueCmd extends MusicCommand {
         Deque<QueuedTrack> deque = ah.getQueue().getDeque();
         if (deque.isEmpty()) {
             Message nowp = ah.getNowPlaying(event.getJDA());
-            Message built = new MessageBuilder()
+            event.reply(new MessageBuilder()
                     .setContent(event.getClient().getWarning() + " There is no music in the queue!")
-                    .setEmbeds((nowp == null ? ah.getNoMusicPlaying(event.getJDA()) : nowp).getEmbeds().get(0)).build();
-            event.reply(built, m -> {
+                    .setEmbeds((nowp == null ? ah.getNoMusicPlaying(event.getJDA()) : nowp).getEmbeds().get(0)).build(), m -> {
                 if (nowp != null)
                     bot.getNowplayingHandler().setLastNPMessage(m);
             });

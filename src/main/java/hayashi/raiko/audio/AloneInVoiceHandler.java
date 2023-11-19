@@ -31,8 +31,8 @@ public class AloneInVoiceHandler {
     private final HashMap<Long, Instant> aloneSince = new HashMap<>();
     private long aloneTimeUntilStop;
 
-    public AloneInVoiceHandler(Bot bot) {
-        this.bot = bot;
+    public AloneInVoiceHandler(Bot b) {
+        bot = b;
     }
 
     public void init() {
@@ -43,7 +43,8 @@ public class AloneInVoiceHandler {
     private void check() {
         Set<Long> toRemove = new HashSet<>();
         for (Map.Entry<Long, Instant> entrySet : aloneSince.entrySet()) {
-            if (entrySet.getValue().getEpochSecond() > Instant.now().getEpochSecond() - aloneTimeUntilStop) continue;
+            if (entrySet.getValue().getEpochSecond() > Instant.now().getEpochSecond() - aloneTimeUntilStop)
+                continue;
 
             Guild guild = bot.getJDA().getGuildById(entrySet.getKey());
 

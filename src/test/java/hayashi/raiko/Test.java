@@ -4,8 +4,7 @@ import hayashi.raiko.queue.DoubleDealingQueue;
 
 import java.util.Iterator;
 
-public enum Test {
-    ;
+public class Test {
 
     public static void main(String[] args){
         testMoveTo(10);

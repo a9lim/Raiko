@@ -338,22 +338,22 @@ public abstract class Command {
         private final String name, failResponse;
         private final Predicate<CommandEvent> predicate;
 
-        public Category(String name) {
-            this.name = name;
-            this.failResponse = null;
-            this.predicate = null;
+        public Category(String n) {
+            name = n;
+            failResponse = null;
+            predicate = null;
         }
 
-        public Category(String name, Predicate<CommandEvent> predicate) {
-            this.name = name;
-            this.failResponse = null;
-            this.predicate = predicate;
+        public Category(String n, Predicate<CommandEvent> p) {
+            name = n;
+            failResponse = null;
+            predicate = p;
         }
 
-        public Category(String name, String failResponse, Predicate<CommandEvent> predicate) {
-            this.name = name;
-            this.failResponse = failResponse;
-            this.predicate = predicate;
+        public Category(String n, String s, Predicate<CommandEvent> p) {
+            name = n;
+            failResponse = s;
+            predicate = p;
         }
 
         public String getName() {
@@ -370,17 +370,15 @@ public abstract class Command {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof Category other))
-                return false;
-            return Objects.equals(name, other.name) && Objects.equals(predicate, other.predicate) && Objects.equals(failResponse, other.failResponse);
+            return obj instanceof Category other && Objects.equals(name, other.name) && Objects.equals(predicate, other.predicate) && Objects.equals(failResponse, other.failResponse);
         }
 
         @Override
         public int hashCode() {
             int hash = 7;
-            hash = 17 * hash + Objects.hashCode(this.name);
-            hash = 17 * hash + Objects.hashCode(this.failResponse);
-            hash = 17 * hash + Objects.hashCode(this.predicate);
+            hash = 17 * hash + Objects.hashCode(name);
+            hash = 17 * hash + Objects.hashCode(failResponse);
+            hash = 17 * hash + Objects.hashCode(predicate);
             return hash;
         }
     }
@@ -402,12 +400,11 @@ public abstract class Command {
 
         GLOBAL("Global", "globally");
 
-        private final String format;
-        final String errorSpecification;
+        private final String format, errorSpecification;
 
-        CooldownScope(String format, String errorSpecification) {
-            this.format = format;
-            this.errorSpecification = errorSpecification;
+        CooldownScope(String f, String e) {
+            format = f;
+            errorSpecification = e;
         }
 
         String genKey(String name, long id) {

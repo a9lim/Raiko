@@ -22,11 +22,11 @@ import net.dv8tion.jda.api.OnlineStatus;
 
 public class SetstatusCmd extends OwnerCommand {
     public SetstatusCmd(Bot bot) {
-        this.name = "setstatus";
-        this.help = "sets the status the bot displays";
-        this.arguments = "<status>";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.guildOnly = false;
+        name = "setstatus";
+        help = "sets the status the bot displays";
+        arguments = "<status>";
+        aliases = bot.getConfig().getAliases(name);
+        guildOnly = false;
     }
 
     @Override

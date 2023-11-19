@@ -32,13 +32,13 @@ public class PlaynextCmd extends MusicCommand {
 
     public PlaynextCmd(Bot bot) {
         super(bot);
-        this.loadingEmoji = bot.getConfig().getLoading();
-        this.name = "playnext";
-        this.arguments = "<title|URL>";
-        this.help = "plays a single song next";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.beListening = true;
-        this.bePlaying = false;
+        loadingEmoji = bot.getConfig().getLoading();
+        name = "playnext";
+        arguments = "<title|URL>";
+        help = "plays a single song next";
+        aliases = bot.getConfig().getAliases(name);
+        beListening = true;
+        bePlaying = false;
     }
 
     @Override
@@ -58,10 +58,10 @@ public class PlaynextCmd extends MusicCommand {
         private final CommandEvent event;
         private final boolean ytsearch;
 
-        private ResultHandler(Message m, CommandEvent event, boolean ytsearch) {
-            this.m = m;
-            this.event = event;
-            this.ytsearch = ytsearch;
+        private ResultHandler(Message message, CommandEvent e, boolean b) {
+            m = message;
+            event = e;
+            ytsearch = b;
         }
 
         private void loadSingle(AudioTrack track) {

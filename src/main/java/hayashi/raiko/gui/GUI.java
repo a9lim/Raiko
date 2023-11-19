@@ -27,8 +27,8 @@ public class GUI extends JFrame {
     private final ConsolePanel console;
     private final Bot bot;
 
-    public GUI(Bot bot) {
-        this.bot = bot;
+    public GUI(Bot b) {
+        bot = b;
         console = new ConsolePanel();
     }
 

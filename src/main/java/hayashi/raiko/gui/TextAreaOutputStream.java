@@ -36,9 +36,8 @@ public class TextAreaOutputStream extends OutputStream {
     }
 
     public TextAreaOutputStream(JTextArea txtara, int maxlin) {
-        if (maxlin < 1) {
+        if (maxlin < 1)
             throw new IllegalArgumentException("TextAreaOutputStream maximum lines must be positive (value=" + maxlin + ")");
-        }
         oneByte = new byte[1];
         appender = new Appender(txtara, maxlin);
     }
@@ -47,9 +46,8 @@ public class TextAreaOutputStream extends OutputStream {
      * Clear the current console text area.
      */
     public synchronized void clear() {
-        if (appender != null) {
+        if (appender != null)
             appender.clear();
-        }
     }
 
     @Override
@@ -75,9 +73,8 @@ public class TextAreaOutputStream extends OutputStream {
 
     @Override
     public synchronized void write(byte[] ba, int str, int len) {
-        if (appender != null) {
+        if (appender != null)
             appender.append(bytesToString(ba, str, len));
-        }
     }
 
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings("DM_DEFAULT_ENCODING")

@@ -25,12 +25,12 @@ import net.dv8tion.jda.api.entities.User;
 public class RemoveCmd extends MusicCommand {
     public RemoveCmd(Bot bot) {
         super(bot);
-        this.name = "remove";
-        this.help = "removes a song from the queue";
-        this.arguments = "<position|MINE|ALL>";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.beListening = true;
-        this.bePlaying = true;
+        name = "remove";
+        help = "removes a song from the queue";
+        arguments = "<position|MINE|ALL>";
+        aliases = bot.getConfig().getAliases(name);
+        beListening = true;
+        bePlaying = true;
     }
 
     @Override

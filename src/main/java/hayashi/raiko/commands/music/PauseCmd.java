@@ -23,10 +23,10 @@ import hayashi.raiko.commands.MusicCommand;
 public class PauseCmd extends MusicCommand {
     public PauseCmd(Bot bot) {
         super(bot);
-        this.name = "pause";
-        this.help = "pauses the current song";
-        this.aliases = bot.getConfig().getAliases(this.name);
-        this.bePlaying = true;
+        name = "pause";
+        help = "pauses the current song";
+        aliases = bot.getConfig().getAliases(name);
+        bePlaying = true;
     }
 
     @Override
@@ -35,9 +35,9 @@ public class PauseCmd extends MusicCommand {
         if (handler.getPlayer().isPaused()) {
             handler.getPlayer().setPaused(false);
             event.replySuccess("Resumed **" + handler.getPlayer().getPlayingTrack().getInfo().title + "**.");
-            return;
+        } else {
+            handler.getPlayer().setPaused(true);
+            event.replySuccess("Paused **" + handler.getPlayer().getPlayingTrack().getInfo().title + "**.");
         }
-        handler.getPlayer().setPaused(true);
-        event.replySuccess("Paused **" + handler.getPlayer().getPlayingTrack().getInfo().title + "**.");
     }
 }

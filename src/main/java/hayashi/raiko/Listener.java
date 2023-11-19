@@ -31,8 +31,8 @@ import org.slf4j.LoggerFactory;
 public class Listener extends ListenerAdapter {
     private final Bot bot;
 
-    public Listener(Bot bot) {
-        this.bot = bot;
+    public Listener(Bot b) {
+        bot = b;
     }
 
     @Override
@@ -45,9 +45,9 @@ public class Listener extends ListenerAdapter {
         credit(event.getJDA());
         event.getJDA().getGuilds().forEach((guild) -> {
             try {
-                String defpl = bot.getSettingsManager().getSettings(guild).getDefaultPlaylist();
                 VoiceChannel vc = bot.getSettingsManager().getSettings(guild).getVoiceChannel(guild);
-                if (defpl != null && vc != null && bot.getPlayerManager().setUpHandler(guild).playFromDefault())
+                if (bot.getSettingsManager().getSettings(guild).getDefaultPlaylist() != null
+                        && vc != null && bot.getPlayerManager().setUpHandler(guild).playFromDefault())
                     guild.getAudioManager().openAudioConnection(vc);
             } catch (Exception ignore) {}
         });
