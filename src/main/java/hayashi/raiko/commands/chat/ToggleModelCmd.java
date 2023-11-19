@@ -1,7 +1,7 @@
 package hayashi.raiko.commands.chat;
 import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
-import hayashi.raiko.ChatBot;
+import hayashi.raiko.chat.ChatBot;
 import hayashi.raiko.commands.ChatCommand;
 
 public class ToggleModelCmd extends ChatCommand {

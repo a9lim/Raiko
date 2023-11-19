@@ -30,7 +30,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.entities.emoji.EmojiUnion;
 import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -184,7 +183,7 @@ public class Slideshow extends Menu {
     private boolean checkReaction(MessageReactionAddEvent event, long messageId) {
         if (event.getMessageIdLong() != messageId)
             return false;
-        EmojiUnion emoji = event.getEmoji();// LEFT, STOP, RIGHT, BIG_LEFT, BIG_RIGHT all fall-through to
+        Emoji emoji = event.getEmoji();// LEFT, STOP, RIGHT, BIG_LEFT, BIG_RIGHT all fall-through to
 // return if the User is valid or not. If none trip, this defaults
 // and returns false.
         if (emoji.equals(LEFT) || emoji.equals(STOP) || emoji.equals(RIGHT)) {
