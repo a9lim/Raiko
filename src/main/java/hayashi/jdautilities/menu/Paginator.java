@@ -26,17 +26,21 @@ import java.util.function.Consumer;
 
 import hayashi.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.emoji.EmojiUnion;
 import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import net.dv8tion.jda.internal.utils.Checks;
+import net.dv8tion.jda.api.entities.channel.middleman.*;
 
 public class Paginator extends Menu {
     private final BiFunction<Integer, Integer, Color> color;
@@ -47,11 +51,11 @@ public class Paginator extends Menu {
     private final Consumer<Message> finalAction;
     private final String leftText, rightText;
 
-    public static final String BIG_LEFT = "\u23EA";
-    public static final String LEFT = "\u25C0";
-    public static final String STOP = "\u23F9";
-    public static final String RIGHT = "\u25B6";
-    public static final String BIG_RIGHT = "\u23E9";
+    public static final Emoji BIG_LEFT = Emoji.fromUnicode("\u23EA");
+    public static final Emoji LEFT = Emoji.fromUnicode("\u25C0");
+    public static final Emoji STOP = Emoji.fromUnicode("\u23F9");
+    public static final Emoji RIGHT = Emoji.fromUnicode("\u25B6");
+    public static final Emoji BIG_RIGHT = Emoji.fromUnicode("\u23E9");
 
     Paginator(EventWaiter waiter, Set<User> users, Set<Role> roles, long timeout, TimeUnit unit,
               BiFunction<Integer, Integer, Color> c, BiFunction<Integer, Integer, String> function,
@@ -91,7 +95,7 @@ public class Paginator extends Menu {
             pageNum = 1;
         else if (pageNum > pages)
             pageNum = pages;
-        initialize(channel.sendMessage(renderPage(pageNum)), pageNum);
+        initialize(channel.sendMessage(MessageCreateData.fromEditData(renderPage(pageNum))), pageNum);
     }
 
     public void paginate(Message message, int pageNum) {
@@ -185,55 +189,52 @@ public class Paginator extends Menu {
     private boolean checkReaction(MessageReactionAddEvent event, long messageId) {
         if (event.getMessageIdLong() != messageId)
             return false;
-        return switch (event.getReactionEmote().getName()) {
-            // LEFT, STOP, RIGHT, BIG_LEFT, BIG_RIGHT all fall-through to
-            // return if the User is valid or not. If none trip, this defaults
-            // and returns false.
-            case LEFT, STOP, RIGHT -> isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
-            case BIG_LEFT, BIG_RIGHT -> bulkSkipNumber > 1 && isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
-            default -> false;
-        };
+        Emoji name = event.getEmoji();// LEFT, STOP, RIGHT, BIG_LEFT, BIG_RIGHT all fall-through to
+// return if the User is valid or not. If none trip, this defaults
+// and returns false.
+        if (name.equals(LEFT) || name.equals(STOP) || name.equals(RIGHT)) {
+            return isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
+        }
+        if (name.equals(BIG_LEFT) || name.equals(BIG_RIGHT)) {
+            return bulkSkipNumber > 1 && isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
+        }
+        return false;
     }
 
     // Private method that handles MessageReactionAddEvents
     // this should also be doable
     private void handleMessageReactionAddAction(MessageReactionAddEvent event, Message message, int pageNum) {
         int newPageNum = pageNum;
-        switch (event.getReaction().getReactionEmote().getName()) {
-            case LEFT -> {
-                if (newPageNum == 1 && wrapPageEnds)
-                    newPageNum = pages + 1;
-                if (newPageNum > 1)
+        Emoji emoji = event.getReaction().getEmoji();
+        if (emoji.equals(LEFT)) {
+            if (newPageNum == 1 && wrapPageEnds)
+                newPageNum = pages + 1;
+            if (newPageNum > 1)
+                newPageNum--;
+        } else if (emoji.equals(RIGHT)) {
+            if (newPageNum == pages && wrapPageEnds)
+                newPageNum = 0;
+            if (newPageNum < pages)
+                newPageNum++;
+        } else if (emoji.equals(BIG_LEFT)) {
+            if (newPageNum > 1 || wrapPageEnds) {
+                for (int i = 1; (newPageNum > 1 || wrapPageEnds) && i < bulkSkipNumber; i++) {
+                    if (newPageNum == 1 && wrapPageEnds)
+                        newPageNum = pages + 1;
                     newPageNum--;
+                }
             }
-            case RIGHT -> {
-                if (newPageNum == pages && wrapPageEnds)
-                    newPageNum = 0;
-                if (newPageNum < pages)
+        } else if (emoji.equals(BIG_RIGHT)) {
+            if (newPageNum < pages || wrapPageEnds) {
+                for (int i = 1; (newPageNum < pages || wrapPageEnds) && i < bulkSkipNumber; i++) {
+                    if (newPageNum == pages && wrapPageEnds)
+                        newPageNum = 0;
                     newPageNum++;
-            }
-            case BIG_LEFT -> {
-                if (newPageNum > 1 || wrapPageEnds) {
-                    for (int i = 1; (newPageNum > 1 || wrapPageEnds) && i < bulkSkipNumber; i++) {
-                        if (newPageNum == 1 && wrapPageEnds)
-                            newPageNum = pages + 1;
-                        newPageNum--;
-                    }
                 }
             }
-            case BIG_RIGHT -> {
-                if (newPageNum < pages || wrapPageEnds) {
-                    for (int i = 1; (newPageNum < pages || wrapPageEnds) && i < bulkSkipNumber; i++) {
-                        if (newPageNum == pages && wrapPageEnds)
-                            newPageNum = 0;
-                        newPageNum++;
-                    }
-                }
-            }
-            case STOP -> {
-                finalAction.accept(message);
-                return;
-            }
+        } else if (emoji.equals(STOP)) {
+            finalAction.accept(message);
+            return;
         }
 
         try {
@@ -244,8 +245,8 @@ public class Paginator extends Menu {
         message.editMessage(renderPage(newPageNum)).queue(m -> pagination(m, n));
     }
 
-    private Message renderPage(int pageNum) {
-        MessageBuilder mbuilder = new MessageBuilder();
+    private MessageEditData renderPage(int pageNum) {
+        MessageEditBuilder mbuilder = new MessageEditBuilder();
         EmbedBuilder ebuilder = new EmbedBuilder();
         int start = (pageNum - 1) * itemsPerPage;
         int end = Math.min(strings.size(), pageNum * itemsPerPage);
@@ -269,7 +270,7 @@ public class Paginator extends Menu {
             ebuilder.setFooter("Page " + pageNum + "/" + pages, null);
         mbuilder.setEmbeds(ebuilder.build());
         if (text != null)
-            mbuilder.append(text.apply(pageNum, pages));
+            mbuilder.setContent(text.apply(pageNum, pages));
         return mbuilder.build();
     }
 

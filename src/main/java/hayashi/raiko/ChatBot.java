@@ -27,7 +27,7 @@ public class ChatBot {
         try {
             String reply = (new JSONObject(client.newCall(new Request.Builder()
                             .url("https://api.openai.com/v1/chat/completions")
-                            .post(RequestBody.create(mediaType, jsonhead + "]}"))
+                            .post(RequestBody.create(jsonhead + "]}",mediaType))
                             .addHeader("Authorization", "Bearer " + apiKey)
                             .addHeader("Content-Type", "application/json")
                             .build())

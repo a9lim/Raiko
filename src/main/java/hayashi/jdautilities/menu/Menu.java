@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import hayashi.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.entities.*;
 
-import javax.annotation.Nullable;
+import net.dv8tion.jda.api.entities.channel.middleman.*;
 
 public abstract class Menu {
     protected final EventWaiter waiter;
@@ -48,7 +48,7 @@ public abstract class Menu {
         return isValidUser(user, null);
     }
 
-    protected boolean isValidUser(User user, @Nullable Guild guild) {
+    protected boolean isValidUser(User user, Guild guild) {
         if (user.isBot())
             return false;
         if ((users.isEmpty() && roles.isEmpty()) || users.contains(user))

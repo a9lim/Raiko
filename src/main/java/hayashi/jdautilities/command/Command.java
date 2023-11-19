@@ -21,47 +21,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.GuildVoiceState;
+import net.dv8tion.jda.api.entities.channel.*;
+import net.dv8tion.jda.api.entities.channel.concrete.*;
 
-/**
- *
- * <p>The internal inheritance for Commands used in JDA-Utilities is that of the Command object.
- *
- * <p>Classes created inheriting this class gain the unique traits of commands operated using the Commands Extension.
- * <br>Using several fields, a command can define properties that make it unique and complex while maintaining
- * a low level of development.
- * <br>All Commands extending this class can define any number of these fields in a object constructor and then
- * create the command action/response in the abstract
- * {@link Command#execute(CommandEvent) #execute(CommandEvent)} body:
- *
- * <pre><code> public class ExampleCmd extends Command {
- *
- *      public ExampleCmd() {
- *          this.name = "example";
- *          this.aliases = new String[]{"test","demo"};
- *          this.help = "gives an example of commands do";
- *      }
- *
- *      {@literal @Override}
- *      protected void execute(CommandEvent) {
- *          event.reply("Hey look! This would be the bot's reply if this was a command!");
- *      }
- *
- * }</code></pre>
- * <p>
- * Execution is with the provision of a MessageReceivedEvent-CommandClient wrapper called a
- * {@link CommandEvent CommandEvent} and is performed in two steps:
- * <ul>
- *     <li>{@link Command#run(CommandEvent) run} - The command runs
- *     through a series of conditionals, automatically terminating the command instance if one is not met,
- *     and possibly providing an error response.</li>
- *
- *     <li>{@link Command#execute(CommandEvent) execute} - The command,
- *     now being cleared to run, executes and performs whatever lies in the abstract body method.</li>
- * </ul>
- *
- * @author John Grosh (jagrosh)
- */
 public abstract class Command {
     public static final Pattern COMPILE = Pattern.compile("\\s+");
 
@@ -146,7 +109,7 @@ public abstract class Command {
                 if (p.isChannel()) {
                     if (p.name().startsWith("VOICE")) {
                         GuildVoiceState gvc = event.getMember().getVoiceState();
-                        VoiceChannel vc = gvc == null ? null : gvc.getChannel();
+                        VoiceChannel vc = gvc == null ? null : gvc.getChannel().asVoiceChannel();
                         if (vc == null) {
                             terminate(event, event.getClient().getError() + " You must be in a voice channel to use that!");
                             return;

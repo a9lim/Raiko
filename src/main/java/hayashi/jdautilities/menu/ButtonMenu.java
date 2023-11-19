@@ -24,26 +24,26 @@ import java.util.function.Consumer;
 
 import hayashi.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageReaction.ReactionEmote;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import net.dv8tion.jda.internal.utils.Checks;
-
+import net.dv8tion.jda.api.entities.channel.middleman.*;
 public class ButtonMenu extends Menu {
     private final Color color;
     private final String text, description;
-    private final List<String> choices;
-    private final Consumer<ReactionEmote> action;
+    private final List<Emoji> choices;
+    private final Consumer<Emoji> action;
     private final Consumer<Message> finalAction;
 
     ButtonMenu(EventWaiter waiter, Set<User> users, Set<Role> roles, long timeout, TimeUnit unit,
-               Color incolor, String intext, String desc, List<String> inchoices, Consumer<ReactionEmote> inaction, Consumer<Message> infinalAction) {
+               Color incolor, String intext, String desc, List<Emoji> inchoices, Consumer<Emoji> inaction, Consumer<Message> infinalAction) {
         super(waiter, users, roles, timeout, unit);
         color = incolor;
         text = intext;
@@ -55,7 +55,7 @@ public class ButtonMenu extends Menu {
 
     @Override
     public void display(MessageChannel channel) {
-        initialize(channel.sendMessage(getMessage()));
+        initialize(channel.sendMessage(MessageCreateData.fromEditData(getMessage())));
     }
 
     @Override
@@ -70,16 +70,16 @@ public class ButtonMenu extends Menu {
         ra.queue(m -> {
             for (int i = 0; i < choices.size(); i++) {
                 // Get the emote to display.
-                Emote emote;
-                try {
-                    emote = m.getJDA().getEmoteById(choices.get(i));
-                } catch (Exception e) {
-                    emote = null;
-                }
+                Emoji emote = choices.get(i);
+//                try {
+//                    emote = m.getJDA().getE(choices.get(i));
+//                } catch (Exception e) {
+//                    emote = null;
+//                }
                 // If the emote is null that means that it might be an emoji.
                 // If it's neither, that's on the developer and we'll let it
                 // throw an error when we queue a rest action.
-                RestAction<Void> r = emote == null ? m.addReaction(choices.get(i)) : m.addReaction(emote);
+                RestAction<Void> r = m.addReaction(emote);
                 if (i + 1 < choices.size()) {
                     r.queue(); // If there is still more reactions to add we delay using the EventWaiter
                     continue;
@@ -98,16 +98,14 @@ public class ButtonMenu extends Menu {
                     // Last check is that the person who added the reaction
                     // is a valid user.
                     return event.getMessageId().equals(m.getId()) &&
-                            choices.contains(event.getReaction().getReactionEmote().isEmote()
-                            ? event.getReaction().getReactionEmote().getId()
-                            : event.getReaction().getReactionEmote().getName()) &&
+                            choices.contains(event.getReaction().getEmoji()) &&
                             isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
                 }, (MessageReactionAddEvent event) -> {
                     // What happens next is after a valid event
                     // is fired and processed above.
 
                     // Preform the specified action with the ReactionEmote
-                    action.accept(event.getReaction().getReactionEmote());
+                    action.accept(event.getReaction().getEmoji());
                     finalAction.accept(m);
                 }, timeout, unit, () -> finalAction.accept(m)));
             }
@@ -115,10 +113,10 @@ public class ButtonMenu extends Menu {
     }
 
     // Generates a ButtonMenu message
-    private Message getMessage() {
-        MessageBuilder mbuilder = new MessageBuilder();
+    private MessageEditData getMessage() {
+        MessageEditBuilder mbuilder = new MessageEditBuilder();
         if (text != null)
-            mbuilder.append(text);
+            mbuilder.setContent(text);
         if (description != null)
             mbuilder.setEmbeds(new EmbedBuilder().setColor(color).setDescription(description).build());
         return mbuilder.build();
@@ -127,8 +125,8 @@ public class ButtonMenu extends Menu {
     public static class Builder extends Menu.Builder<Builder, ButtonMenu> {
         private Color color;
         private String text, description;
-        private final List<String> choices = new LinkedList<>();
-        private Consumer<ReactionEmote> action;
+        private final List<Emoji> choices = new LinkedList<>();
+        private Consumer<Emoji> action;
         private Consumer<Message> finalAction = (m) -> {};
 
         @Override
@@ -156,7 +154,7 @@ public class ButtonMenu extends Menu {
             return this;
         }
 
-        public Builder setAction(Consumer<ReactionEmote> consumer) {
+        public Builder setAction(Consumer<Emoji> consumer) {
             action = consumer;
             return this;
         }
@@ -166,35 +164,20 @@ public class ButtonMenu extends Menu {
             return this;
         }
 
-        public Builder addChoice(String emoji) {
+        public Builder addChoice(Emoji emoji) {
             choices.add(emoji);
             return this;
         }
 
-        public Builder addChoice(Emote emote) {
-            return addChoice(emote.getId());
-        }
-
-        public Builder addChoices(String... emojis) {
-            for (String emoji : emojis)
+        public Builder addChoices(Emoji... emojis) {
+            for (Emoji emoji : emojis)
                 addChoice(emoji);
             return this;
         }
 
-        public Builder addChoices(Emote... emotes) {
-            for (Emote emote : emotes)
-                addChoice(emote);
-            return this;
-        }
-
-        public Builder setChoices(String... emojis) {
+        public Builder setChoices(Emoji... emojis) {
             choices.clear();
             return addChoices(emojis);
-        }
-
-        public Builder setChoices(Emote... emotes) {
-            choices.clear();
-            return addChoices(emotes);
         }
     }
 }

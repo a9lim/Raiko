@@ -28,10 +28,10 @@ import hayashi.raiko.commands.MusicCommand;
 import hayashi.raiko.settings.RepeatMode;
 import hayashi.raiko.settings.Settings;
 import hayashi.raiko.utils.FormatUtil;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.exceptions.PermissionException;
+import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
 public class QueueCmd extends MusicCommand {
     private final Paginator.Builder builder;
@@ -69,10 +69,11 @@ public class QueueCmd extends MusicCommand {
         AudioHandler ah = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
         Deque<QueuedTrack> deque = ah.getQueue().getDeque();
         if (deque.isEmpty()) {
-            Message nowp = ah.getNowPlaying(event.getJDA());
-            event.reply(new MessageBuilder()
+            MessageEditData nowp = ah.getNowPlaying(event.getJDA());
+            event.reply(new MessageEditBuilder()
                     .setContent(event.getClient().getWarning() + " There is no music in the queue!")
-                    .setEmbeds((nowp == null ? ah.getNoMusicPlaying(event.getJDA()) : nowp).getEmbeds().get(0)).build(), m -> {
+                    .setEmbeds((nowp == null ? ah.getNoMusicPlaying(event.getJDA()) : nowp).getEmbeds().get(0)).build().getContent()
+                    , m -> {
                 if (nowp != null)
                     bot.getNowplayingHandler().setLastNPMessage(m);
             });

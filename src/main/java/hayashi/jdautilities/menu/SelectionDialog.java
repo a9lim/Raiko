@@ -27,15 +27,16 @@ import java.util.function.Function;
 
 import hayashi.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.utils.messages.*;
 import net.dv8tion.jda.internal.utils.Checks;
+import net.dv8tion.jda.api.entities.channel.middleman.*;
 
 public class SelectionDialog extends Menu {
     private final List<String> choices;
@@ -46,10 +47,10 @@ public class SelectionDialog extends Menu {
     private final BiConsumer<Message, Integer> success;
     private final Consumer<Message> cancel;
 
-    public static final String UP = "\uD83D\uDD3C";
-    public static final String DOWN = "\uD83D\uDD3D";
-    public static final String SELECT = "\u2705";
-    public static final String CANCEL = "\u274E";
+    public static final Emoji UP = Emoji.fromUnicode("\uD83D\uDD3C");
+    public static final Emoji DOWN = Emoji.fromUnicode("\uD83D\uDD3D");
+    public static final Emoji SELECT = Emoji.fromUnicode("\u2705");
+    public static final Emoji CANCEL = Emoji.fromUnicode("\u274E");
 
     SelectionDialog(EventWaiter waiter, Set<User> users, Set<Role> roles, long timeout, TimeUnit unit,
                     List<String> c, String le, String re, String dl, String dr,
@@ -92,7 +93,7 @@ public class SelectionDialog extends Menu {
             selection = 1;
         else if (selection > choices.size())
             selection = choices.size();
-        initialize(channel.sendMessage(render(selection)), selection);
+        initialize(channel.sendMessage(MessageCreateData.fromEditData(render(selection))), selection);
     }
 
     public void showDialog(Message message, int selection) {
@@ -121,36 +122,32 @@ public class SelectionDialog extends Menu {
         waiter.waitForEvent(MessageReactionAddEvent.class, event -> {
             if (!event.getMessageId().equals(message.getId()))
                 return false;
-            if (!(UP.equals(event.getReaction().getReactionEmote().getName())
-                || DOWN.equals(event.getReaction().getReactionEmote().getName())
-                || CANCEL.equals(event.getReaction().getReactionEmote().getName())
-                || SELECT.equals(event.getReaction().getReactionEmote().getName())))
+            if (!(UP.equals(event.getReaction().getEmoji())
+                || DOWN.equals(event.getReaction().getEmoji())
+                || CANCEL.equals(event.getReaction().getEmoji())
+                || SELECT.equals(event.getReaction().getEmoji())))
                 return false;
             return isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
         }, event -> {
             int newSelection = selection;
-            switch (event.getReaction().getReactionEmote().getName()) {
-                case UP -> {
-                    if (newSelection > 1)
-                        newSelection--;
-                    else if (loop)
-                        newSelection = choices.size();
-                }
-                case DOWN -> {
-                    if (newSelection < choices.size())
-                        newSelection++;
-                    else if (loop)
-                        newSelection = 1;
-                }
-                case SELECT -> {
-                    success.accept(message, selection);
-                    if (singleSelectionMode)
-                        return;
-                }
-                case CANCEL -> {
-                    cancel.accept(message);
+            Emoji emoji = event.getReaction().getEmoji();
+            if (emoji.equals(UP)) {
+                if (newSelection > 1)
+                    newSelection--;
+                else if (loop)
+                    newSelection = choices.size();
+            } else if (emoji.equals(DOWN)) {
+                if (newSelection < choices.size())
+                    newSelection++;
+                else if (loop)
+                    newSelection = 1;
+            } else if (emoji.equals(SELECT)) {
+                success.accept(message, selection);
+                if (singleSelectionMode)
                     return;
-                }
+            } else if (emoji.equals(CANCEL)) {
+                cancel.accept(message);
+                return;
             }
             try {
                 event.getReaction().removeReaction(event.getUser()).queue();
@@ -160,7 +157,7 @@ public class SelectionDialog extends Menu {
         }, timeout, unit, () -> cancel.accept(message));
     }
 
-    private Message render(int selection) {
+    private MessageEditData render(int selection) {
         StringBuilder sbuilder = new StringBuilder();
         selection--;
         for (int i = 0; i < choices.size(); i++)
@@ -168,10 +165,10 @@ public class SelectionDialog extends Menu {
                 sbuilder.append("\n").append(leftEnd).append(choices.get(i)).append(rightEnd);
             else
                 sbuilder.append("\n").append(defaultLeft).append(choices.get(i)).append(defaultRight);
-        MessageBuilder mbuilder = new MessageBuilder();
+        MessageEditBuilder mbuilder = new MessageEditBuilder();
         String content = text.apply(++selection);
         if (content != null)
-            mbuilder.append(content);
+            mbuilder.setContent(content);
         return mbuilder.setEmbeds(new EmbedBuilder()
             .setColor(color.apply(selection))
             .setDescription(sbuilder.toString())

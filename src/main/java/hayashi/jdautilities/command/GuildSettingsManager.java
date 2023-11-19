@@ -17,32 +17,8 @@ package hayashi.jdautilities.command;
 
 import net.dv8tion.jda.api.entities.Guild;
 
-import javax.annotation.Nullable;
-
-/**
- * An implementable frame for classes that handle Guild-Specific
- * settings.
- *
- * <p>Standard implementations should be able to simply provide a
- * type of {@link java.lang.Object Object} provided a non-null
- * {@link net.dv8tion.jda.api.entities.Guild Guild}. Further
- * customization of the implementation is allowed on the developer
- * end.
- *
- * @param <T> The specific type of the settings object.
- * @author Kaidan Gustave
- * @implNote Unless in the event of a major breaking change to
- * JDA, there is no chance of implementations of this
- * interface being required to implement additional
- * methods.
- * <br>If in the future it is decided to add a method
- * to this interface, the method will have a default
- * implementation that doesn't require developer additions.
- * @since 2.0
- */
 @FunctionalInterface
 public interface GuildSettingsManager<T> {
-    @Nullable
     T getSettings(Guild guild);
 
     default void init() {}
