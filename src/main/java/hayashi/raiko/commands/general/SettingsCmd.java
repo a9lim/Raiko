@@ -22,9 +22,8 @@ import hayashi.raiko.settings.RepeatMode;
 import hayashi.raiko.settings.Settings;
 import hayashi.raiko.utils.FormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.*;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 
 public class SettingsCmd extends Command {
     private final static String EMOJI = "\uD83C\uDFA7"; // 🎧
@@ -41,10 +40,10 @@ public class SettingsCmd extends Command {
         Settings s = event.getClient().getSettingsFor(event.getGuild());
         TextChannel tchan = s.getTextChannel(event.getGuild());
         VoiceChannel vchan = s.getVoiceChannel(event.getGuild());
-        event.getChannel().sendMessage(new MessageBuilder()
-                .append(EMOJI + " **")
-                .append(FormatUtil.filter(event.getSelfUser().getName()))
-                .append("** settings:")
+        event.getChannel().sendMessage(new MessageCreateBuilder()
+                .addContent(EMOJI + " **")
+                .addContent(FormatUtil.filter(event.getSelfUser().getName()))
+                .addContent("** settings:")
                 .setEmbeds(new EmbedBuilder()
                 .setColor(event.getSelfMember().getColor())
                 .setDescription("Text Channel: " + (tchan == null ? "Any" : "**#" + tchan.getName() + "**")
@@ -56,7 +55,7 @@ public class SettingsCmd extends Command {
                         + "\nDefault Playlist: " + (s.getDefaultPlaylist() == null ? "None" : "**" + s.getDefaultPlaylist() + "**")
                 )
                 .setFooter(event.getJDA().getGuilds().size() + " servers | "
-                        + event.getJDA().getGuilds().stream().filter(g -> g.getSelfMember().getVoiceState().inVoiceChannel()).count()
+                        + event.getJDA().getGuilds().stream().filter(g -> g.getSelfMember().getVoiceState().inAudioChannel()).count()
                         + " audio connections", null).build()).build()).queue();
     }
 

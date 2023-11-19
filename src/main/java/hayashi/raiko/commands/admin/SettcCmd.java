@@ -23,7 +23,7 @@ import hayashi.raiko.Bot;
 import hayashi.raiko.commands.AdminCommand;
 import hayashi.raiko.settings.Settings;
 import hayashi.raiko.utils.FormatUtil;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.*;
 
 public class SettcCmd extends AdminCommand {
     public SettcCmd(Bot bot) {

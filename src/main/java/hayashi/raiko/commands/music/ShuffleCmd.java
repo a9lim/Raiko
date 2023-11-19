@@ -43,8 +43,10 @@ public class ShuffleCmd extends MusicCommand {
         } else {
             if ((s = handler.getQueue().size()) < 2)
                 event.replyWarning("There aren't enough songs in the queue!");
-            else
+            else {
+                handler.getQueue().shuffle();
                 event.replySuccess("You successfully shuffled all " + s + " entries.");
+            }
         }
     }
 

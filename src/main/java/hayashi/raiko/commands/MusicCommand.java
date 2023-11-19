@@ -21,8 +21,7 @@ import hayashi.raiko.Bot;
 import hayashi.raiko.settings.Settings;
 import hayashi.raiko.audio.AudioHandler;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.*;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 
 public abstract class MusicCommand extends Command {
@@ -52,11 +51,14 @@ public abstract class MusicCommand extends Command {
             return;
         }
         if (beListening) {
-            VoiceChannel current = event.getGuild().getSelfMember().getVoiceState().getChannel();
-            if (current == null)
+            VoiceChannel current;
+            try {
+                current = event.getGuild().getSelfMember().getVoiceState().getChannel().asVoiceChannel();
+            } catch (Exception ex) {
                 current = settings.getVoiceChannel(event.getGuild());
+            }
             GuildVoiceState userState = event.getMember().getVoiceState();
-            if (!userState.inVoiceChannel() || userState.isDeafened() || (current != null && !userState.getChannel().equals(current))) {
+            if (!userState.inAudioChannel() || userState.isDeafened() || (current != null && !userState.getChannel().equals(current))) {
                 event.replyError("You must be listening in " + (current == null ? "a voice channel" : current.getAsMention()) + " to use that!");
                 return;
             }
@@ -67,7 +69,7 @@ public abstract class MusicCommand extends Command {
                 return;
             }
 
-            if (!event.getGuild().getSelfMember().getVoiceState().inVoiceChannel()) {
+            if (!event.getGuild().getSelfMember().getVoiceState().inAudioChannel()) {
                 try {
                     event.getGuild().getAudioManager().openAudioConnection(userState.getChannel());
                 } catch (PermissionException ex) {

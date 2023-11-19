@@ -24,12 +24,11 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.ReadyEvent;
-import net.dv8tion.jda.api.events.ShutdownEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
+import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
+import net.dv8tion.jda.api.events.session.*;
 import net.dv8tion.jda.api.hooks.EventListener;
 import net.dv8tion.jda.internal.utils.Checks;
 import okhttp3.*;
@@ -37,7 +36,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import net.dv8tion.jda.api.entities.channel.*;
 import java.io.IOException;
 import java.io.Reader;
 import java.time.OffsetDateTime;
@@ -68,6 +67,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
     private final ScheduledExecutorService executor;
     private final AnnotatedModuleCompiler compiler;
     private final GuildSettingsManager manager;
+    private final MediaType mediaType = MediaType.parse("application/json");
 
     private String textPrefix;
     private CommandListener listener;
@@ -367,7 +367,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
         if (event instanceof MessageReceivedEvent e)
             onMessageReceived(e);
 
-        else if (event instanceof GuildMessageDeleteEvent e && usesLinkedDeletion())
+        else if (event instanceof MessageDeleteEvent e && usesLinkedDeletion())
             onMessageDelete(e);
 
         else if (event instanceof GuildJoinEvent e) {
@@ -444,7 +444,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
                     listener.onCompletedCommand(cevent, null);
                 return; // Help Consumer is done
             }
-            if (event.isFromType(ChannelType.PRIVATE) || event.getTextChannel().canTalk()) {
+            if (event.isFromType(ChannelType.PRIVATE) || event.getChannel().canTalk()) {
                 final Command command; // this will be null if it's not a command
                 // this may be cleanable
                 synchronized (commandIndex) {
@@ -504,7 +504,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
             }
 
             client.newCall(new Request.Builder()
-                    .post(RequestBody.create(MediaType.parse("application/json"), body.toString()))
+                    .post(RequestBody.create(body.toString(),mediaType))
                     .url("https://discord.bots.gg/api/v1/bots/" + jda.getSelfUser().getId() + "/stats")
                     .header("Authorization", botsKey)
                     .header("Content-Type", "application/json")
@@ -533,15 +533,15 @@ public class CommandClientImpl implements CommandClient, EventListener {
         }
     }
 
-    private void onMessageDelete(GuildMessageDeleteEvent event) {
+    private void onMessageDelete(MessageDeleteEvent event) {
         // We don't need to cover whether or not this client usesLinkedDeletion() because
         // that is checked in onEvent(Event) before this is even called.
         synchronized (linkMap) {
             if (linkMap.contains(event.getMessageIdLong())) {
                 Set<Message> messages = linkMap.get(event.getMessageIdLong());
                 if (messages.size() > 1 && event.getGuild().getSelfMember()
-                    .hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE))
-                    event.getChannel().deleteMessages(messages).queue(unused -> {
+                    .hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE))
+                    event.getChannel().asGuildMessageChannel().deleteMessages(messages).queue(unused -> {
                     }, ignored -> {
                     });
                 else if (!messages.isEmpty())

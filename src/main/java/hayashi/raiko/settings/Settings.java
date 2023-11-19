@@ -21,8 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.*;
 
 public class Settings implements GuildSettingsProvider {
     private final SettingsManager manager;

@@ -23,9 +23,15 @@ import java.util.regex.Pattern;
 import hayashi.jdautilities.command.impl.CommandClientImpl;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
+import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.internal.utils.Checks;
+import net.dv8tion.jda.api.entities.channel.*;
+import net.dv8tion.jda.api.entities.channel.concrete.*;
+import net.dv8tion.jda.api.entities.channel.middleman.*;
 
 public class CommandEvent {
     private static final Pattern COMPILE = Pattern.compile("<a?:(.+):(\\d+)>");
@@ -99,14 +105,14 @@ public class CommandEvent {
         }, failure);
     }
 
-    public void reply(Message message) {
+    public void reply(MessageCreateData message) {
         event.getChannel().sendMessage(message).queue(m -> {
             if (event.isFromType(ChannelType.TEXT))
                 linkId(m);
         });
     }
 
-    public void reply(Message message, Consumer<Message> success) {
+    public void reply(MessageCreateData message, Consumer<Message> success) {
         event.getChannel().sendMessage(message).queue(m -> {
             if (event.isFromType(ChannelType.TEXT))
                 linkId(m);
@@ -114,7 +120,7 @@ public class CommandEvent {
         });
     }
 
-    public void reply(Message message, Consumer<Message> success, Consumer<Throwable> failure) {
+    public void reply(MessageCreateData message, Consumer<Message> success, Consumer<Throwable> failure) {
         event.getChannel().sendMessage(message).queue(m -> {
             if (event.isFromType(ChannelType.TEXT))
                 linkId(m);
@@ -123,11 +129,11 @@ public class CommandEvent {
     }
 
     public void reply(File file, String filename) {
-        event.getChannel().sendFile(file, filename).queue();
+        event.getChannel().sendFiles(FileUpload.fromData(file, filename)).queue();
     }
 
     public void reply(String message, File file, String filename) {
-        event.getChannel().sendFile(file, filename).content(message).queue();
+        event.getChannel().sendFiles(FileUpload.fromData(file, filename)).setContent(message).queue();
     }
 
     public void replyFormatted(String format, Object... args) {
@@ -144,7 +150,7 @@ public class CommandEvent {
 
     public void replyOrAlternate(String message, File file, String filename, String alternateMessage) {
         try {
-            event.getChannel().sendFile(file, filename).content(message).queue();
+            event.getChannel().sendFiles(FileUpload.fromData(file, filename)).setContent(message).queue();
         } catch (Exception e) {
             reply(alternateMessage);
         }
@@ -192,21 +198,21 @@ public class CommandEvent {
             event.getAuthor().openPrivateChannel().queue(pc -> pc.sendMessageEmbeds(embed).queue(success, failure), failure);
     }
 
-    public void replyInDm(Message message) {
+    public void replyInDm(MessageCreateData message) {
         if (event.isFromType(ChannelType.PRIVATE))
             reply(message);
         else
             event.getAuthor().openPrivateChannel().queue(pc -> pc.sendMessage(message).queue());
     }
 
-    public void replyInDm(Message message, Consumer<Message> success) {
+    public void replyInDm(MessageCreateData message, Consumer<Message> success) {
         if (event.isFromType(ChannelType.PRIVATE))
             getPrivateChannel().sendMessage(message).queue(success);
         else
             event.getAuthor().openPrivateChannel().queue(pc -> pc.sendMessage(message).queue(success));
     }
 
-    public void replyInDm(Message message, Consumer<Message> success, Consumer<Throwable> failure) {
+    public void replyInDm(MessageCreateData message, Consumer<Message> success, Consumer<Throwable> failure) {
         if (event.isFromType(ChannelType.PRIVATE))
             getPrivateChannel().sendMessage(message).queue(success, failure);
         else
@@ -217,7 +223,7 @@ public class CommandEvent {
         if (event.isFromType(ChannelType.PRIVATE))
             reply(message, file, filename);
         else
-            event.getAuthor().openPrivateChannel().queue(pc -> pc.sendFile(file, filename).content(message).queue());
+            event.getAuthor().openPrivateChannel().queue(pc -> pc.sendFiles(FileUpload.fromData(file, filename)).setContent(message).queue());
     }
 
     public void replySuccess(String message) {
@@ -267,7 +273,7 @@ public class CommandEvent {
     private void react(String reaction) {
         if (reaction != null && !reaction.isEmpty())
             try {
-                event.getMessage().addReaction(COMPILE.matcher(reaction).replaceAll("$1:$2")).queue();
+                event.getMessage().addReaction(Emoji.fromFormatted(COMPILE.matcher(reaction).replaceAll("$1:$2"))).queue();
             } catch (PermissionException ignored) {}
     }
 
@@ -396,7 +402,7 @@ public class CommandEvent {
     }
 
     public PrivateChannel getPrivateChannel() {
-        return event.getPrivateChannel();
+        return event.getChannel().asPrivateChannel();
     }
 
     public long getResponseNumber() {
@@ -404,7 +410,7 @@ public class CommandEvent {
     }
 
     public TextChannel getTextChannel() {
-        return event.getTextChannel();
+        return event.getChannel().asTextChannel();
     }
 
     public boolean isFromType(ChannelType channelType) {

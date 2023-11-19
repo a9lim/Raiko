@@ -35,11 +35,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import hayashi.raiko.playlist.PlaylistLoader;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 
 public class PlayCmd extends MusicCommand {
-    private final static String LOAD = "\uD83D\uDCE5"; // 📥
-    private final static String CANCEL = "\uD83D\uDEAB"; // 🚫
+    private final static Emoji LOAD = Emoji.fromUnicode("\uD83D\uDCE5"); // 📥
+    private final static Emoji CANCEL = Emoji.fromUnicode("\uD83D\uDEAB"); // 🚫
 
     private final String loadingEmoji;
 
@@ -110,7 +111,7 @@ public class PlayCmd extends MusicCommand {
                     .setEventWaiter(bot.getWaiter())
                     .setTimeout(30, TimeUnit.SECONDS)
                     .setAction(re -> {
-                        if (re.getName().equals(LOAD))
+                        if (re.equals(LOAD))
                             m.editMessage(addMsg + "\n" + event.getClient().getSuccess() + " Loaded **" + loadPlaylist(playlist, track) + "** additional tracks!").queue();
                         else
                             m.editMessage(addMsg).queue();
