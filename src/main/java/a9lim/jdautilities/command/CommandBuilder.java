@@ -37,7 +37,6 @@ public class CommandBuilder {
     private Permission[] botPermissions = new Permission[0];
     private final LinkedList<String> aliases = new LinkedList<>();
     private final LinkedList<Command> children = new LinkedList<>();
-    private BiConsumer<CommandEvent, Command> helpBiConsumer;
     private boolean usesTopicTags = true;
     private Command.CooldownScope cooldownScope = Command.CooldownScope.USER;
 
@@ -153,11 +152,6 @@ public class CommandBuilder {
         return this;
     }
 
-    public CommandBuilder setHelpBiConsumer(BiConsumer<CommandEvent, Command> consumer) {
-        helpBiConsumer = consumer;
-        return this;
-    }
-
     public CommandBuilder setUsesTopicTags(boolean b) {
         usesTopicTags = b;
         return this;
@@ -181,7 +175,7 @@ public class CommandBuilder {
         return new BlankCommand(name, help, category, arguments,
             guildOnly, requiredRole, ownerCommand, cooldown,
             userPermissions, botPermissions, aliases.toArray(new String[0]),
-            children.toArray(new Command[0]), helpBiConsumer, usesTopicTags,
+            children.toArray(new Command[0]), usesTopicTags,
             cooldownScope, hidden) {
             @Override
             protected void execute(CommandEvent event) {
@@ -195,7 +189,6 @@ public class CommandBuilder {
                      String args, boolean b1, String role,
                      boolean b2, int c, Permission[] uperms,
                      Permission[] bperms, String[] al, Command[] commands,
-                     BiConsumer<CommandEvent, Command> consumer,
                      boolean b3, CooldownScope scope, boolean b4) {
             name = n;
             help = h;
@@ -209,7 +202,6 @@ public class CommandBuilder {
             botPermissions = bperms;
             aliases = al;
             children = commands;
-            helpBiConsumer = consumer;
             usesTopicTags = b3;
             cooldownScope = scope;
             hidden = b4;

@@ -50,9 +50,10 @@ public class DebugCmd extends OwnerCommand {
         sb.append("\n\nRaiko Information:")
                 //.append("\n  Version = ").append(OtherUtil.getCurrentVersion())
                 .append("\n  Owner = ").append(bot.getConfig().getOwnerId())
-                .append("\n  Prefix = ").append(bot.getConfig().getPrefix())
-                .append("\n  AltPrefix = ").append(bot.getConfig().getAltPrefix())
-                .append("\n  MaxSeconds = ").append(bot.getConfig().getMaxSeconds())
+                .append("Prefix = ");
+        for (String s : bot.getConfig().getPrefixes())
+                sb.append(s).append(", ");
+        sb.append("\n  MaxSeconds = ").append(bot.getConfig().getMaxSeconds())
                 .append("\n  NPImages = ").append(bot.getConfig().useNPImages())
                 .append("\n  SongInStatus = ").append(bot.getConfig().getSongInStatus())
                 .append("\n  StayInChannel = ").append(bot.getConfig().getStay());

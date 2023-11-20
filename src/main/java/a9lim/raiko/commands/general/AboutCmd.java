@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 
-public class AboutCommand extends Command {
+public class AboutCmd extends Command {
     private boolean IS_AUTHOR = true;
     private String REPLACEMENT_ICON = "+";
     private final Color color;
@@ -39,10 +39,11 @@ public class AboutCommand extends Command {
     private String oauthLink;
     private final String[] features;
 
-    public AboutCommand(Color c, String s, String[] strings, Permission... permissions) {
+    public AboutCmd(Color c, String s, String[] strings, Permission... permissions) {
         color = c;
         description = s;
         features = strings;
+        category = new Category("General");
         name = "about";
         help = "shows info about the bot";
         guildOnly = false;
@@ -80,7 +81,7 @@ public class AboutCommand extends Command {
                 .append(event.getJDA().getUserById(event.getClient().getOwnerId()) == null ? "<@" + event.getClient().getOwnerId() + ">"
                         : event.getJDA().getUserById(event.getClient().getOwnerId()).getName())
                 .append("** using [JDA](https://github.com/discord-jda/JDA) and [LavaPlayer](https://github.com/lavalink-devs/lavaplayer)\nType `")
-                .append(event.getClient().getTextualPrefix()).append(event.getClient().getHelpWord())
+                .append(event.getClient().getDefaultPrefix()).append(event.getClient().getHelpWord())
                 .append("` to see my commands!").append(join || inv ? "\n" + (join ? "Join my server [`here`](" + event.getClient().getServerInvite() + ")" : (inv ? "Please " : ""))
                         + (inv ? (join ? ", or " : "") + "[`invite`](" + oauthLink + ") me to your server" : "") + "!" : "").append("\n\nSome of my features include: ```css");
         for (String feature : features)

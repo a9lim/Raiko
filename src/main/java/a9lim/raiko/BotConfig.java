@@ -31,6 +31,7 @@ import net.dv8tion.jda.api.entities.Activity;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 public class BotConfig {
     private final Prompt prompt;
@@ -39,9 +40,10 @@ public class BotConfig {
     private final static String END_TOKEN = "/// END OF RAIKO CONFIG ///";
 
     private Path path;
-    private String token, prefix, altprefix, helpWord, playlistsFolder,
+    private String token, helpWord, playlistsFolder,
             successEmoji, warningEmoji, errorEmoji, loadingEmoji, searchingEmoji,
             cgpttoken, preprompt;
+    private List<String> prefixes;
     private boolean stayInChannel, songInGame, npImages,
             model, valid;
     private long owner, maxSeconds, aloneTimeUntilStop;
@@ -67,8 +69,7 @@ public class BotConfig {
 
             // set values
             token = config.getString("token");
-            prefix = config.getString("prefix");
-            altprefix = config.getString("altprefix");
+            prefixes = config.getStringList("prefixes");
             helpWord = config.getString("help");
             owner = config.getLong("owner");
             successEmoji = config.getString("success");
@@ -201,12 +202,8 @@ public class BotConfig {
         return path.toFile().getAbsolutePath();
     }
 
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public String getAltPrefix() {
-        return "NONE".equalsIgnoreCase(altprefix) ? null : altprefix;
+    public List<String> getPrefixes() {
+        return prefixes;
     }
 
     public String getToken() {
@@ -243,10 +240,6 @@ public class BotConfig {
 
     public OnlineStatus getStatus() {
         return status;
-    }
-
-    public String getHelp() {
-        return helpWord;
     }
 
     public boolean getStay() {

@@ -21,33 +21,28 @@ package a9lim.jdautilities.command;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Function;
 
 public interface CommandClient {
 
-    String getPrefix();
+    List<String> getPrefixes();
 
-    String getAltPrefix();
-
-    String getTextualPrefix();
+    String getDefaultPrefix();
 
     void addCommand(Command command);
-
-    void addCommand(Command command, int index);
 
     void removeCommand(String name);
 
     void addAnnotatedModule(Object module);
 
-    void addAnnotatedModule(Object module, Function<Command, Integer> mapFunction);
-
     void setListener(CommandListener listener);
 
     CommandListener getListener();
 
-    List<Command> getCommands();
+    Collection<Command> getCommands();
 
     OffsetDateTime getStartTime();
 
@@ -84,6 +79,8 @@ public interface CommandClient {
     int getTotalGuilds();
 
     String getHelpWord();
+
+    void setHelp(Command c);
 
     boolean usesLinkedDeletion();
 

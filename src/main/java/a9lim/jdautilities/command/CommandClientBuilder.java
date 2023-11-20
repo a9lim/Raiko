@@ -20,33 +20,36 @@ package a9lim.jdautilities.command;
 
 import a9lim.jdautilities.command.impl.AnnotatedModuleCompilerImpl;
 import a9lim.jdautilities.command.impl.CommandClientImpl;
+import a9lim.raiko.commands.general.HelpCmd;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 
 public class CommandClientBuilder {
     private Activity activity = Activity.playing("default");
     private OnlineStatus status = OnlineStatus.ONLINE;
-    private String ownerId, prefix, altprefix, serverInvite, success, warning, error, carbonKey, helpWord, botsKey;
-    private String[] coOwnerIds;
+    private String ownerId, serverInvite, success, warning, error, carbonKey, botsKey;
+    private String[] coOwnerIds, helpWords;
+    private List<String> prefixes;
     private final LinkedList<Command> commands = new LinkedList<>();
     private CommandListener listener;
-    private boolean useHelp = true;
     private boolean shutdownAutomatically = true;
-    private Consumer<CommandEvent> helpConsumer;
     private ScheduledExecutorService executor;
     private int linkedCacheSize;
     private AnnotatedModuleCompiler compiler = new AnnotatedModuleCompilerImpl();
     private GuildSettingsManager manager;
 
     public CommandClient build() {
-        CommandClient client = new CommandClientImpl(ownerId, coOwnerIds, prefix, altprefix, activity, status, serverInvite,
-            success, warning, error, carbonKey, botsKey, new ArrayList<>(commands), useHelp,
-            shutdownAutomatically, helpConsumer, helpWord, executor, linkedCacheSize, compiler, manager);
+        CommandClient client = new CommandClientImpl(ownerId, coOwnerIds, prefixes, activity, status, serverInvite,
+            success, warning, error, carbonKey, botsKey, commands,
+            shutdownAutomatically, executor, linkedCacheSize, compiler, manager);
+        client.setHelp(new HelpCmd(client,helpWords));
+        System.out.println(client.getCommands());
         if (listener != null)
             client.setListener(listener);
         return client;
@@ -62,28 +65,18 @@ public class CommandClientBuilder {
         return this;
     }
 
-    public CommandClientBuilder setPrefix(String p) {
-        prefix = p;
+    public CommandClientBuilder setPrefixes(List<String> p) {
+        prefixes = p;
         return this;
     }
 
-    public CommandClientBuilder setAlternativePrefix(String prefix) {
-        altprefix = prefix;
+    public CommandClientBuilder addPrefix(String prefix) {
+        prefixes.add(prefix);
         return this;
     }
 
-    public CommandClientBuilder useHelpBuilder(boolean b) {
-        useHelp = b;
-        return this;
-    }
-
-    public CommandClientBuilder setHelpConsumer(Consumer<CommandEvent> consumer) {
-        helpConsumer = consumer;
-        return this;
-    }
-
-    public CommandClientBuilder setHelpWord(String h) {
-        helpWord = h;
+    public CommandClientBuilder setHelpWords(String[] s) {
+        helpWords = s;
         return this;
     }
 

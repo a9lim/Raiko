@@ -50,7 +50,7 @@ public class PlaylistsCmd extends MusicCommand {
         else {
             StringBuilder builder = new StringBuilder(" Available playlists:\n");
             list.forEach(str -> builder.append("`").append(str).append("` "));
-            builder.append("\nType `").append(event.getClient().getTextualPrefix()).append("play playlist <name>` to play a playlist");
+            builder.append("\nType `").append(event.getClient().getDefaultPrefix()).append("play playlist <name>` to play a playlist");
             event.replySuccess(builder.toString());
         }
     }

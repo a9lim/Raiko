@@ -34,6 +34,7 @@ public class SettingsCmd extends Command {
 
     public SettingsCmd(Bot bot) {
         name = "settings";
+        category = new Category("General");
         help = "shows the bots settings";
         aliases = bot.getConfig().getAliases(name);
         guildOnly = true;
