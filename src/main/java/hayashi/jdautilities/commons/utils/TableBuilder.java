@@ -136,8 +136,7 @@ public class TableBuilder {
                 else if (j < firstRow.length - 1)
                     builder.append(borders.upperIntersection);
             }
-            builder.append(borders.upRightCorner);
-            builder.append("\n");
+            builder.append(borders.upRightCorner).append("\n");
         }
 
         appendRow(builder, firstRow); // header
@@ -195,8 +194,7 @@ public class TableBuilder {
 
         // outline
         if (frame) {
-            builder.append("\n");
-            builder.append(borders.lowLeftCorner);
+            builder.append("\n").append(borders.lowLeftCorner);
             for (int j = 0; j < firstRow.length; j++) {
                 builder.append(String.valueOf(borders.horizontalOutline).repeat(firstRow[j].length()));
 
@@ -239,23 +237,15 @@ public class TableBuilder {
         switch (alignment) {
             case RIGHT -> {
                 // first black spaces
-                newValueBuilder.append(" ".repeat(Math.max(0, adjustment)));
-                newValueBuilder.append(oldValue); // then value
+                newValueBuilder.append(" ".repeat(Math.max(0, adjustment))).append(oldValue); // then value
             }
             case LEFT -> {
-                newValueBuilder.append(oldValue); // first value
-                // then blank spaces
-                newValueBuilder.append(" ".repeat(Math.max(0, adjustment)));
+                newValueBuilder.append(oldValue).append(" ".repeat(Math.max(0, adjustment)));
             }
             case CENTER -> {
                 int half = adjustment / 2;
                 // append one half of black spaces
-                newValueBuilder.append(" ".repeat(Math.max(0, half)));
-
-                newValueBuilder.append(oldValue); // append value
-
-                // append other half of blank spaces
-                newValueBuilder.append(" ".repeat(Math.max(0, half)));
+                newValueBuilder.append(" ".repeat(Math.max(0, half))).append(oldValue).append(" ".repeat(Math.max(0, half)));
 
                 if (adjustment % 2 != 0) // if the number wasn't event, one blank space is still missing
                     newValueBuilder.append(" ");

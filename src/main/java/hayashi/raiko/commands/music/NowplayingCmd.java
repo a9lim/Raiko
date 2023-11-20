@@ -24,7 +24,6 @@ import hayashi.raiko.audio.AudioHandler;
 import hayashi.raiko.commands.MusicCommand;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
-import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
 public class NowplayingCmd extends MusicCommand {
     public NowplayingCmd(Bot bot) {

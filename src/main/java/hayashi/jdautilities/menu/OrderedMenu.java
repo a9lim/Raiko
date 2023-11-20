@@ -215,8 +215,10 @@ public class OrderedMenu extends Menu {
         if (text != null)
             mbuilder.setContent(text);
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < choices.size(); i++)
-            sb.append("\n").append(getEmoji(i).getFormatted()).append(" ").append(choices.get(i));
+        int i = 0;
+        for (String c : choices) {
+            sb.append("\n").append(getEmoji(i++).getFormatted()).append(" ").append(c);
+        }
         mbuilder.setEmbeds(new EmbedBuilder().setColor(color)
             .setDescription(description == null ? sb.toString() : description + sb).build());
         return mbuilder.build();
@@ -339,7 +341,6 @@ public class OrderedMenu extends Menu {
 
         public Builder addChoice(String choice) {
             Checks.check(choices.size() < 10, "Cannot set more than 10 choices");
-
             choices.add(choice);
             return this;
         }

@@ -22,7 +22,7 @@ import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
 import hayashi.raiko.commands.OwnerCommand;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
-
+@Deprecated
 public class SetnameCmd extends OwnerCommand {
     public SetnameCmd(Bot bot) {
         name = "setname";

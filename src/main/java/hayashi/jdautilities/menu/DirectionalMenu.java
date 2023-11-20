@@ -221,12 +221,10 @@ public abstract class DirectionalMenu extends Menu{
         Emoji emoji = event.getEmoji();// LEFT, STOP, RIGHT, BIG_LEFT, BIG_RIGHT all fall-through to
 // return if the User is valid or not. If none trip, this defaults
 // and returns false.
-        if (emoji.equals(LEFT) || emoji.equals(STOP) || emoji.equals(RIGHT)) {
+        if (emoji.equals(LEFT) || emoji.equals(STOP) || emoji.equals(RIGHT))
             return isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
-        }
-        if (emoji.equals(BIG_LEFT) || emoji.equals(BIG_RIGHT)) {
+        if (emoji.equals(BIG_LEFT) || emoji.equals(BIG_RIGHT))
             return bulkSkipNumber > 1 && isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
-        }
         return false;
     }
 

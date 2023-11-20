@@ -78,10 +78,10 @@ public class FinderUtil {
                 return Collections.singletonList(user);
         }
 
-        ArrayList<User> exact = new ArrayList<>();
-        ArrayList<User> wrongcase = new ArrayList<>();
-        ArrayList<User> startswith = new ArrayList<>();
-        ArrayList<User> contains = new ArrayList<>();
+        List<User> exact = new ArrayList<>();
+        List<User> wrongcase = new ArrayList<>();
+        List<User> startswith = new ArrayList<>();
+        List<User> contains = new ArrayList<>();
         String lowerquery = query.toLowerCase();
         (manager != null ? manager.getUserCache() : jda.getUserCache()).forEach(user -> {
             String name = user.getName();
@@ -133,10 +133,10 @@ public class FinderUtil {
                 if (u.getId().equals(query))
                     return Collections.singletonList(u);
         }
-        ArrayList<User> exact = new ArrayList<>();
-        ArrayList<User> wrongcase = new ArrayList<>();
-        ArrayList<User> startswith = new ArrayList<>();
-        ArrayList<User> contains = new ArrayList<>();
+        List<User> exact = new ArrayList<>();
+        List<User> wrongcase = new ArrayList<>();
+        List<User> startswith = new ArrayList<>();
+        List<User> contains = new ArrayList<>();
         String lowerQuery = query.toLowerCase();
         for (User u : bans) {
             // If a discrim is specified then we skip all users without it.
@@ -180,10 +180,10 @@ public class FinderUtil {
             if (member != null)
                 return Collections.singletonList(member);
         }
-        ArrayList<Member> exact = new ArrayList<>();
-        ArrayList<Member> wrongcase = new ArrayList<>();
-        ArrayList<Member> startswith = new ArrayList<>();
-        ArrayList<Member> contains = new ArrayList<>();
+        List<Member> exact = new ArrayList<>();
+        List<Member> wrongcase = new ArrayList<>();
+        List<Member> startswith = new ArrayList<>();
+        List<Member> contains = new ArrayList<>();
         String lowerquery = query.toLowerCase();
         guild.getMemberCache().forEach(member -> {
             String name = member.getUser().getName();
@@ -231,10 +231,10 @@ public class FinderUtil {
     }
 
     private static List<TextChannel> genericTextChannelSearch(String query, SnowflakeCacheView<TextChannel> cache) {
-        ArrayList<TextChannel> exact = new ArrayList<>();
-        ArrayList<TextChannel> wrongcase = new ArrayList<>();
-        ArrayList<TextChannel> startswith = new ArrayList<>();
-        ArrayList<TextChannel> contains = new ArrayList<>();
+        List<TextChannel> exact = new ArrayList<>();
+        List<TextChannel> wrongcase = new ArrayList<>();
+        List<TextChannel> startswith = new ArrayList<>();
+        List<TextChannel> contains = new ArrayList<>();
         String lowerquery = query.toLowerCase();
         cache.forEach((tc) -> {
             String name = tc.getName();
@@ -276,10 +276,10 @@ public class FinderUtil {
     }
 
     private static List<VoiceChannel> genericVoiceChannelSearch(String query, SnowflakeCacheView<VoiceChannel> cache) {
-        ArrayList<VoiceChannel> exact = new ArrayList<>();
-        ArrayList<VoiceChannel> wrongcase = new ArrayList<>();
-        ArrayList<VoiceChannel> startswith = new ArrayList<>();
-        ArrayList<VoiceChannel> contains = new ArrayList<>();
+        List<VoiceChannel> exact = new ArrayList<>();
+        List<VoiceChannel> wrongcase = new ArrayList<>();
+        List<VoiceChannel> startswith = new ArrayList<>();
+        List<VoiceChannel> contains = new ArrayList<>();
         String lowerquery = query.toLowerCase();
         cache.forEach((vc) -> {
             String name = vc.getName();
@@ -321,10 +321,10 @@ public class FinderUtil {
     }
 
     private static List<Category> genericCategorySearch(String query, SnowflakeCacheView<Category> cache) {
-        ArrayList<Category> exact = new ArrayList<>();
-        ArrayList<Category> wrongcase = new ArrayList<>();
-        ArrayList<Category> startswith = new ArrayList<>();
-        ArrayList<Category> contains = new ArrayList<>();
+        List<Category> exact = new ArrayList<>();
+        List<Category> wrongcase = new ArrayList<>();
+        List<Category> startswith = new ArrayList<>();
+        List<Category> contains = new ArrayList<>();
         String lowerquery = query.toLowerCase();
         cache.forEach(cat -> {
             String name = cat.getName();
@@ -357,10 +357,10 @@ public class FinderUtil {
             if (role != null)
                 return Collections.singletonList(role);
         }
-        ArrayList<Role> exact = new ArrayList<>();
-        ArrayList<Role> wrongcase = new ArrayList<>();
-        ArrayList<Role> startswith = new ArrayList<>();
-        ArrayList<Role> contains = new ArrayList<>();
+        List<Role> exact = new ArrayList<>();
+        List<Role> wrongcase = new ArrayList<>();
+        List<Role> startswith = new ArrayList<>();
+        List<Role> contains = new ArrayList<>();
         String lowerquery = query.toLowerCase();
         guild.getRoleCache().forEach((role) -> {
             String name = role.getName();
@@ -422,10 +422,10 @@ public class FinderUtil {
     }
 
     private static List<RichCustomEmoji> genericEmoteSearch(String query, SnowflakeCacheView<RichCustomEmoji> cache) {
-        ArrayList<RichCustomEmoji> exact = new ArrayList<>();
-        ArrayList<RichCustomEmoji> wrongcase = new ArrayList<>();
-        ArrayList<RichCustomEmoji> startswith = new ArrayList<>();
-        ArrayList<RichCustomEmoji> contains = new ArrayList<>();
+        List<RichCustomEmoji> exact = new ArrayList<>();
+        List<RichCustomEmoji> wrongcase = new ArrayList<>();
+        List<RichCustomEmoji> startswith = new ArrayList<>();
+        List<RichCustomEmoji> contains = new ArrayList<>();
         String lowerquery = query.toLowerCase();
         cache.forEach(emote -> {
             String name = emote.getName();

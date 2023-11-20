@@ -34,8 +34,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
-import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
-import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
 public class QueueCmd extends MusicCommand {
     private final Paginator.Builder builder;

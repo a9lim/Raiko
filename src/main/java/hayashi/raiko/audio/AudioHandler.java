@@ -84,8 +84,8 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
         //current = null;
     }
 
-    public boolean isMusicPlaying(JDA jda) {
-        return guild(jda).getSelfMember().getVoiceState().inAudioChannel() && audioPlayer.getPlayingTrack() != null;
+    public boolean noMusicPlaying(JDA jda) {
+        return !guild(jda).getSelfMember().getVoiceState().inAudioChannel() || audioPlayer.getPlayingTrack() == null;
     }
 
     public AudioPlayer getPlayer() {
@@ -159,7 +159,7 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
 
     // Formatting
     public MessageCreateData getNowPlaying(JDA jda) {
-        if (!isMusicPlaying(jda))
+        if (noMusicPlaying(jda))
             return null;
         Guild guild = guild(jda);
         AudioTrack track = audioPlayer.getPlayingTrack();
@@ -207,7 +207,7 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
     }
 
     public String getTopicFormat(JDA jda) {
-        if (!isMusicPlaying(jda))
+        if (noMusicPlaying(jda))
             return "No music playing " + STOP_EMOJI + " " + FormatUtil.volumeIcon(audioPlayer.getVolume());
         long userid = getRequestMetadata().getOwner();
         AudioTrack track = audioPlayer.getPlayingTrack();

@@ -68,12 +68,12 @@ public class PlayCmd extends MusicCommand {
                 event.replySuccess("Resumed **" + handler.getPlayer().getPlayingTrack().getInfo().title + "**.");
                 return;
             }
-            StringBuilder builder = new StringBuilder(event.getClient().getWarning() + " Play Commands:\n")
+            StringBuilder builder = new StringBuilder(" Play Commands:\n")
                     .append("\n`").append(event.getClient().getPrefix()).append(name).append(" <song title>` - plays the first result from Youtube")
                     .append("\n`").append(event.getClient().getPrefix()).append(name).append(" <URL>` - plays the provided song, playlist, or stream");
             for (Command cmd : children)
                 builder.append("\n`").append(event.getClient().getPrefix()).append(name).append(" ").append(cmd.getName()).append(" ").append(cmd.getArguments()).append("` - ").append(cmd.getHelp());
-            event.reply(builder.toString());
+            event.replyWarning(builder.toString());
             return;
         }
         String args = !event.getArgs().isEmpty() && event.getArgs().charAt(0) == '<' && event.getArgs().charAt(event.getArgs().length() - 1) == '>'
@@ -82,7 +82,7 @@ public class PlayCmd extends MusicCommand {
         event.reply(loadingEmoji + " Loading... `[" + args + "]`", m -> bot.getPlayerManager().loadItemOrdered(event.getGuild(), args, new ResultHandler(m, event, false)));
     }
 
-    private class ResultHandler implements AudioLoadResultHandler {
+    private final class ResultHandler implements AudioLoadResultHandler {
         private final Message m;
         private final CommandEvent event;
         private final boolean ytsearch;

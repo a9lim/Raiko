@@ -71,11 +71,11 @@ public class ButtonMenu extends Menu {
     // OR through sending a new one to a TextChannel.
     private void initialize(RestAction<Message> ra) {
         ra.queue(m -> {
-            for (int i = 0; i < choices.size(); i++) {
+            int i = 1;
+            for (Emoji emote : choices) {
                 // Get the emote to display.
-                Emoji emote = choices.get(i);
                 RestAction<Void> r = m.addReaction(emote);
-                if (i + 1 < choices.size()) {
+                if (i++ < choices.size()) {
                     r.queue(); // If there is still more reactions to add we delay using the EventWaiter
                     continue;
                 }

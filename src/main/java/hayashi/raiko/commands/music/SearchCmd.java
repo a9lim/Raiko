@@ -68,7 +68,7 @@ public class SearchCmd extends MusicCommand {
                 m -> bot.getPlayerManager().loadItemOrdered(event.getGuild(), searchPrefix + event.getArgs(), new ResultHandler(m, event)));
     }
 
-    private class ResultHandler implements AudioLoadResultHandler {
+    private final class ResultHandler implements AudioLoadResultHandler {
         private final Message m;
         private final CommandEvent event;
 

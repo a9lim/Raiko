@@ -165,11 +165,12 @@ public class SelectionDialog extends Menu {
     private MessageEditData render(int selection) {
         StringBuilder sbuilder = new StringBuilder();
         selection--;
-        for (int i = 0; i < choices.size(); i++)
-            if (i == selection)
-                sbuilder.append("\n").append(leftEnd).append(choices.get(i)).append(rightEnd);
+        int i = 0;
+        for (String c : choices)
+            if (i++ == selection)
+                sbuilder.append("\n").append(leftEnd).append(c).append(rightEnd);
             else
-                sbuilder.append("\n").append(defaultLeft).append(choices.get(i)).append(defaultRight);
+                sbuilder.append("\n").append(defaultLeft).append(c).append(defaultRight);
         MessageEditBuilder mbuilder = new MessageEditBuilder();
         String content = text.apply(++selection);
         if (content != null)
