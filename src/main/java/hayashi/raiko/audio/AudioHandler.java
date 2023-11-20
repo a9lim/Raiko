@@ -1,37 +1,34 @@
-/*
- * Copyright 2016 John Grosh <john.a.grosh@gmail.com>.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2023 Aidan Lim (southernscreamer32) <aidanlim192@gmail.com>.
+// Copyright 2016 John Grosh (jagrosh) <john.a.grosh@gmail.com>.
+//
+// This file is part of Raiko.
+//
+// Raiko is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// Raiko is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with Raiko. If not, see <http://www.gnu.org/licenses/>.
+
 package hayashi.raiko.audio;
 
-import hayashi.raiko.playlist.PlaylistLoader.Playlist;
-import hayashi.raiko.queue.DoubleDealingQueue;
-import hayashi.raiko.settings.RepeatMode;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
-
-import java.util.ArrayDeque;
-
+import hayashi.raiko.playlist.PlaylistLoader.Playlist;
+import hayashi.raiko.queue.DoubleDealingQueue;
+import hayashi.raiko.settings.RepeatMode;
 import hayashi.raiko.settings.Settings;
 import hayashi.raiko.utils.FormatUtil;
-import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack;
-
-import java.nio.ByteBuffer;
-
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.audio.AudioSendHandler;
@@ -39,8 +36,9 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
-import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
-import net.dv8tion.jda.api.utils.messages.MessageEditData;
+
+import java.nio.ByteBuffer;
+import java.util.ArrayDeque;
 
 public class AudioHandler extends AudioEventAdapter implements AudioSendHandler {
     public final static String PLAY_EMOJI = "\u25B6"; // ▶

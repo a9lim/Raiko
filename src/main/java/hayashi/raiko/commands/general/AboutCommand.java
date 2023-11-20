@@ -1,17 +1,34 @@
+// Copyright 2023 Aidan Lim (southernscreamer32) <aidanlim192@gmail.com>.
+// Copyright 2018 John Grosh (jagrosh) <john.a.grosh@gmail.com>.
+//
+// This file is part of Raiko.
+//
+// Raiko is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// Raiko is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with Raiko. If not, see <http://www.gnu.org/licenses/>.
+
+
 package hayashi.raiko.commands.general;
 
 import hayashi.jdautilities.command.Command;
 import hayashi.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDAInfo;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ApplicationInfo;
-import net.dv8tion.jda.api.entities.MessageEmbed;
+
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 public class AboutCommand extends Command {
     private boolean IS_AUTHOR = true;
@@ -62,8 +79,8 @@ public class AboutCommand extends Command {
                 .append(description).append("\nI ").append(IS_AUTHOR ? "was written in Java" : "am owned").append(" by **")
                 .append(event.getJDA().getUserById(event.getClient().getOwnerId()) == null ? "<@" + event.getClient().getOwnerId() + ">"
                         : event.getJDA().getUserById(event.getClient().getOwnerId()).getName())
-                .append("** using the [JDA library](https://github.com/DV8FromTheWorld/JDA) (")
-                .append(JDAInfo.VERSION).append(")\nType `").append(event.getClient().getTextualPrefix()).append(event.getClient().getHelpWord())
+                .append("** using [JDA](https://github.com/discord-jda/JDA) and [LavaPlayer](https://github.com/lavalink-devs/lavaplayer)\nType `")
+                .append(event.getClient().getTextualPrefix()).append(event.getClient().getHelpWord())
                 .append("` to see my commands!").append(join || inv ? "\n" + (join ? "Join my server [`here`](" + event.getClient().getServerInvite() + ")" : (inv ? "Please " : ""))
                         + (inv ? (join ? ", or " : "") + "[`invite`](" + oauthLink + ") me to your server" : "") + "!" : "").append("\n\nSome of my features include: ```css");
         for (String feature : features)

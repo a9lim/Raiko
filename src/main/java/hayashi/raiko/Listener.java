@@ -1,24 +1,24 @@
-/*
- * Copyright 2016 John Grosh <john.a.grosh@gmail.com>.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2023 Aidan Lim (southernscreamer32) <aidanlim192@gmail.com>.
+// Copyright 2016 John Grosh (jagrosh) <john.a.grosh@gmail.com>.
+//
+// This file is part of Raiko.
+//
+// Raiko is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// Raiko is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with Raiko. If not, see <http://www.gnu.org/licenses/>.
+
 package hayashi.raiko;
 
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
-import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
@@ -38,11 +38,10 @@ public class Listener extends ListenerAdapter {
     @Override
     public void onReady(ReadyEvent event) {
         if (event.getJDA().getGuildCache().isEmpty()) {
-            Logger log = LoggerFactory.getLogger("MusicBot");
+            Logger log = LoggerFactory.getLogger("Raiko");
             log.warn("This bot is not on any guilds! Use the following link to add the bot to your guilds!");
             log.warn(event.getJDA().getInviteUrl(Raiko.RECOMMENDED_PERMS));
         }
-        credit(event.getJDA());
         event.getJDA().getGuilds().forEach((guild) -> {
             try {
                 VoiceChannel vc = bot.getSettingsManager().getSettings(guild).getVoiceChannel(guild);
@@ -68,18 +67,4 @@ public class Listener extends ListenerAdapter {
         bot.shutdown();
     }
 
-    @Override
-    public void onGuildJoin(GuildJoinEvent event) {
-        credit(event.getJDA());
-    }
-
-    // make sure people aren't adding clones to dbots
-    private void credit(JDA jda) {
-        Guild dbots = jda.getGuildById(110373943822540800L);
-        if (dbots != null && !bot.getConfig().getDBots()) {
-            jda.getTextChannelById(119222314964353025L)
-                    .sendMessage("This account is running Raiko. Please do not list bot clones on this server, <@" + bot.getConfig().getOwnerId() + ">.").complete();
-            dbots.leave().queue();
-        }
-    }
 }

@@ -7,7 +7,7 @@ Discord music bot forked from [jagrosh's JMusicBot](https://github.com/jagrosh/M
 
 ## Main Changes
 * Migrated to Java 21
-* Reworked to use [JDA 5.0.0](https://github.com/discord-jda/JDA)
+* Reworked to use [JDA 5.0.0](https://github.com/discord-jda/JDA), [LavaPlayer 2.0.3](https://github.com/lavalink-devs/lavaplayer), and several other updated libraries
 * [JDA-Utilities](https://github.com/JDA-Applications/JDA-Utilities) forked and directly incorporated into project
 * ChatGPT-powered chatbot integrated 
-* General improvements to efficiency 
+* General improvements to code efficiency 
