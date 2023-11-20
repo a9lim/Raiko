@@ -33,6 +33,6 @@ public class StopCmd extends MusicCommand {
     public void doCommand(CommandEvent event) {
         ((AudioHandler) event.getGuild().getAudioManager().getSendingHandler() ).stopAndClear();
         event.getGuild().getAudioManager().closeAudioConnection();
-        event.reply(event.getClient().getSuccess() + " The player has stopped and the queue has been cleared.");
+        event.replySuccess(" The player has stopped and the queue has been cleared.");
     }
 }

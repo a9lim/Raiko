@@ -46,7 +46,7 @@ public class VolumeCmd extends MusicCommand {
             nvolume = -1;
         }
         if (nvolume < 0 || nvolume > 150) {
-            event.reply(event.getClient().getError() + " Volume must be a valid integer between 0 and 150!");
+            event.replyError(" Volume must be a valid integer between 0 and 150!");
             return;
         }
         handler.getPlayer().setVolume(nvolume);

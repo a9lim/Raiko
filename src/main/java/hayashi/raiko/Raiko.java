@@ -15,32 +15,37 @@
  */
 package hayashi.raiko;
 
+import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
 import hayashi.jdautilities.command.CommandClientBuilder;
 import hayashi.jdautilities.commons.waiter.EventWaiter;
 import hayashi.raiko.chat.ChatBot;
-import hayashi.raiko.commands.chat.ChatCmd;
-import hayashi.raiko.commands.chat.ClearChatCmd;
-import hayashi.raiko.commands.chat.ToggleModelCmd;
-import hayashi.raiko.commands.music.*;
-import hayashi.raiko.commands.owner.*;
-import hayashi.raiko.commands.general.*;
-import hayashi.raiko.entities.Prompt;
-import hayashi.raiko.gui.GUI;
-import hayashi.raiko.settings.SettingsManager;
-
-import java.awt.Color;
-import java.util.Arrays;
-
 import hayashi.raiko.commands.admin.PrefixCmd;
 import hayashi.raiko.commands.admin.SettcCmd;
 import hayashi.raiko.commands.admin.SetvcCmd;
-import net.dv8tion.jda.api.*;
+import hayashi.raiko.commands.chat.ChatCmd;
+import hayashi.raiko.commands.chat.ClearChatCmd;
+import hayashi.raiko.commands.chat.ToggleModelCmd;
+import hayashi.raiko.commands.general.AboutCommand;
+import hayashi.raiko.commands.general.PingCommand;
+import hayashi.raiko.commands.general.SettingsCmd;
+import hayashi.raiko.commands.music.*;
+import hayashi.raiko.commands.owner.*;
+import hayashi.raiko.entities.Prompt;
+import hayashi.raiko.gui.GUI;
+import hayashi.raiko.settings.SettingsManager;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.awt.*;
+import java.util.Arrays;
 
 public class Raiko {
     public final static Logger LOG = LoggerFactory.getLogger(Raiko.class);
@@ -48,7 +53,7 @@ public class Raiko {
             Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_ATTACH_FILES, Permission.MESSAGE_MANAGE, Permission.MESSAGE_EXT_EMOJI,
             Permission.MANAGE_CHANNEL, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.NICKNAME_CHANGE};
     public final static GatewayIntent[] INTENTS = {GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS,
-            GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.SCHEDULED_EVENTS};
+            GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_EMOJIS_AND_STICKERS};
 
     public static void main(String[] args) {
         if (args.length > 0 && "generate-config".equalsIgnoreCase(args[0])) {
@@ -157,12 +162,14 @@ public class Raiko {
         try {
             JDA jda = JDABuilder.create(config.getToken(), Arrays.asList(INTENTS))
                     .enableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE)
-                    .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.ONLINE_STATUS)
+                    .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.ONLINE_STATUS, CacheFlag.SCHEDULED_EVENTS)
                     .setActivity(nogame ? null : Activity.playing("loading..."))
                     .setStatus(config.getStatus() == OnlineStatus.INVISIBLE || config.getStatus() == OnlineStatus.OFFLINE
                             ? OnlineStatus.INVISIBLE : OnlineStatus.DO_NOT_DISTURB)
                     .addEventListeners(cb.build(), waiter, new Listener(bot))
                     .setBulkDeleteSplittingEnabled(true)
+                    // maybe
+//                    .setAudioSendFactory(new NativeAudioSendFactory())
                     .build();
             bot.setJDA(jda);
 //        } catch (LoginException ex) {

@@ -16,6 +16,8 @@
 package hayashi.raiko.utils;
 
 import hayashi.raiko.Raiko;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
 
 import java.io.*;
 import java.net.URI;
@@ -23,9 +25,6 @@ import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.Activity;
 
 import static hayashi.jdautilities.command.Command.COMPILE;
 

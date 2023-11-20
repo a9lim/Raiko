@@ -37,8 +37,9 @@ public class DoubleDealingQueue<T extends Queueable> {
         for (; i > 0; i--)
             helper.push(deque.pop());
         deque.push(item);
-        for (T t : helper)
-            deque.push(t);
+        helper.forEach(deque::push);
+//        for (T t : helper)
+//            deque.push(t);
     }
 
     public int size() {
@@ -117,8 +118,9 @@ public class DoubleDealingQueue<T extends Queueable> {
         ArrayList<T> out = new ArrayList<>(deque);
         Collections.shuffle(out);
         deque.clear();
-        for (T t : out)
-            deque.push(t);
+        out.forEach(deque::push);
+//        for (T t : out)
+//            deque.push(t);
     }
 
     public void skip(int number) {
@@ -144,8 +146,9 @@ public class DoubleDealingQueue<T extends Queueable> {
             for (; i > to; i--)
                 deque.push(helper.pop());
         deque.push(B);
-        for (T t : helper)
-            deque.push(t);
+        helper.forEach(deque::push);
+//        for (T t : helper)
+//            deque.push(t);
         return B;
     }
 
@@ -168,14 +171,16 @@ public class DoubleDealingQueue<T extends Queueable> {
         for (; i > b; i--)
             deque.push(helper.pop());
         deque.push(A);
-        for (T t : helper)
-            deque.push(t);
+        helper.forEach(deque::push);
+//        for (T t : helper)
+//            deque.push(t);
     }
 
     public String toString(){
         StringBuilder out = new StringBuilder();
-        for(T t: deque)
-            out.append(t);
+        deque.forEach(out::append);
+//        for(T t: deque)
+//            out.append(t);
         return out.toString();
     }
 }

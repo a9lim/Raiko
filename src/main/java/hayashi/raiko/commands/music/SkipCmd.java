@@ -39,17 +39,17 @@ public class SkipCmd extends MusicCommand {
             index = Integer.parseInt(event.getArgs());
         } catch (NumberFormatException e) {
             RequestMetadata rm = handler.getRequestMetadata();
-            event.reply(event.getClient().getSuccess() + " Skipped **" + handler.getPlayer().getPlayingTrack().getInfo().title
+            event.replySuccess(" Skipped **" + handler.getPlayer().getPlayingTrack().getInfo().title
                     + "** " + (rm.getOwner() == 0L ? "(autoplay)" : "(requested by **" + rm.user.username + "**)"));
             handler.getPlayer().stopTrack();
             return;
         }
         if (index < 1 || index > handler.getQueue().size()) {
-            event.reply(event.getClient().getError() + " Position must be a valid integer between 1 and " + handler.getQueue().size() + "!");
+            event.replyError(" Position must be a valid integer between 1 and " + handler.getQueue().size() + "!");
             return;
         }
         handler.getQueue().skip(index - 1);
-        event.reply(event.getClient().getSuccess() + " Skipped to **" + handler.getQueue().get(0).getTrack().getInfo().title + "**");
+        event.replySuccess(" Skipped to **" + handler.getQueue().get(0).getTrack().getInfo().title + "**");
         handler.getPlayer().stopTrack();
     }
 }

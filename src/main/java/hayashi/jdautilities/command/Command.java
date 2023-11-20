@@ -15,15 +15,17 @@
  */
 package hayashi.jdautilities.command;
 
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.GuildVoiceState;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.channel.*;
-import net.dv8tion.jda.api.entities.channel.concrete.*;
 
 public abstract class Command {
     public static final Pattern COMPILE = Pattern.compile("\\s+");

@@ -20,6 +20,8 @@ import hayashi.raiko.Bot;
 import hayashi.raiko.audio.AudioHandler;
 import hayashi.raiko.commands.MusicCommand;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
 public class NowplayingCmd extends MusicCommand {
     public NowplayingCmd(Bot bot) {
@@ -33,10 +35,12 @@ public class NowplayingCmd extends MusicCommand {
     @Override
     public void doCommand(CommandEvent event) {
         AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
-        String m = handler.getNowPlaying(event.getJDA()).getContent();
-        if (m != null)
+        MessageCreateData m = handler.getNowPlaying(event.getJDA());
+        if (m != null) {
             event.reply(m, msg -> bot.getNowplayingHandler().setLastNPMessage(msg));
-        event.reply(handler.getNoMusicPlaying(event.getJDA()).getContent());
+            return;
+        }
+        event.reply(handler.getNoMusicPlaying(event.getJDA()));
         bot.getNowplayingHandler().clearLastNPMessage(event.getGuild());
     }
 }

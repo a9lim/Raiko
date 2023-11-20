@@ -15,26 +15,26 @@
  */
 package hayashi.jdautilities.menu;
 
-import java.awt.Color;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
-
 import hayashi.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import net.dv8tion.jda.internal.utils.Checks;
-import net.dv8tion.jda.api.entities.channel.middleman.*;
+
+import java.awt.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 public class ButtonMenu extends Menu {
     private final Color color;
     private final String text, description;
@@ -71,14 +71,6 @@ public class ButtonMenu extends Menu {
             for (int i = 0; i < choices.size(); i++) {
                 // Get the emote to display.
                 Emoji emote = choices.get(i);
-//                try {
-//                    emote = m.getJDA().getE(choices.get(i));
-//                } catch (Exception e) {
-//                    emote = null;
-//                }
-                // If the emote is null that means that it might be an emoji.
-                // If it's neither, that's on the developer and we'll let it
-                // throw an error when we queue a rest action.
                 RestAction<Void> r = m.addReaction(emote);
                 if (i + 1 < choices.size()) {
                     r.queue(); // If there is still more reactions to add we delay using the EventWaiter

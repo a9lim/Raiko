@@ -66,6 +66,11 @@
             <artifactId>json</artifactId>
             <version>20231013</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.whya5448.lavaplayer-jda-nas</groupId>
+            <artifactId>jda-nas</artifactId>
+            <version>1.0.6.4</version>
+        </dependency>
         <!-- this is needed, but isn't actually hosted anywhere anymore... uh -->
         <!--dependency>
             <groupId>com.sedmelluq</groupId>

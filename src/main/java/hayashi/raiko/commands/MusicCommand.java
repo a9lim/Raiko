@@ -18,10 +18,11 @@ package hayashi.raiko.commands;
 import hayashi.jdautilities.command.Command;
 import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
-import hayashi.raiko.settings.Settings;
 import hayashi.raiko.audio.AudioHandler;
+import hayashi.raiko.settings.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
-import net.dv8tion.jda.api.entities.channel.concrete.*;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 
 public abstract class MusicCommand extends Command {
@@ -47,7 +48,7 @@ public abstract class MusicCommand extends Command {
         }
         bot.getPlayerManager().setUpHandler(event.getGuild()); // no point constantly checking for this later
         if (bePlaying && !((AudioHandler) event.getGuild().getAudioManager().getSendingHandler()).isMusicPlaying(event.getJDA())) {
-            event.reply(event.getClient().getError() + " There must be music playing to use that!");
+            event.replyError(" There must be music playing to use that!");
             return;
         }
         if (beListening) {
@@ -73,7 +74,7 @@ public abstract class MusicCommand extends Command {
                 try {
                     event.getGuild().getAudioManager().openAudioConnection(userState.getChannel());
                 } catch (PermissionException ex) {
-                    event.reply(event.getClient().getError() + " I am unable to connect to " + userState.getChannel().getAsMention() + "!");
+                    event.replyError(" I am unable to connect to " + userState.getChannel().getAsMention() + "!");
                     return;
                 }
             }
