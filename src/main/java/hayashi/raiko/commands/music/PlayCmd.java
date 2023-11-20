@@ -219,11 +219,9 @@ public class PlayCmd extends MusicCommand {
                             : event.getClient().getSuccess() + " Loaded **" + playlist.getTracks().size() + "** tracks!");
                     if (!playlist.getErrors().isEmpty())
                         builder.append("\nThe following tracks failed to load:");
-                    playlist.getErrors().forEach(err -> builder.append("\n`[").append(err.getIndex() + 1).append("]` **").append(err.getItem()).append("**: ").append(err.getReason()));
-                    String str = builder.toString();
-                    if (str.length() > 2000)
-                        str = str.substring(0, 1994) + " (...)";
-                    m.editMessage(FormatUtil.filter(str)).queue();
+                    playlist.getErrors().forEach(err ->
+                            builder.append("\n`[").append(err.getIndex() + 1).append("]` **").append(err.getItem()).append("**: ").append(err.getReason()));
+                    m.editMessage(FormatUtil.filter(builder.length() > 2000 ? builder.append(" (...)").substring(0,1994) : builder.toString())).queue();
                 });
             });
         }

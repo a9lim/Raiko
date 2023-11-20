@@ -149,10 +149,7 @@ public abstract class DirectionalMenu extends Menu{
                         .queue(v -> pagination(m, pageNum), t -> pagination(m, pageNum));
             } else if (waitOnSinglePage) {
                 // Go straight to without text-input because only one page is available
-                m.addReaction(STOP).queue(
-                        v -> paginationWithoutTextInput(m, pageNum),
-                        t -> paginationWithoutTextInput(m, pageNum)
-                );
+                m.addReaction(STOP).queue(v -> paginationWithoutTextInput(m, pageNum), t -> paginationWithoutTextInput(m, pageNum));
             } else {
                 finalAction.accept(m);
             }
