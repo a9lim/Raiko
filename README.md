@@ -1,7 +1,7 @@
 # Raiko
 
-[![Release](https://img.shields.io/github/release/southernscreamer32/raiko.svg)](https://github.com/southernscreamer32/raiko/releases/latest)
-[![License](https://img.shields.io/github/license/southernscreamer32/raiko.svg)](https://github.com/southernscreamer32/raiko/blob/master/LICENSE)
+[![Release](https://img.shields.io/github/release/a9lim/raiko.svg)](https://github.com/a9lim/raiko/releases/latest)
+[![License](https://img.shields.io/github/license/a9lim/raiko.svg)](https://github.com/a9lim/raiko/blob/master/LICENSE)
 
 Discord music bot forked from [jagrosh's JMusicBot](https://github.com/jagrosh/MusicBot)
 
