@@ -215,12 +215,14 @@ public class OrderedMenu extends Menu {
         if (text != null)
             mbuilder.setContent(text);
         StringBuilder sb = new StringBuilder();
+        if(description == null)
+            sb.append(description);
         int i = 0;
         for (String c : choices) {
             sb.append("\n").append(getEmoji(i++).getFormatted()).append(" ").append(c);
         }
         mbuilder.setEmbeds(new EmbedBuilder().setColor(color)
-            .setDescription(description == null ? sb.toString() : description + sb).build());
+            .setDescription(sb.toString()).build());
         return mbuilder.build();
     }
 

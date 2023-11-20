@@ -196,13 +196,12 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
     }
 
     public MessageCreateData getNoMusicPlaying(JDA jda) {
-        Guild guild = guild(jda);
         return new MessageCreateBuilder()
                 .setContent(FormatUtil.filter(manager.getBot().getConfig().getSuccess() + " **Now Playing...**"))
                 .setEmbeds(new EmbedBuilder()
                         .setTitle("No music playing")
                         .setDescription(STOP_EMOJI + " " + FormatUtil.progressBar(-1) + " " + FormatUtil.volumeIcon(audioPlayer.getVolume()))
-                        .setColor(guild.getSelfMember().getColor())
+                        .setColor(guild(jda).getSelfMember().getColor())
                         .build()).build();
     }
 

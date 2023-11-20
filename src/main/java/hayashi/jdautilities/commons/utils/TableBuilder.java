@@ -83,7 +83,6 @@ public class TableBuilder {
         if (autoAdjust) {
             // find the max. value for each column
             int[] maxLengths = new int[columns];
-//            Arrays.fill(maxLengths, 0);
 
             for (String[] row : values) {
                 for (int i = 0; i < row.length; i++) {
@@ -235,13 +234,8 @@ public class TableBuilder {
         newValueBuilder.append(" ".repeat(Math.max(0, padding)));
 
         switch (alignment) {
-            case RIGHT -> {
-                // first black spaces
-                newValueBuilder.append(" ".repeat(Math.max(0, adjustment))).append(oldValue); // then value
-            }
-            case LEFT -> {
-                newValueBuilder.append(oldValue).append(" ".repeat(Math.max(0, adjustment)));
-            }
+            case RIGHT -> newValueBuilder.append(" ".repeat(Math.max(0, adjustment))).append(oldValue); // then value
+            case LEFT -> newValueBuilder.append(oldValue).append(" ".repeat(Math.max(0, adjustment)));
             case CENTER -> {
                 int half = adjustment / 2;
                 // append one half of black spaces

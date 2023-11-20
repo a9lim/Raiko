@@ -35,7 +35,6 @@ import hayashi.raiko.commands.owner.*;
 import hayashi.raiko.entities.Prompt;
 import hayashi.raiko.gui.GUI;
 import hayashi.raiko.settings.SettingsManager;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
@@ -162,7 +161,7 @@ public class Raiko {
 
         // attempt to log in and start
         try {
-            JDA jda = JDABuilder.create(config.getToken(), Arrays.asList(INTENTS))
+            bot.setJDA( JDABuilder.create(config.getToken(), Arrays.asList(INTENTS))
                     .enableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE)
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.ONLINE_STATUS, CacheFlag.SCHEDULED_EVENTS)
                     .setActivity(nogame ? null : Activity.playing("loading..."))
@@ -172,13 +171,7 @@ public class Raiko {
                     .setBulkDeleteSplittingEnabled(true)
                     // maybe
 //                    .setAudioSendFactory(new NativeAudioSendFactory())
-                    .build();
-            bot.setJDA(jda);
-//        } catch (LoginException ex) {
-//            prompt.alert(Prompt.Level.ERROR, "Raiko", ex + "\nPlease make sure you are "
-//                    + "editing the correct config.txt file, and that you have used the "
-//                    + "correct token (not the 'secret'!)\nConfig Location: " + config.getConfigLocation());
-//            System.exit(1);
+                    .build() );
         } catch (IllegalArgumentException ex) {
             prompt.alert(Prompt.Level.ERROR, "Raiko", "Some aspect of the configuration is "
                     + "invalid: " + ex + "\nConfig Location: " + config.getConfigLocation());
