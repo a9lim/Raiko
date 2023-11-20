@@ -26,7 +26,7 @@ public class CTest {
 
         final BotConfig config = new BotConfig(new Prompt("Raiko"));
         config.load();
-        final ChatBot chatBot = new ChatBot(config.getCgpttoken(), config.getModel());
+        final ChatBot chatBot = new ChatBot(config);
         Scanner s = new Scanner(System.in);
         while (true){
             System.out.println(chatBot.chat(s.nextLine(), 0L));

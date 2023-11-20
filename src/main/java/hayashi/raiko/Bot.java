@@ -23,6 +23,7 @@ import hayashi.raiko.audio.AloneInVoiceHandler;
 import hayashi.raiko.audio.AudioHandler;
 import hayashi.raiko.audio.NowplayingHandler;
 import hayashi.raiko.audio.PlayerManager;
+import hayashi.raiko.chat.ChatBot;
 import hayashi.raiko.gui.GUI;
 import hayashi.raiko.playlist.PlaylistLoader;
 import hayashi.raiko.settings.SettingsManager;
@@ -43,6 +44,7 @@ public class Bot {
     private final PlaylistLoader playlists;
     private final NowplayingHandler nowplaying;
     private final AloneInVoiceHandler aloneInVoiceHandler;
+    private final ChatBot chatBot;
 
     private boolean shuttingDown;
     private JDA jda;
@@ -60,6 +62,7 @@ public class Bot {
         nowplaying.init();
         aloneInVoiceHandler = new AloneInVoiceHandler(this);
         aloneInVoiceHandler.init();
+        chatBot = new ChatBot(inconfig);
     }
 
     public BotConfig getConfig() {
@@ -92,6 +95,9 @@ public class Bot {
 
     public AloneInVoiceHandler getAloneInVoiceHandler() {
         return aloneInVoiceHandler;
+    }
+    public ChatBot getChatBot() {
+        return chatBot;
     }
 
     public JDA getJDA() {

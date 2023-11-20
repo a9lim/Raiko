@@ -1,4 +1,5 @@
 // Copyright 2023 Aidan Lim (southernscreamer32) <aidanlim192@gmail.com>.
+// Copyright 2018 John Grosh (jagrosh) <john.a.grosh@gmail.com>.
 //
 // This file is part of Raiko.
 //
@@ -15,24 +16,23 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Raiko. If not, see <http://www.gnu.org/licenses/>.
 
-
 package hayashi.raiko.commands.chat;
 import hayashi.jdautilities.command.CommandEvent;
 import hayashi.raiko.Bot;
-import hayashi.raiko.chat.ChatBot;
 import hayashi.raiko.commands.ChatCommand;
 
-public class ToggleModelCmd extends ChatCommand {
+public class SetPrepromptCmd extends ChatCommand {
 
-    public ToggleModelCmd(Bot bot) {
+    public SetPrepromptCmd(Bot bot) {
         super(bot);
-        name = "setmodel";
-        help = "toggle";
+        name = "setpreprompt";
+        help = "set raiko's preprompt";
+        arguments = "<text>";
         aliases = bot.getConfig().getAliases(name);
     }
     @Override
     protected void execute(CommandEvent event) {
-        chatBot.toggleModel();
-        event.replySuccess("Model set to " + chatBot.getModel());
+        chatBot.setPreprompt(event.getArgs());
+        event.replySuccess("Preprompt set!");
     }
 }
