@@ -41,7 +41,7 @@ public class BotConfig {
     private Path path;
     private String token, prefix, altprefix, helpWord, playlistsFolder,
             successEmoji, warningEmoji, errorEmoji, loadingEmoji, searchingEmoji,
-            cgpttoken;
+            cgpttoken, preprompt;
     private boolean stayInChannel, songInGame, npImages,
             model, valid;
     private long owner, maxSeconds, aloneTimeUntilStop;
@@ -87,6 +87,7 @@ public class BotConfig {
             aliases = config.getConfig("aliases");
             cgpttoken = config.getString("gpttoken");
             model = config.getBoolean("cheapmodel");
+            preprompt = config.getString("preprompt");
 
             // we may need to write a new config file
             boolean write = false;
@@ -106,6 +107,7 @@ public class BotConfig {
                 }
             }
 
+            // validate chatgpt token
             if (cgpttoken == null || cgpttoken.isEmpty() || "CGPTTOKEN".equalsIgnoreCase(cgpttoken)) {
                 cgpttoken = prompt.prompt("""
                         Please provide an OpenAI token.
@@ -293,5 +295,9 @@ public class BotConfig {
 
     public boolean getModel(){
         return model;
+    }
+
+    public String getPreprompt() {
+        return preprompt;
     }
 }

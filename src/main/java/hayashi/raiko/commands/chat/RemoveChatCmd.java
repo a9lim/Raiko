@@ -24,8 +24,8 @@ import hayashi.raiko.commands.ChatCommand;
 
 public class RemoveChatCmd extends ChatCommand {
 
-    public RemoveChatCmd(ChatBot chatBot, Bot bot) {
-        super(chatBot);
+    public RemoveChatCmd(Bot bot) {
+        super(bot);
         name = "removechat";
         help = "delete a certain message from raiko's memory";
         arguments = "<position>";

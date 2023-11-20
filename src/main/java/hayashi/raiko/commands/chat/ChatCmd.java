@@ -24,8 +24,8 @@ import hayashi.raiko.commands.ChatCommand;
 
 public class ChatCmd extends ChatCommand {
 
-    public ChatCmd(ChatBot chatBot, Bot bot) {
-        super(chatBot);
+    public ChatCmd(Bot bot) {
+        super(bot);
         name = "chat";
         help = "talk to raiko";
         arguments = "<text>";

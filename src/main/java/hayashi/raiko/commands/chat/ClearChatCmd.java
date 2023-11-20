@@ -24,8 +24,8 @@ import hayashi.raiko.commands.ChatCommand;
 
 public class ClearChatCmd extends ChatCommand {
 
-    public ClearChatCmd(ChatBot chatBot, Bot bot) {
-        super(chatBot);
+    public ClearChatCmd(Bot bot) {
+        super(bot);
         name = "clearchat";
         help = "wipe raiko's memory";
         aliases = bot.getConfig().getAliases(name);
