@@ -23,34 +23,11 @@
     </repositories>
 
     <dependencies>
-        <!-- Discord Dependencies -->
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
             <version>5.0.0-beta.18</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.jagrosh</groupId>-->
-<!--            <artifactId>jda-utilities-command</artifactId>-->
-<!--            <version>3.0.5</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.jagrosh</groupId>-->
-<!--            <artifactId>jda-utilities-commons</artifactId>-->
-<!--            <version>3.0.5</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.jagrosh</groupId>-->
-<!--            <artifactId>jda-utilities-menu</artifactId>-->
-<!--            <version>3.0.5</version>-->
-<!--        </dependency>-->
-        <!-- Music Dependencies -->
-        <!-- using a fork of this to fix some issues faster -->
-        <!--dependency>
-            <groupId>com.sedmelluq</groupId>
-            <artifactId>lavaplayer</artifactId>
-            <version>1.3.77</version>
-        </dependency-->
         <dependency>
             <groupId>dev.arbjerg</groupId>
             <artifactId>lavaplayer</artifactId>
@@ -61,18 +38,11 @@
             <artifactId>json</artifactId>
             <version>20231013</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>com.github.whya5448.lavaplayer-jda-nas</groupId>
             <artifactId>jda-nas</artifactId>
             <version>1.0.6.4</version>
-        </dependency>
-	<!--dependency>
-	    <groupId>com.github.jagrosh</groupId>
-	    <artifactId>JLyrics</artifactId>
-	    <version>master-SNAPSHOT</version>
-	</dependency-->
-
-        <!-- Misc Internal Dependencies -->
+        </dependency-->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
@@ -96,7 +66,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.7</version>
+            <version>2.0.9</version>
         </dependency>
     </dependencies>
 
@@ -105,7 +75,7 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
-            <version>1.5</version>
+            <version>3.5.1</version>
             <executions>
                 <execution>
                     <phase>package</phase>
