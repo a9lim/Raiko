@@ -6,10 +6,12 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDAInfo;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ApplicationInfo;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class AboutCommand extends Command {
     private boolean IS_AUTHOR = true;
@@ -65,7 +67,8 @@ public class AboutCommand extends Command {
                 .append("` to see my commands!").append(join || inv ? "\n" + (join ? "Join my server [`here`](" + event.getClient().getServerInvite() + ")" : (inv ? "Please " : ""))
                         + (inv ? (join ? ", or " : "") + "[`invite`](" + oauthLink + ") me to your server" : "") + "!" : "").append("\n\nSome of my features include: ```css");
         for (String feature : features)
-            descr.append("\n").append(!event.getClient().getSuccess().isEmpty() && event.getClient().getSuccess().charAt(0) == '<' ? REPLACEMENT_ICON : event.getClient().getSuccess()).append(" ").append(feature);
+            descr.append("\n").append(!event.getClient().getSuccess().isEmpty() && event.getClient().getSuccess().charAt(0) == '<' ?
+                    REPLACEMENT_ICON : event.getClient().getSuccess()).append(" ").append(feature);
         descr.append(" ```");
         builder.setDescription(descr);
         if (event.getJDA().getShardInfo() == null) {

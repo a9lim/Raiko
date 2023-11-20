@@ -19,22 +19,18 @@ public class Test {
         for(int s: arr)
             queue.add(new TestQueuable<>(s,(int)(Math.random()+0.25)));
 
-        for(TestQueuable<Integer> t: queue.getDeque())
-            System.out.print(t + "  ");
+        queue.getDeque().forEach(t -> System.out.print(t + "  "));
         System.out.println();
-        for(TestQueuable<Integer> t: queue.getDeque())
-            System.out.print("0" + t.getIdentifier() + "  ");
+        queue.getDeque().forEach(t -> System.out.print("0" + t.getIdentifier() + "  "));
 
         System.out.println();
 
         System.out.println();
         queue.shuffle(1);
 
-        for(TestQueuable<Integer> t: queue.getDeque())
-            System.out.print(t + "  ");
+        queue.getDeque().forEach(t -> System.out.print(t + "  "));
         System.out.println();
-        for(TestQueuable<Integer> t: queue.getDeque())
-            System.out.print("0" +  t.getIdentifier() + "  ");
+        queue.getDeque().forEach(t -> System.out.print("0" + t.getIdentifier() + "  "));
 
         System.out.println();
 
@@ -48,14 +44,12 @@ public class Test {
         for(int s: arr)
             queue.add(new TestQueuable<>(s));
 
-        for(TestQueuable<Integer> t: queue.getDeque())
-            System.out.print(t + "  ");
+        queue.getDeque().forEach(t -> System.out.print(t + "  "));
 
         System.out.println();
         queue.shuffle();
 
-        for(TestQueuable<Integer> t: queue.getDeque())
-            System.out.print(t + "  ");
+        queue.getDeque().forEach(t -> System.out.print(t + "  "));
 
         System.out.println();
         int[] arr2 = new int[queue.size()];
@@ -80,13 +74,11 @@ public class Test {
         for(int s: arr)
             queue.add(new TestQueuable<>(s));
 
-        for(TestQueuable<Integer> t: queue.getDeque())
-            System.out.print(t + "  ");
+        queue.getDeque().forEach(t -> System.out.print(t + "  "));
 
         System.out.println();
         queue.moveItem(4,7);
 
-        for(TestQueuable<Integer> t: queue.getDeque())
-            System.out.print(t + "  ");
+        queue.getDeque().forEach(t -> System.out.print(t + "  "));
     }
 }

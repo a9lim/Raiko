@@ -25,11 +25,12 @@ import hayashi.raiko.Bot;
 import hayashi.raiko.audio.AudioHandler;
 import hayashi.raiko.audio.QueuedTrack;
 import hayashi.raiko.commands.MusicCommand;
-import hayashi.raiko.settings.RepeatMode;
 import hayashi.raiko.settings.Settings;
-import hayashi.raiko.utils.FormatUtil;
+import hayashi.raiko.utils.GuildUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.exceptions.PermissionException;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
@@ -69,10 +70,10 @@ public class QueueCmd extends MusicCommand {
         AudioHandler ah = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
         Deque<QueuedTrack> deque = ah.getQueue().getDeque();
         if (deque.isEmpty()) {
-            MessageEditData nowp = ah.getNowPlaying(event.getJDA());
-            event.reply(new MessageEditBuilder()
+            MessageCreateData nowp = ah.getNowPlaying(event.getJDA());
+            event.reply(new MessageCreateBuilder()
                     .setContent(event.getClient().getWarning() + " There is no music in the queue!")
-                    .setEmbeds((nowp == null ? ah.getNoMusicPlaying(event.getJDA()) : nowp).getEmbeds().get(0)).build().getContent()
+                    .setEmbeds((nowp == null ? ah.getNoMusicPlaying(event.getJDA()) : nowp).getEmbeds().get(0)).build()
                     , m -> {
                 if (nowp != null)
                     bot.getNowplayingHandler().setLastNPMessage(m);
@@ -89,20 +90,10 @@ public class QueueCmd extends MusicCommand {
         }
         Settings settings = event.getClient().getSettingsFor(event.getGuild());
         long fintotal = total;
-        builder.setText((i1, i2) -> getQueueTitle(ah, event.getClient().getSuccess(), songs.length, fintotal, settings.getRepeatMode()))
+        builder.setText((i1, i2) -> GuildUtil.getQueueTitle(ah, event.getClient().getSuccess(), songs.length, fintotal, settings.getRepeatMode()))
                 .setItems(songs)
                 .setUsers(event.getAuthor())
                 .setColor(event.getSelfMember().getColor());
         builder.build().paginate(event.getChannel(), pagenum);
-    }
-
-    private String getQueueTitle(AudioHandler ah, String success, int songslength, long total, RepeatMode repeatmode) {
-        StringBuilder sb = new StringBuilder();
-        if (ah.getPlayer().getPlayingTrack() != null)
-            sb.append(ah.getStatusEmoji()).append(" **")
-                    .append(ah.getPlayer().getPlayingTrack().getInfo().title).append("**\n");
-        return FormatUtil.filter(sb.append(success).append(" Current Queue | ").append(songslength)
-                .append(" entries | `").append(FormatUtil.formatTime(total)).append("` ")
-                .append(repeatmode.getEmoji() != null ? "| " + repeatmode.getEmoji() : "").toString());
     }
 }

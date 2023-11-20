@@ -22,13 +22,18 @@ import hayashi.jdautilities.commons.utils.SafeIdUtil;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.session.*;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
+import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import net.dv8tion.jda.internal.utils.Checks;
 import okhttp3.*;
@@ -36,7 +41,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.dv8tion.jda.api.entities.channel.*;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.time.OffsetDateTime;
@@ -496,41 +501,41 @@ public class CommandClientImpl implements CommandClient, EventListener {
             });
         }
 
-        if (botsKey != null) {
-            JSONObject body = new JSONObject().put("guildCount", jda.getGuilds().size());
-            if (jda.getShardInfo() != null) {
-                body.put("shardId", jda.getShardInfo().getShardId())
-                    .put("shardCount", jda.getShardInfo().getShardTotal());
+        if (botsKey == null) {
+            totalGuilds = (int) (jda.getShardManager() != null ? jda.getShardManager().getGuildCache().size() : jda.getGuildCache().size());
+            return;
+        }
+
+        JSONObject body = new JSONObject().put("guildCount", jda.getGuilds().size());
+        if (jda.getShardInfo() != null) {
+            body.put("shardId", jda.getShardInfo().getShardId())
+                .put("shardCount", jda.getShardInfo().getShardTotal());
+        }
+
+        client.newCall(new Request.Builder()
+                .post(RequestBody.create(body.toString(),mediaType))
+                .url("https://discord.bots.gg/api/v1/bots/" + jda.getSelfUser().getId() + "/stats")
+                .header("Authorization", botsKey)
+                .header("Content-Type", "application/json")
+                .build()).enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    LOG.info("Successfully sent information to discord.bots.gg");
+                    try (Reader reader = response.body().charStream()) {
+                        totalGuilds = new JSONObject(new JSONTokener(reader)).getInt("guildCount");
+                    } catch (Exception ex) {
+                        LOG.error("Failed to retrieve bot shard information from discord.bots.gg ", ex);
+                    }
+                } else
+                    LOG.error("Failed to send information to discord.bots.gg: " + response.body().string());
+                response.close();
             }
 
-            client.newCall(new Request.Builder()
-                    .post(RequestBody.create(body.toString(),mediaType))
-                    .url("https://discord.bots.gg/api/v1/bots/" + jda.getSelfUser().getId() + "/stats")
-                    .header("Authorization", botsKey)
-                    .header("Content-Type", "application/json")
-                    .build()).enqueue(new Callback() {
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    if (response.isSuccessful()) {
-                        LOG.info("Successfully sent information to discord.bots.gg");
-                        try (Reader reader = response.body().charStream()) {
-                            totalGuilds = new JSONObject(new JSONTokener(reader)).getInt("guildCount");
-                        } catch (Exception ex) {
-                            LOG.error("Failed to retrieve bot shard information from discord.bots.gg ", ex);
-                        }
-                    } else
-                        LOG.error("Failed to send information to discord.bots.gg: " + response.body().string());
-                    response.close();
-                }
-
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    LOG.error("Failed to send information to discord.bots.gg ", e);
-                }
-            });
-        } else {
-            totalGuilds = (int) (jda.getShardManager() != null ? jda.getShardManager().getGuildCache().size() : jda.getGuildCache().size());
-        }
+            @Override
+            public void onFailure(Call call, IOException e) {
+                LOG.error("Failed to send information to discord.bots.gg ", e);
+            }});
     }
 
     private void onMessageDelete(MessageDeleteEvent event) {

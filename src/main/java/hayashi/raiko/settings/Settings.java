@@ -16,12 +16,12 @@
 package hayashi.raiko.settings;
 
 import hayashi.jdautilities.command.GuildSettingsProvider;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
 import java.util.Collection;
 import java.util.Collections;
-
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.channel.concrete.*;
 
 public class Settings implements GuildSettingsProvider {
     private final SettingsManager manager;

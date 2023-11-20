@@ -15,14 +15,21 @@
  */
 package hayashi.jdautilities.commons.utils;
 
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.Category;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.sharding.ShardManager;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.utils.cache.SnowflakeCacheView;
-import net.dv8tion.jda.api.entities.channel.concrete.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;

@@ -16,6 +16,7 @@
 package hayashi.raiko.audio;
 
 import hayashi.raiko.Bot;
+import hayashi.raiko.utils.GuildUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 
@@ -64,8 +65,8 @@ public class AloneInVoiceHandler {
     public void onVoiceUpdate(GuildVoiceUpdateEvent event) {
         if (aloneTimeUntilStop > 0) {
             Guild guild = event.getEntity().getGuild();
-            if (bot.getPlayerManager().hasHandler(guild)) {
-                boolean alone = isAlone(guild);
+            if (GuildUtil.hasHandler(guild)) {
+                boolean alone = GuildUtil.isAlone(guild);
                 boolean inList = aloneSince.containsKey(guild.getIdLong());
 
                 if (!alone && inList)
@@ -76,10 +77,4 @@ public class AloneInVoiceHandler {
         }
     }
 
-    private boolean isAlone(Guild guild) {
-        return guild.getAudioManager().getConnectedChannel() != null && guild.getAudioManager().getConnectedChannel().getMembers().stream()
-                .noneMatch(x ->
-                        !x.getVoiceState().isDeafened()
-                                && !x.getUser().isBot());
-    }
 }

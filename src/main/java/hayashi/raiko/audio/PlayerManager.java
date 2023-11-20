@@ -15,11 +15,11 @@
  */
 package hayashi.raiko.audio;
 
-import hayashi.raiko.Bot;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import hayashi.raiko.Bot;
 import net.dv8tion.jda.api.entities.Guild;
 
 public class PlayerManager extends DefaultAudioPlayerManager {
@@ -37,10 +37,6 @@ public class PlayerManager extends DefaultAudioPlayerManager {
 
     public Bot getBot() {
         return bot;
-    }
-
-    public boolean hasHandler(Guild guild) {
-        return guild.getAudioManager().getSendingHandler() != null;
     }
 
     public AudioHandler setUpHandler(Guild guild) {

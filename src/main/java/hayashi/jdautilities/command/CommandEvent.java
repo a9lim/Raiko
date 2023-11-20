@@ -15,23 +15,24 @@
  */
 package hayashi.jdautilities.command;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.function.Consumer;
-import java.util.regex.Pattern;
-
 import hayashi.jdautilities.command.impl.CommandClientImpl;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.internal.utils.Checks;
-import net.dv8tion.jda.api.entities.channel.*;
-import net.dv8tion.jda.api.entities.channel.concrete.*;
-import net.dv8tion.jda.api.entities.channel.middleman.*;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 public class CommandEvent {
     private static final Pattern COMPILE = Pattern.compile("<a?:(.+):(\\d+)>");
@@ -70,6 +71,7 @@ public class CommandEvent {
 
     // functional calls
 
+    // try not to convert messagecreatedata into these
     public void reply(String message) {
         sendMessage(event.getChannel(), message);
     }

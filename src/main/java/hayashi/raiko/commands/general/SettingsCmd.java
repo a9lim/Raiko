@@ -22,7 +22,8 @@ import hayashi.raiko.settings.RepeatMode;
 import hayashi.raiko.settings.Settings;
 import hayashi.raiko.utils.FormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.channel.concrete.*;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 
 public class SettingsCmd extends Command {

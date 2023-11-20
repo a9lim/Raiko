@@ -15,18 +15,19 @@
  */
 package hayashi.raiko;
 
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigException;
+import com.typesafe.config.ConfigFactory;
 import hayashi.raiko.entities.Prompt;
 import hayashi.raiko.utils.FormatUtil;
 import hayashi.raiko.utils.OtherUtil;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.typesafe.config.*;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.Activity;
 
 public class BotConfig {
     private final Prompt prompt;

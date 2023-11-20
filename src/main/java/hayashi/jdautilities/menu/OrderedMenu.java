@@ -15,20 +15,15 @@
  */
 package hayashi.jdautilities.menu;
 
-import java.awt.Color;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-
 import hayashi.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -39,9 +34,14 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.api.utils.messages.MessageEditBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import net.dv8tion.jda.internal.utils.Checks;
-import net.dv8tion.jda.api.entities.channel.*;
-import net.dv8tion.jda.api.entities.channel.concrete.*;
-import net.dv8tion.jda.api.entities.channel.middleman.*;
+
+import java.awt.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class OrderedMenu extends Menu {
     private final Color color;
@@ -213,7 +213,7 @@ public class OrderedMenu extends Menu {
             mbuilder.setContent(text);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < choices.size(); i++)
-            sb.append("\n").append(getEmoji(i)).append(" ").append(choices.get(i));
+            sb.append("\n").append(getEmoji(i).getFormatted()).append(" ").append(choices.get(i));
         mbuilder.setEmbeds(new EmbedBuilder().setColor(color)
             .setDescription(description == null ? sb.toString() : description + sb).build());
         return mbuilder.build();

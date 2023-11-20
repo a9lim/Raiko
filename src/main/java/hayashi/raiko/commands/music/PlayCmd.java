@@ -106,7 +106,7 @@ public class PlayCmd extends MusicCommand {
                 return;
             }
             new ButtonMenu.Builder()
-                    .setText(addMsg + "\n" + event.getClient().getWarning() + " This track has a playlist of **" + playlist.getTracks().size() + "** tracks attached. Select " + LOAD + " to load playlist.")
+                    .setText(addMsg + "\n" + event.getClient().getWarning() + " This track has a playlist of **" + playlist.getTracks().size() + "** tracks attached. Select " + LOAD.getFormatted() + " to load playlist.")
                     .setChoices(LOAD, CANCEL)
                     .setEventWaiter(bot.getWaiter())
                     .setTimeout(30, TimeUnit.SECONDS)
@@ -200,7 +200,7 @@ public class PlayCmd extends MusicCommand {
         @Override
         public void doCommand(CommandEvent event) {
             if (event.getArgs().isEmpty()) {
-                event.reply(event.getClient().getError() + " Please include a playlist name.");
+                event.replyError(" Please include a playlist name.");
                 return;
             }
             PlaylistLoader.Playlist playlist = bot.getPlaylistLoader().getPlaylist(event.getArgs());
@@ -208,8 +208,7 @@ public class PlayCmd extends MusicCommand {
                 event.replyError("I could not find `" + event.getArgs() + ".txt` in the Playlists folder.");
                 return;
             }
-            event.getChannel().sendMessage(loadingEmoji + " Loading playlist **" + event.getArgs() + "**... (" + playlist.getItems().size() + " items)").queue(m ->
-            {
+            event.getChannel().sendMessage(loadingEmoji + " Loading playlist **" + event.getArgs() + "**... (" + playlist.getItems().size() + " items)").queue(m -> {
                 AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
                 playlist.loadTracks(bot.getPlayerManager(), (at) -> handler.addTrack(new QueuedTrack(at, event.getAuthor())), () -> {
                     StringBuilder builder = new StringBuilder(playlist.getTracks().isEmpty()

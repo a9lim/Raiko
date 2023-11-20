@@ -40,7 +40,7 @@ public class SetstatusCmd extends OwnerCommand {
             event.getJDA().getPresence().setStatus(status);
             event.replySuccess("Set the status to `" + status.getKey().toUpperCase() + "`");
         } catch (Exception e) {
-            event.reply(event.getClient().getError() + " The status could not be set!");
+            event.replyError(" The status could not be set!");
         }
     }
 }

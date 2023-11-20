@@ -15,15 +15,17 @@
  */
 package hayashi.jdautilities.menu;
 
+import hayashi.jdautilities.commons.waiter.EventWaiter;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
-import hayashi.jdautilities.commons.waiter.EventWaiter;
-import net.dv8tion.jda.api.entities.*;
-
-import net.dv8tion.jda.api.entities.channel.middleman.*;
 
 public abstract class Menu {
     protected final EventWaiter waiter;

@@ -35,20 +35,20 @@ public class AutoplaylistCmd extends OwnerCommand {
     @Override
     public void execute(CommandEvent event) {
         if (event.getArgs().isEmpty()) {
-            event.reply(event.getClient().getError() + " Please include a playlist name or NONE");
+            event.replyError(" Please include a playlist name or NONE");
             return;
         }
         if ("none".equalsIgnoreCase(event.getArgs())) {
             ((Settings) event.getClient().getSettingsFor(event.getGuild())).setDefaultPlaylist(null);
-            event.reply(event.getClient().getSuccess() + " Cleared the default playlist for **" + event.getGuild().getName() + "**");
+            event.replySuccess(" Cleared the default playlist for **" + event.getGuild().getName() + "**");
             return;
         }
         String pname = COMPILE.matcher(event.getArgs()).replaceAll("_");
         if (bot.getPlaylistLoader().getPlaylist(pname) == null) {
-            event.reply(event.getClient().getError() + " Could not find `" + pname + ".txt`!");
+            event.replyError(" Could not find `" + pname + ".txt`!");
             return;
         }
         ((Settings) event.getClient().getSettingsFor(event.getGuild())).setDefaultPlaylist(pname);
-        event.reply(event.getClient().getSuccess() + " The default playlist for **" + event.getGuild().getName() + "** is now `" + pname + "`");
+        event.replySuccess(" The default playlist for **" + event.getGuild().getName() + "** is now `" + pname + "`");
     }
 }

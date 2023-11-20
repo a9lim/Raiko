@@ -15,23 +15,24 @@
  */
 package hayashi.raiko.audio;
 
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import hayashi.raiko.Bot;
 import hayashi.raiko.entities.Pair;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.exceptions.PermissionException;
+import net.dv8tion.jda.api.exceptions.RateLimitedException;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.concrete.*;
-import net.dv8tion.jda.api.exceptions.PermissionException;
-import net.dv8tion.jda.api.exceptions.RateLimitedException;
-import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
 public class NowplayingHandler {
     private final Bot bot;
@@ -71,13 +72,13 @@ public class NowplayingHandler {
                 continue;
             }
             AudioHandler handler = (AudioHandler)guild.getAudioManager().getSendingHandler();
-            MessageEditData msg = handler.getNowPlaying(bot.getJDA());
+            MessageCreateData msg = handler.getNowPlaying(bot.getJDA());
             if(msg==null) {
                 msg = handler.getNoMusicPlaying(bot.getJDA());
                 toRemove.add(guildId);
             }
             try {
-                tc.editMessageById(pair.value(), msg).queue(m->{}, t -> lastNP.remove(guildId));
+                tc.editMessageById(pair.value(), MessageEditData.fromCreateData(msg)).queue(m->{}, t -> lastNP.remove(guildId));
             } catch(Exception e) {
                 toRemove.add(guildId);
             }
