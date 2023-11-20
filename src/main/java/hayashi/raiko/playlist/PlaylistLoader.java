@@ -120,10 +120,11 @@ public class PlaylistLoader {
             if (loaded)
                 return;
             loaded = true;
-            for (int i = 0; i < items.size(); i++) {
+            int i = 0;
+            for (String item : items) {
                 boolean last = i + 1 == items.size();
-                int index = i;
-                manager.loadItemOrdered(name, items.get(i), new AudioLoadResultHandler() {
+                int finalI = i;
+                manager.loadItemOrdered(name, item, new AudioLoadResultHandler() {
                     private void done() {
                         if (last) {
                             if (shuffle)
@@ -136,7 +137,7 @@ public class PlaylistLoader {
                     @Override
                     public void trackLoaded(AudioTrack at) {
                         if (config.isTooLong(at))
-                            errors.add(new PlaylistLoadError(index, items.get(index), "This track is longer than the allowed maximum"));
+                            errors.add(new PlaylistLoadError(finalI, item, "This track is longer than the allowed maximum"));
                         else {
                             at.setUserData(0L);
                             tracks.add(at);
@@ -165,16 +166,17 @@ public class PlaylistLoader {
 
                     @Override
                     public void noMatches() {
-                        errors.add(new PlaylistLoadError(index, items.get(index), "No matches found."));
+                        errors.add(new PlaylistLoadError(finalI, item, "No matches found."));
                         done();
                     }
 
                     @Override
                     public void loadFailed(FriendlyException fe) {
-                        errors.add(new PlaylistLoadError(index, items.get(index), "Failed to load track: " + fe.getLocalizedMessage()));
+                        errors.add(new PlaylistLoadError(finalI, item, "Failed to load track: " + fe.getLocalizedMessage()));
                         done();
                     }
                 });
+                i++;
             }
         }
 

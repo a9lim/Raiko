@@ -33,7 +33,7 @@ public class RequestMetadata {
         return user == null ? 0L : user.id;
     }
 
-    public static class RequestInfo {
+    public static final class RequestInfo {
         public final String query, url;
 
         private RequestInfo(String q, String u) {
@@ -42,7 +42,7 @@ public class RequestMetadata {
         }
     }
 
-    public static class UserInfo {
+    public static final class UserInfo {
         public final long id;
         public final String username, discrim, avatar;
 

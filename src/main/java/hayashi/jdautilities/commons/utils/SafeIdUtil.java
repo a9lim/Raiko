@@ -28,11 +28,11 @@ public class SafeIdUtil {
         }
     }
 
-    public static boolean checkId(String id) {
+    public static boolean badId(String id) {
         try {
-            return Long.parseLong(id.trim()) >= 0;
+            return Long.parseLong(id.trim()) < 0;
         } catch (NumberFormatException e) {
-            return false;
+            return true;
         }
     }
 

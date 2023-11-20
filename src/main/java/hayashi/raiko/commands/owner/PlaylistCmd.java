@@ -187,9 +187,9 @@ public class PlaylistCmd extends OwnerCommand {
                 event.replyWarning(" There are no playlists in the Playlists folder!");
                 return;
             }
-            StringBuilder builder = new StringBuilder(event.getClient().getSuccess() + " Available playlists:\n");
+            StringBuilder builder = new StringBuilder(" Available playlists:\n");
             list.forEach(str -> builder.append("`").append(str).append("` "));
-            event.reply(builder.toString());
+            event.replySuccess(builder.toString());
         }
     }
 }

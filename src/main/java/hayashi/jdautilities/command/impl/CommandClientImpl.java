@@ -82,17 +82,17 @@ public class CommandClientImpl implements CommandClient, EventListener {
     private int totalGuilds;
 
     public CommandClientImpl(String inownerId, String[] incoOwnerIds, String inprefix, String inaltprefix, Activity inactivity, OnlineStatus instatus, String inserverInvite,
-                             String insuccess, String inwarning, String inerror, String incarbonKey, String inbotsKey, ArrayList<Command> incommands,
+                             String insuccess, String inwarning, String inerror, String incarbonKey, String inbotsKey, List<Command> incommands,
                              boolean inuseHelp, boolean inshutdownAutomatically, Consumer<CommandEvent> inhelpConsumer, String inhelpWord, ScheduledExecutorService inexecutor,
                              int linkedCacheSize, AnnotatedModuleCompiler incompiler, GuildSettingsManager inmanager) {
         Checks.check(inownerId != null, "Owner ID was set null or not set! Please provide an User ID to register as the owner!");
 
-        if (!SafeIdUtil.checkId(inownerId))
+        if (SafeIdUtil.badId(inownerId))
             LOG.warn(String.format("The provided Owner ID (%s) was found unsafe! Make sure ID is a non-negative long!", inownerId));
 
         if (incoOwnerIds != null) {
             for (String coOwnerId : incoOwnerIds) {
-                if (!SafeIdUtil.checkId(coOwnerId))
+                if (SafeIdUtil.badId(coOwnerId))
                     LOG.warn(String.format("The provided CoOwner ID (%s) was found unsafe! Make sure ID is a non-negative long!", coOwnerId));
             }
         }
@@ -419,25 +419,25 @@ public class CommandClientImpl implements CommandClient, EventListener {
 
 
         // Check for prefix or alternate prefix (@mention cases)
-        if ((prefix.equals(DEFAULT_PREFIX) || (DEFAULT_PREFIX.equals(altprefix))) &&
+        if ((DEFAULT_PREFIX.equals(prefix) || DEFAULT_PREFIX.equals(altprefix)) &&
             (rawContent.startsWith("<@" + event.getJDA().getSelfUser().getId() + ">") ||
                 rawContent.startsWith("<@!" + event.getJDA().getSelfUser().getId() + ">")))
                 parts = splitOnPrefixLength(rawContent, rawContent.indexOf('>') + 1);
         // Check for prefix
-        if (parts == null && rawContent.toLowerCase().startsWith(prefix.toLowerCase()))
+        else if (rawContent.toLowerCase().startsWith(prefix.toLowerCase()))
             parts = splitOnPrefixLength(rawContent, prefix.length());
         // Check for alternate prefix
-        if (parts == null && altprefix != null && rawContent.toLowerCase().startsWith(altprefix.toLowerCase()))
+        else if (altprefix != null && rawContent.toLowerCase().startsWith(altprefix.toLowerCase()))
             parts = splitOnPrefixLength(rawContent, altprefix.length());
         // Check for guild specific prefixes
-        GuildSettingsProvider settings = event.isFromType(ChannelType.TEXT) ? provideSettings(event.getGuild()) : null;
-        if (parts == null && settings != null) {
-            Collection<String> prefixes = settings.getPrefixes();
-            if (prefixes != null) {
-                for (String prefix : prefixes) {
-                    if (parts == null && rawContent.toLowerCase().startsWith(prefix.toLowerCase()))
-                        parts = splitOnPrefixLength(rawContent, prefix.length());
-                }
+        else {
+            GuildSettingsProvider settings = event.isFromType(ChannelType.TEXT) ? provideSettings(event.getGuild()) : null;
+            if (settings != null) {
+                Collection<String> prefixes = settings.getPrefixes();
+                if (prefixes != null)
+                    for (String prefix : prefixes)
+                        if (parts == null && rawContent.toLowerCase().startsWith(prefix.toLowerCase()))
+                            parts = splitOnPrefixLength(rawContent, prefix.length());
             }
         }
 

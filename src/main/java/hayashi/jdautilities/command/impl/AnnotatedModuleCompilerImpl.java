@@ -165,10 +165,9 @@ public class AnnotatedModuleCompilerImpl implements AnnotatedModuleCompiler {
     @SafeVarargs
     private static <T> List<T> collect(Predicate<T> filter, T... entities) {
         List<T> list = new ArrayList<>();
-        for (T entity : entities) {
+        for (T entity : entities)
             if (filter.test(entity))
                 list.add(entity);
-        }
         return list;
     }
 

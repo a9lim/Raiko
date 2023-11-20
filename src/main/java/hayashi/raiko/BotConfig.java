@@ -35,8 +35,8 @@ import java.nio.file.Path;
 public class BotConfig {
     private final Prompt prompt;
     private final static String CONTEXT = "Config";
-    private final static String START_TOKEN = "/// START OF JMUSICBOT CONFIG ///";
-    private final static String END_TOKEN = "/// END OF JMUSICBOT CONFIG ///";
+    private final static String START_TOKEN = "/// START OF RAIKO CONFIG ///";
+    private final static String END_TOKEN = "/// END OF RAIKO CONFIG ///";
 
     private Path path;
     private String token, prefix, altprefix, helpWord, playlistsFolder,
