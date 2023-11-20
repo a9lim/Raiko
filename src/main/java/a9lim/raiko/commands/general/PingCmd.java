@@ -24,10 +24,11 @@ import a9lim.jdautilities.command.CommandEvent;
 
 import java.time.temporal.ChronoUnit;
 
-public class PingCommand extends Command {
+public class PingCmd extends Command {
 
-    public PingCommand() {
+    public PingCmd() {
         name = "ping";
+        category = new Category("General");
         help = "checks the bot's latency";
         guildOnly = false;
         aliases = new String[]{"pong"};

@@ -23,6 +23,7 @@ import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -30,7 +31,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public abstract class Command {
+public abstract class Command implements Comparable<Command>{
     public static final Pattern COMPILE = Pattern.compile("\\s+");
 
     protected String name = "null";
@@ -55,7 +56,7 @@ public abstract class Command {
 
     protected Command[] children = new Command[0];
 
-    protected BiConsumer<CommandEvent, Command> helpBiConsumer;
+//    protected BiConsumer<CommandEvent, Command> helpBiConsumer;
 
     protected boolean usesTopicTags = true;
 
@@ -70,10 +71,10 @@ public abstract class Command {
         // child check
         if (!event.getArgs().isEmpty()) {
             String[] parts = Arrays.copyOf(COMPILE.split(event.getArgs(), 2), 2);
-            if (helpBiConsumer != null && parts[0].equalsIgnoreCase(event.getClient().getHelpWord())) {
-                helpBiConsumer.accept(event, this);
-                return;
-            }
+//            if (helpBiConsumer != null && parts[0].equalsIgnoreCase(event.getClient().getHelpWord())) {
+//                helpBiConsumer.accept(event, this);
+//                return;
+//            }
             for (Command cmd : children) {
                 if (cmd.isCommandFor(parts[0])) {
                     event.setArgs(parts[1] == null ? "" : parts[1]);
@@ -90,8 +91,9 @@ public abstract class Command {
         }
 
         // category check
+        // fix later
         if (category != null && !category.test(event)) {
-            terminate(event, category.getFailureResponse());
+            terminate(event, null);
             return;
         }
 
@@ -197,7 +199,7 @@ public abstract class Command {
             return true;
         if (topic.contains("{-" + lowerName + "}"))
             return false;
-        lowerName = category == null ? null : category.getName().toLowerCase();
+        lowerName = category == null ? null : category.name().toLowerCase();
         if (lowerName != null) {
             if (topic.contains("{" + lowerName + "}"))
                 return true;
@@ -302,34 +304,14 @@ public abstract class Command {
         return front + " " + cooldownScope.errorSpecification + "!";
     }
 
-    public static class Category {
-        private final String name, failResponse;
-        private final Predicate<CommandEvent> predicate;
+    @Override
+    public int compareTo(@NotNull Command o) {
+        return category.equals(o.category) ? name.compareTo(o.name) : category.compareTo(o.category);
+    }
 
+    public record Category(String name, Predicate<CommandEvent> predicate) implements Comparable<Category> {
         public Category(String n) {
-            name = n;
-            failResponse = null;
-            predicate = null;
-        }
-
-        public Category(String n, Predicate<CommandEvent> p) {
-            name = n;
-            failResponse = null;
-            predicate = p;
-        }
-
-        public Category(String n, String s, Predicate<CommandEvent> p) {
-            name = n;
-            failResponse = s;
-            predicate = p;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getFailureResponse() {
-            return failResponse;
+            this(n,null);
         }
 
         public boolean test(CommandEvent event) {
@@ -337,17 +319,8 @@ public abstract class Command {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            return obj instanceof Category other && Objects.equals(name, other.name) && Objects.equals(predicate, other.predicate) && Objects.equals(failResponse, other.failResponse);
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            hash = 17 * hash + Objects.hashCode(name);
-            hash = 17 * hash + Objects.hashCode(failResponse);
-            hash = 17 * hash + Objects.hashCode(predicate);
-            return hash;
+        public int compareTo(@NotNull Category o) {
+            return name.compareTo(o.name);
         }
     }
 

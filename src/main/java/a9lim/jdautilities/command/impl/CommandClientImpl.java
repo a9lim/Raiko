@@ -59,31 +59,30 @@ import static a9lim.jdautilities.command.Command.COMPILE;
 
 public class CommandClientImpl implements CommandClient, EventListener {
     private static final Logger LOG = LoggerFactory.getLogger(CommandClient.class);
-    private static final String DEFAULT_PREFIX = "@mention";
-
     private final OffsetDateTime start;
     private final Activity activity;
     private final OnlineStatus status;
     private final String[] coOwnerIds;
-    private final String ownerId, prefix, altprefix, serverInvite, success, warning, error, botsKey, carbonKey, helpWord;
-    private final HashMap<String, Integer> commandIndex, uses;
-    private final ArrayList<Command> commands;
+    private final String ownerId, serverInvite, success, warning, error, botsKey, carbonKey, defaultprefix;
+    private final List<String> prefixes;
+    private final HashMap<String, Integer> uses;
+    private final HashMap<String, Command> commandIndex;
+    private final TreeSet<Command> commandSet;
     private final HashMap<String, OffsetDateTime> cooldowns;
     private final FixedSizeCache<Long, Set<Message>> linkMap;
-    private final boolean useHelp, shutdownAutomatically;
-    private final Consumer<CommandEvent> helpConsumer;
+    private final boolean shutdownAutomatically;
     private final ScheduledExecutorService executor;
     private final AnnotatedModuleCompiler compiler;
     private final GuildSettingsManager manager;
     private final MediaType mediaType = MediaType.parse("application/json");
 
-    private String textPrefix;
     private CommandListener listener;
     private int totalGuilds;
+    private String helpword;
 
-    public CommandClientImpl(String inownerId, String[] incoOwnerIds, String inprefix, String inaltprefix, Activity inactivity, OnlineStatus instatus, String inserverInvite,
+    public CommandClientImpl(String inownerId, String[] incoOwnerIds, List<String> inprefix, Activity inactivity, OnlineStatus instatus, String inserverInvite,
                              String insuccess, String inwarning, String inerror, String incarbonKey, String inbotsKey, List<Command> incommands,
-                             boolean inuseHelp, boolean inshutdownAutomatically, Consumer<CommandEvent> inhelpConsumer, String inhelpWord, ScheduledExecutorService inexecutor,
+                             boolean inshutdownAutomatically, ScheduledExecutorService inexecutor,
                              int linkedCacheSize, AnnotatedModuleCompiler incompiler, GuildSettingsManager inmanager) {
         Checks.check(inownerId != null, "Owner ID was set null or not set! Please provide an User ID to register as the owner!");
 
@@ -101,9 +100,8 @@ public class CommandClientImpl implements CommandClient, EventListener {
 
         ownerId = inownerId;
         coOwnerIds = incoOwnerIds;
-        prefix = inprefix == null || inprefix.isEmpty() ? DEFAULT_PREFIX : inprefix;
-        altprefix = inaltprefix == null || inaltprefix.isEmpty() ? null : inaltprefix;
-        textPrefix = inprefix;
+        prefixes = inprefix;
+        defaultprefix = (prefixes == null || prefixes.isEmpty()? "@mention" : prefixes.getFirst());
         activity = inactivity;
         status = instatus;
         serverInvite = inserverInvite;
@@ -113,46 +111,30 @@ public class CommandClientImpl implements CommandClient, EventListener {
         carbonKey = incarbonKey;
         botsKey = inbotsKey;
         commandIndex = new HashMap<>();
-        commands = new ArrayList<>();
+        commandSet = new TreeSet<>();
         cooldowns = new HashMap<>();
         uses = new HashMap<>();
         linkMap = linkedCacheSize > 0 ? new FixedSizeCache<>(linkedCacheSize) : null;
-        useHelp = inuseHelp;
         shutdownAutomatically = inshutdownAutomatically;
-        helpWord = inhelpWord == null ? "help" : inhelpWord;
         executor = inexecutor == null ? Executors.newSingleThreadScheduledExecutor() : inexecutor;
         compiler = incompiler;
         manager = inmanager;
-        helpConsumer = inhelpConsumer == null ? (event) -> {
-            StringBuilder builder = new StringBuilder("**" + event.getSelfUser().getName() + "** commands:\n");
-            Category category = null;
-            for (Command command : incommands) {
-                if (!command.isHidden() && (!command.isOwnerCommand() || event.isOwner())) {
-                    if (!Objects.equals(category, command.getCategory())) {
-                        category = command.getCategory();
-                        builder.append("\n\n  __").append(category == null ? "No Category" : category.getName()).append("__:\n");
-                    }
-                    builder.append("\n`").append(textPrefix).append(inprefix == null ? " " : "").append(command.getName())
-                        .append(command.getArguments() == null ? "`" : " " + command.getArguments() + "`")
-                        .append(" - ").append(command.getHelp());
-                }
-            }
-            User owner = event.getJDA().getUserById(inownerId);
-            if (owner != null) {
-                builder.append("\n\nFor additional help, contact **").append(owner.getName()).append("**#").append(owner.getDiscriminator());
-                if (inserverInvite != null)
-                    builder.append(" or join ").append(inserverInvite);
-            }
-            event.replyInDm(builder.toString(), unused -> {
-                if (event.isFromType(ChannelType.TEXT))
-                    event.reactSuccess();
-            }, t -> event.replyWarning("Help cannot be sent because you are blocking Direct Messages."));
-        } : inhelpConsumer;
 
         // Load commands
         for (Command command : incommands) {
             addCommand(command);
         }
+    }
+
+    public void setHelp(Command c) {
+        if(helpword != null)
+            removeCommand(helpword);
+        helpword = c.getName();
+        addCommand(c);
+    }
+
+    public String getHelpWord() {
+        return helpword;
     }
 
     @Override
@@ -166,9 +148,10 @@ public class CommandClientImpl implements CommandClient, EventListener {
     }
 
     @Override
-    public List<Command> getCommands() {
-        return commands;
+    public Set<Command> getCommands() {
+        return commandSet;
     }
+
 
     @Override
     public OffsetDateTime getStartTime() {
@@ -200,7 +183,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
     @Override
     public void cleanCooldowns() {
         cooldowns.keySet().stream().filter((str) -> (cooldowns.get(str).isBefore(OffsetDateTime.now())))
-            .toList().forEach(cooldowns::remove);
+            .forEach(cooldowns::remove);
     }
 
     @Override
@@ -215,13 +198,6 @@ public class CommandClientImpl implements CommandClient, EventListener {
 
     @Override
     public void addCommand(Command command) {
-        addCommand(command, commands.size());
-    }
-
-    @Override
-    public void addCommand(Command command, int index) {
-        if (index > commands.size() || index < 0)
-            throw new ArrayIndexOutOfBoundsException("Index specified is invalid: [" + index + "/" + commands.size() + "]");
         synchronized (commandIndex) {
             String name = command.getName().toLowerCase();
             //check for collision
@@ -231,40 +207,31 @@ public class CommandClientImpl implements CommandClient, EventListener {
                 if (commandIndex.containsKey(alias.toLowerCase()))
                     throw new IllegalArgumentException("Command added has a name or alias that has already been indexed: \"" + alias + "\"!");
             }
-            //shift if not append
-            if (index < commands.size())
-                commandIndex.entrySet().stream().filter(entry -> entry.getValue() >= index).toList()
-                    .forEach(entry -> commandIndex.put(entry.getKey(), entry.getValue() + 1));
             //add
-            commandIndex.put(name, index);
+            commandIndex.put(name, command);
+            commandSet.add(command);
             for (String alias : command.getAliases())
-                commandIndex.put(alias.toLowerCase(), index);
+                commandIndex.put(alias.toLowerCase(), command);
         }
-        commands.add(index, command);
     }
 
     @Override
     public void removeCommand(String name) {
+        // huh
         synchronized (commandIndex) {
-            if (!commandIndex.containsKey(name.toLowerCase()))
+            name = name.toLowerCase();
+            if (!commandIndex.containsKey(name))
                 throw new IllegalArgumentException("Name provided is not indexed: \"" + name + "\"!");
-            int targetIndex = commandIndex.remove(name.toLowerCase());
-            for (String alias : commands.remove(targetIndex).getAliases()) {
+            Command c = commandIndex.remove(name);
+            commandSet.remove(c);
+            for (String alias : c.getAliases())
                 commandIndex.remove(alias.toLowerCase());
-            }
-            commandIndex.entrySet().stream().filter(entry -> entry.getValue() > targetIndex).toList()
-                .forEach(entry -> commandIndex.put(entry.getKey(), entry.getValue() - 1));
         }
     }
 
     @Override
     public void addAnnotatedModule(Object module) {
         compiler.compile(module).forEach(this::addCommand);
-    }
-
-    @Override
-    public void addAnnotatedModule(Object module, Function<Command, Integer> mapFunction) {
-        compiler.compile(module).forEach(command -> addCommand(command, mapFunction.apply(command)));
     }
 
     @Override
@@ -320,29 +287,18 @@ public class CommandClientImpl implements CommandClient, EventListener {
         return serverInvite;
     }
 
-    @Override
-    public String getPrefix() {
-        return prefix;
+    public List<String> getPrefixes() {
+        return prefixes;
     }
 
     @Override
-    public String getAltPrefix() {
-        return altprefix;
-    }
-
-    @Override
-    public String getTextualPrefix() {
-        return textPrefix;
+    public String getDefaultPrefix() {
+        return defaultprefix;
     }
 
     @Override
     public int getTotalGuilds() {
         return totalGuilds;
-    }
-
-    @Override
-    public String getHelpWord() {
-        return helpWord;
     }
 
     @Override
@@ -375,7 +331,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
         if (event instanceof MessageReceivedEvent e)
             onMessageReceived(e);
 
-        else if (event instanceof MessageDeleteEvent e && usesLinkedDeletion())
+        else if (usesLinkedDeletion() && event instanceof MessageDeleteEvent e)
             onMessageDelete(e);
 
         else if (event instanceof GuildJoinEvent e) {
@@ -386,7 +342,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
             sendStats(event.getJDA());
         else if (event instanceof ReadyEvent e)
             onReady(e);
-        else if (event instanceof ShutdownEvent && shutdownAutomatically) {
+        else if (shutdownAutomatically && event instanceof ShutdownEvent) {
             shutdown();
         }
     }
@@ -397,9 +353,8 @@ public class CommandClientImpl implements CommandClient, EventListener {
             event.getJDA().shutdown();
             return;
         }
-        textPrefix = prefix.equals(DEFAULT_PREFIX) ? "@" + event.getJDA().getSelfUser().getName() + " " : prefix;
         event.getJDA().getPresence().setPresence(status == null ? OnlineStatus.ONLINE : status,
-            activity == null ? null : "default".equals(activity.getName()) ? Activity.playing("Type " + textPrefix + helpWord) : activity);
+            activity == null ? null : "default".equals(activity.getName()) ? Activity.playing("Type " + defaultprefix + helpword) : activity);
 
         // Start SettingsManager if necessary
         GuildSettingsManager<?> manager = getSettingsManager();
@@ -417,20 +372,16 @@ public class CommandClientImpl implements CommandClient, EventListener {
         String[] parts = null;
         String rawContent = event.getMessage().getContentRaw();
 
-
-        // Check for prefix or alternate prefix (@mention cases)
-        if ((DEFAULT_PREFIX.equals(prefix) || DEFAULT_PREFIX.equals(altprefix)) &&
-            (rawContent.startsWith("<@" + event.getJDA().getSelfUser().getId() + ">") ||
-                rawContent.startsWith("<@!" + event.getJDA().getSelfUser().getId() + ">")))
-                parts = splitOnPrefixLength(rawContent, rawContent.indexOf('>') + 1);
+        // Check for @mention
+        if (event.getMessage().getMentions().isMentioned(event.getJDA().getSelfUser()))
+            parts = splitOnPrefixLength(rawContent, rawContent.indexOf('>') + 1);
         // Check for prefix
-        else if (rawContent.toLowerCase().startsWith(prefix.toLowerCase()))
-            parts = splitOnPrefixLength(rawContent, prefix.length());
-        // Check for alternate prefix
-        else if (altprefix != null && rawContent.toLowerCase().startsWith(altprefix.toLowerCase()))
-            parts = splitOnPrefixLength(rawContent, altprefix.length());
+        else if(prefixes != null)
+            for(String s: prefixes)
+                if (rawContent.toLowerCase().startsWith(s.toLowerCase()))
+                    parts = splitOnPrefixLength(rawContent, s.length());
         // Check for guild specific prefixes
-        else {
+        if(parts == null) {
             GuildSettingsProvider settings = event.isFromType(ChannelType.TEXT) ? provideSettings(event.getGuild()) : null;
             if (settings != null) {
                 Collection<String> prefixes = settings.getPrefixes();
@@ -443,21 +394,11 @@ public class CommandClientImpl implements CommandClient, EventListener {
 
         //starts with valid prefix
         if (parts != null) {
-            if (useHelp && parts[0].equalsIgnoreCase(helpWord)) {
-                CommandEvent cevent = new CommandEvent(event, parts[1] == null ? "" : parts[1], this);
-                if (listener != null)
-                    listener.onCommand(cevent, null);
-                helpConsumer.accept(cevent); // Fire help consumer
-                if (listener != null)
-                    listener.onCompletedCommand(cevent, null);
-                return; // Help Consumer is done
-            }
             if (event.isFromType(ChannelType.PRIVATE) || event.getChannel().canTalk()) {
                 final Command command; // this will be null if it's not a command
                 // this may be cleanable
                 synchronized (commandIndex) {
-                    int i = commandIndex.getOrDefault(parts[0].toLowerCase(), -1);
-                    command = i == -1 ? null : commands.get(i);
+                    command = commandIndex.getOrDefault(parts[0].toLowerCase(), null);
                 }
                 if (command != null) {
                     CommandEvent cevent = new CommandEvent(event, parts[1] == null ? "" : parts[1], this);
@@ -473,6 +414,8 @@ public class CommandClientImpl implements CommandClient, EventListener {
         if (listener != null)
             listener.onNonCommandMessage(event);
     }
+
+    // this is pretty silly, remove???
 
     private void sendStats(JDA jda) {
         OkHttpClient client = jda.getHttpClient();
@@ -549,13 +492,9 @@ public class CommandClientImpl implements CommandClient, EventListener {
                 Set<Message> messages = linkMap.get(event.getMessageIdLong());
                 if (messages.size() > 1 && event.getGuild().getSelfMember()
                     .hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_MANAGE))
-                    event.getChannel().asTextChannel().deleteMessages(messages).queue(unused -> {
-                    }, ignored -> {
-                    });
+                    event.getChannel().asTextChannel().deleteMessages(messages).queue(unused -> {}, ignored -> {});
                 else if (!messages.isEmpty())
-                    messages.forEach(m -> m.delete().queue(unused -> {
-                    }, ignored -> {
-                    }));
+                    messages.forEach(m -> m.delete().queue(unused -> {}, ignored -> {}));
             }
         }
     }

@@ -26,8 +26,9 @@ import a9lim.raiko.commands.admin.SetvcCmd;
 import a9lim.raiko.commands.chat.ChatCmd;
 import a9lim.raiko.commands.chat.ClearChatCmd;
 import a9lim.raiko.commands.chat.ToggleModelCmd;
-import a9lim.raiko.commands.general.AboutCommand;
-import a9lim.raiko.commands.general.PingCommand;
+import a9lim.raiko.commands.general.AboutCmd;
+import a9lim.raiko.commands.general.HelpCmd;
+import a9lim.raiko.commands.general.PingCmd;
 import a9lim.raiko.commands.general.SettingsCmd;
 import a9lim.raiko.commands.music.*;
 import a9lim.raiko.commands.owner.*;
@@ -79,24 +80,23 @@ public class Raiko {
         SettingsManager settings = new SettingsManager();
         Bot bot = new Bot(waiter, config, settings);
 
-        AboutCommand aboutCommand = new AboutCommand(Color.BLUE.brighter(),
+        AboutCmd aboutCmd = new AboutCmd(Color.BLUE.brighter(),
                 "raiko gaming",
                 new String[]{"high-quality (touhou) music playback", "DoubleDealingQueue™ Technology", "(somewhat) easy to host yourself"},
                 RECOMMENDED_PERMS);
-        aboutCommand.setIsAuthor(false);
-        aboutCommand.setReplacementCharacter("\uD83C\uDFB6"); // 🎶
+        aboutCmd.setIsAuthor(false);
+        aboutCmd.setReplacementCharacter("\uD83C\uDFB6"); // 🎶
 
         // set up the command client
         CommandClientBuilder cb = new CommandClientBuilder()
-                .setPrefix(config.getPrefix())
-                .setAlternativePrefix(config.getAltPrefix())
+                .setPrefixes(config.getPrefixes())
                 .setOwnerId(Long.toString(config.getOwnerId()))
                 .setEmojis(config.getSuccess(), config.getWarning(), config.getError())
-                .setHelpWord(config.getHelp())
                 .setLinkedCacheSize(200)
                 .setGuildSettingsManager(settings)
-                .addCommands(aboutCommand,
-                        new PingCommand(),
+                .setHelpWords(config.getAliases("help"))
+                .addCommands(aboutCmd,
+                        new PingCmd(),
                         new SettingsCmd(bot),
 
                         new NowplayingCmd(bot),
@@ -107,7 +107,6 @@ public class Raiko {
                         new SearchCmd(bot),
                         new SCSearchCmd(bot),
                         new ShuffleCmd(bot),
-
                         new SkipCmd(bot),
                         new MoveTrackCmd(bot),
                         new PauseCmd(bot),

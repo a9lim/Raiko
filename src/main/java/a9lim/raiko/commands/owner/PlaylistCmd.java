@@ -50,11 +50,11 @@ public class PlaylistCmd extends OwnerCommand {
 
     @Override
     public void execute(CommandEvent event) {
-        StringBuilder builder = new StringBuilder(event.getClient().getWarning() + " Playlist Management Commands:\n");
+        StringBuilder builder = new StringBuilder(" Playlist Management Commands:\n");
         for (Command cmd : children)
-            builder.append("\n`").append(event.getClient().getPrefix()).append(name).append(" ").append(cmd.getName())
+            builder.append("\n`").append(event.getClient().getDefaultPrefix()).append(name).append(" ").append(cmd.getName())
                     .append(" ").append(cmd.getArguments() == null ? "" : cmd.getArguments()).append("` - ").append(cmd.getHelp());
-        event.reply(builder.toString());
+        event.replyWarning(builder.toString());
     }
 
     public class MakelistCmd extends OwnerCommand {

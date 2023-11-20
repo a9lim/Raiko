@@ -69,10 +69,10 @@ public class PlayCmd extends MusicCommand {
                 return;
             }
             StringBuilder builder = new StringBuilder(" Play Commands:\n")
-                    .append("\n`").append(event.getClient().getPrefix()).append(name).append(" <song title>` - plays the first result from Youtube")
-                    .append("\n`").append(event.getClient().getPrefix()).append(name).append(" <URL>` - plays the provided song, playlist, or stream");
+                    .append("\n`").append(event.getClient().getDefaultPrefix()).append(name).append(" <song title>` - plays the first result from Youtube")
+                    .append("\n`").append(event.getClient().getDefaultPrefix()).append(name).append(" <URL>` - plays the provided song, playlist, or stream");
             for (Command cmd : children)
-                builder.append("\n`").append(event.getClient().getPrefix()).append(name).append(" ").append(cmd.getName()).append(" ").append(cmd.getArguments()).append("` - ").append(cmd.getHelp());
+                builder.append("\n`").append(event.getClient().getDefaultPrefix()).append(name).append(" ").append(cmd.getName()).append(" ").append(cmd.getArguments()).append("` - ").append(cmd.getHelp());
             event.replyWarning(builder.toString());
             return;
         }
