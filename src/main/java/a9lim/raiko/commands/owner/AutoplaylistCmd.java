@@ -24,15 +24,12 @@ import a9lim.raiko.commands.OwnerCommand;
 import a9lim.raiko.settings.Settings;
 
 public class AutoplaylistCmd extends OwnerCommand {
-    private final Bot bot;
 
-    public AutoplaylistCmd(Bot b) {
-        bot = b;
+    public AutoplaylistCmd() {
         guildOnly = true;
         name = "autoplaylist";
         arguments = "<name|NONE>";
         help = "sets the default playlist for the server";
-        aliases = bot.getConfig().getAliases(name);
     }
 
     @Override

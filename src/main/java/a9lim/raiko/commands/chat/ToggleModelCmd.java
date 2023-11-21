@@ -23,11 +23,9 @@ import a9lim.raiko.commands.ChatCommand;
 
 public class ToggleModelCmd extends ChatCommand {
 
-    public ToggleModelCmd(Bot bot) {
-        super(bot);
+    public ToggleModelCmd() {
         name = "setmodel";
         help = "toggle";
-        aliases = bot.getConfig().getAliases(name);
     }
     @Override
     protected void execute(CommandEvent event) {

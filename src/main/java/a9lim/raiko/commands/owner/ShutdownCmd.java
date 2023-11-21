@@ -23,13 +23,10 @@ import a9lim.raiko.Bot;
 import a9lim.raiko.commands.OwnerCommand;
 
 public class ShutdownCmd extends OwnerCommand {
-    private final Bot bot;
 
-    public ShutdownCmd(Bot b) {
-        bot = b;
+    public ShutdownCmd() {
         name = "shutdown";
         help = "safely shuts down";
-        aliases = bot.getConfig().getAliases(name);
         guildOnly = false;
     }
 

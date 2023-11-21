@@ -28,12 +28,10 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 
-public abstract class MusicCommand extends Command {
-    protected final Bot bot;
+public abstract class MusicCommand extends BotCommand {
     protected boolean bePlaying, beListening;
 
-    public MusicCommand(Bot b) {
-        bot = b;
+    public MusicCommand() {
         guildOnly = true;
         category = new Category("Music");
     }

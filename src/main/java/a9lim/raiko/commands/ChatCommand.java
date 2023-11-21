@@ -23,10 +23,13 @@ import a9lim.raiko.Bot;
 import a9lim.raiko.chat.ChatBot;
 
 public abstract class ChatCommand extends Command {
-    protected final ChatBot chatBot;
-    public ChatCommand(Bot bot){
-        chatBot = bot.getChatBot();
+    protected static ChatBot chatBot;
+    public ChatCommand(){
         guildOnly = true;
         category = new Category("Chat");
+    }
+
+    public static void setChatBot(ChatBot c){
+        chatBot = c;
     }
 }

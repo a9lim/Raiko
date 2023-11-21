@@ -23,12 +23,10 @@ import a9lim.raiko.commands.ChatCommand;
 
 public class SetPrepromptCmd extends ChatCommand {
 
-    public SetPrepromptCmd(Bot bot) {
-        super(bot);
+    public SetPrepromptCmd() {
         name = "setpreprompt";
         help = "set raiko's preprompt";
         arguments = "<text>";
-        aliases = bot.getConfig().getAliases(name);
     }
     @Override
     protected void execute(CommandEvent event) {

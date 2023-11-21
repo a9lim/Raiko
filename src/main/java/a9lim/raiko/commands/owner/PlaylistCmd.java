@@ -30,21 +30,18 @@ import java.util.regex.Pattern;
 
 public class PlaylistCmd extends OwnerCommand {
     private static final Pattern PATTERN = Pattern.compile("[*?|\\/\":<>]");
-    private final Bot bot;
 
-    public PlaylistCmd(Bot b) {
-        bot = b;
+    public PlaylistCmd() {
         guildOnly = false;
         name = "playlist";
         arguments = "<append|delete|make|setdefault>";
         help = "playlist management";
-        aliases = bot.getConfig().getAliases(name);
         children = new OwnerCommand[]{
                 new ListCmd(),
                 new AppendlistCmd(),
                 new DeletelistCmd(),
                 new MakelistCmd(),
-                new DefaultlistCmd(bot)
+                new DefaultlistCmd()
         };
     }
 
@@ -153,8 +150,7 @@ public class PlaylistCmd extends OwnerCommand {
     }
 
     public static class DefaultlistCmd extends AutoplaylistCmd {
-        public DefaultlistCmd(Bot bot) {
-            super(bot);
+        public DefaultlistCmd() {
             name = "setdefault";
             aliases = new String[]{"default"};
             arguments = "<playlistname|NONE>";

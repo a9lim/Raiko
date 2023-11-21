@@ -18,6 +18,7 @@
 
 package a9lim.jdautilities.command;
 
+import a9lim.raiko.BotConfig;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
@@ -26,13 +27,13 @@ import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 public abstract class Command implements Comparable<Command>{
     public static final Pattern COMPILE = Pattern.compile("\\s+");
+
+    protected static BotConfig aliasSource;
 
     protected String name = "null";
 
@@ -52,7 +53,7 @@ public abstract class Command implements Comparable<Command>{
 
     protected Permission[] botPermissions = new Permission[0];
 
-    protected String[] aliases = new String[0];
+    protected String[] aliases;
 
     protected Command[] children = new Command[0];
 
@@ -245,6 +246,10 @@ public abstract class Command implements Comparable<Command>{
         return botPermissions;
     }
 
+    public void loadAliases() {
+        aliases = aliasSource.getAliases(name);
+    }
+
     public String[] getAliases() {
         return aliases;
     }
@@ -307,6 +312,10 @@ public abstract class Command implements Comparable<Command>{
     @Override
     public int compareTo(@NotNull Command o) {
         return category.equals(o.category) ? name.compareTo(o.name) : category.compareTo(o.category);
+    }
+
+    public static void setAliasSource(BotConfig c){
+        aliasSource = c;
     }
 
     public record Category(String name, Predicate<CommandEvent> predicate) implements Comparable<Category> {

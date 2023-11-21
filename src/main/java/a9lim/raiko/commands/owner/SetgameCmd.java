@@ -19,16 +19,14 @@
 package a9lim.raiko.commands.owner;
 
 import a9lim.jdautilities.command.CommandEvent;
-import a9lim.raiko.Bot;
 import a9lim.raiko.commands.OwnerCommand;
 import net.dv8tion.jda.api.entities.Activity;
 
 public class SetgameCmd extends OwnerCommand {
-    public SetgameCmd(Bot bot) {
+    public SetgameCmd() {
         name = "setgame";
         help = "sets the game the bot is playing";
         arguments = "[action] [game]";
-        aliases = bot.getConfig().getAliases(name);
         guildOnly = false;
         children = new OwnerCommand[]{
                 new SetlistenCmd(),

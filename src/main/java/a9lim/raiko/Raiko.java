@@ -18,16 +18,16 @@
 
 package a9lim.raiko;
 
+import a9lim.jdautilities.command.Command;
 import a9lim.jdautilities.command.CommandClientBuilder;
 import a9lim.jdautilities.commons.waiter.EventWaiter;
+import a9lim.raiko.commands.ChatCommand;
+import a9lim.raiko.commands.MusicCommand;
 import a9lim.raiko.commands.admin.PrefixCmd;
 import a9lim.raiko.commands.admin.SettcCmd;
 import a9lim.raiko.commands.admin.SetvcCmd;
-import a9lim.raiko.commands.chat.ChatCmd;
-import a9lim.raiko.commands.chat.ClearChatCmd;
-import a9lim.raiko.commands.chat.ToggleModelCmd;
+import a9lim.raiko.commands.chat.*;
 import a9lim.raiko.commands.general.AboutCmd;
-import a9lim.raiko.commands.general.HelpCmd;
 import a9lim.raiko.commands.general.PingCmd;
 import a9lim.raiko.commands.general.SettingsCmd;
 import a9lim.raiko.commands.music.*;
@@ -87,6 +87,10 @@ public class Raiko {
         aboutCmd.setIsAuthor(false);
         aboutCmd.setReplacementCharacter("\uD83C\uDFB6"); // 🎶
 
+        Command.setAliasSource(config);
+        MusicCommand.setBot(bot);
+        ChatCommand.setChatBot(bot.getChatBot());
+
         // set up the command client
         CommandClientBuilder cb = new CommandClientBuilder()
                 .setPrefixes(config.getPrefixes())
@@ -94,43 +98,45 @@ public class Raiko {
                 .setEmojis(config.getSuccess(), config.getWarning(), config.getError())
                 .setLinkedCacheSize(200)
                 .setGuildSettingsManager(settings)
-                .setHelpWords(config.getAliases("help"))
                 .addCommands(aboutCmd,
                         new PingCmd(),
-                        new SettingsCmd(bot),
+                        new SettingsCmd(),
 
-                        new NowplayingCmd(bot),
-                        new PlayCmd(bot),
-                        new PlaylistsCmd(bot),
-                        new QueueCmd(bot),
-                        new RemoveCmd(bot),
-                        new SearchCmd(bot),
-                        new SCSearchCmd(bot),
-                        new ShuffleCmd(bot),
-                        new SkipCmd(bot),
-                        new MoveTrackCmd(bot),
-                        new PauseCmd(bot),
-                        new PlaynextCmd(bot),
-                        new RepeatCmd(bot),
-                        new StopCmd(bot),
-                        new VolumeCmd(bot),
+                        new NowplayingCmd(),
+                        new PlayCmd(),
+                        new PlaylistsCmd(),
+                        new QueueCmd(),
+                        new RemoveCmd(),
+                        new SearchCmd(),
+                        new SCSearchCmd(),
+                        new ShuffleCmd(),
+                        new SkipCmd(),
+                        new MoveTrackCmd(),
+                        new PauseCmd(),
+                        new PlaynextCmd(),
+                        new RepeatCmd(),
+                        new StopCmd(),
+                        new VolumeCmd(),
 
-                        new PrefixCmd(bot),
-                        new SettcCmd(bot),
-                        new SetvcCmd(bot),
+                        new PrefixCmd(),
+                        new SettcCmd(),
+                        new SetvcCmd(),
 
-                        new AutoplaylistCmd(bot),
-                        new DebugCmd(bot),
-                        new PlaylistCmd(bot),
-                        new SetavatarCmd(bot),
-                        new SetgameCmd(bot),
-                        new SetnameCmd(bot),
-                        new SetstatusCmd(bot),
-                        new ShutdownCmd(bot),
+                        new AutoplaylistCmd(),
+                        new DebugCmd(),
+                        new PlaylistCmd(),
+                        new SetavatarCmd(),
+                        new SetgameCmd(),
+                        new SetnameCmd(),
+                        new SetstatusCmd(),
+                        new ShutdownCmd(),
 
-                        new ChatCmd(bot),
-                        new ClearChatCmd(bot),
-                        new ToggleModelCmd(bot)
+                        new ChatCmd(),
+                        new ClearChatCmd(),
+                        new ToggleModelCmd(),
+                        new RemoveChatCmd(),
+                        new RewindChatCmd(),
+                        new SetPrepromptCmd()
                 );
         boolean nogame = false;
         if (config.getStatus() != OnlineStatus.UNKNOWN)

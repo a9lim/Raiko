@@ -23,12 +23,10 @@ import a9lim.raiko.commands.ChatCommand;
 
 public class RewindChatCmd extends ChatCommand {
 
-    public RewindChatCmd(Bot bot) {
-        super(bot);
+    public RewindChatCmd() {
         name = "rewindchat";
         help = "delete the last few messages from raiko's memory";
         arguments = "<position>";
-        aliases = bot.getConfig().getAliases(name);
     }
     @Override
     protected void execute(CommandEvent event) {

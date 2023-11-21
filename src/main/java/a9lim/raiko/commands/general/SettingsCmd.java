@@ -20,7 +20,6 @@ package a9lim.raiko.commands.general;
 
 import a9lim.jdautilities.command.Command;
 import a9lim.jdautilities.command.CommandEvent;
-import a9lim.raiko.Bot;
 import a9lim.raiko.settings.RepeatMode;
 import a9lim.raiko.settings.Settings;
 import a9lim.raiko.utils.FormatUtil;
@@ -32,11 +31,10 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 public class SettingsCmd extends Command {
     private final static String EMOJI = "\uD83C\uDFA7"; // 🎧
 
-    public SettingsCmd(Bot bot) {
+    public SettingsCmd() {
         name = "settings";
         category = new Category("General");
         help = "shows the bots settings";
-        aliases = bot.getConfig().getAliases(name);
         guildOnly = true;
     }
 

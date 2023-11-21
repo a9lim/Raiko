@@ -25,11 +25,9 @@ import a9lim.raiko.Bot;
 import a9lim.raiko.commands.MusicCommand;
 
 public class PlaylistsCmd extends MusicCommand {
-    public PlaylistsCmd(Bot bot) {
-        super(bot);
+    public PlaylistsCmd() {
         name = "playlists";
         help = "shows the available playlists";
-        aliases = bot.getConfig().getAliases(name);
         guildOnly = true;
         beListening = false;
     }

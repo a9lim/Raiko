@@ -20,7 +20,7 @@ package a9lim.raiko.commands;
 
 import a9lim.jdautilities.command.Command;
 
-public abstract class OwnerCommand extends Command {
+public abstract class OwnerCommand extends BotCommand {
     public OwnerCommand() {
         category = new Category("Owner");
         ownerCommand = true;

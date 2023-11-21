@@ -28,11 +28,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class SetavatarCmd extends OwnerCommand {
-    public SetavatarCmd(Bot bot) {
+    public SetavatarCmd() {
         name = "setavatar";
         help = "sets the avatar of the bot";
         arguments = "<url>";
-        aliases = bot.getConfig().getAliases(name);
         guildOnly = false;
     }
 

@@ -23,12 +23,10 @@ import a9lim.raiko.commands.ChatCommand;
 
 public class RemoveChatCmd extends ChatCommand {
 
-    public RemoveChatCmd(Bot bot) {
-        super(bot);
+    public RemoveChatCmd() {
         name = "removechat";
         help = "delete a certain message from raiko's memory";
         arguments = "<position>";
-        aliases = bot.getConfig().getAliases(name);
     }
     @Override
     protected void execute(CommandEvent event) {

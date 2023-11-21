@@ -24,11 +24,9 @@ import a9lim.raiko.audio.AudioHandler;
 import a9lim.raiko.commands.MusicCommand;
 
 public class StopCmd extends MusicCommand {
-    public StopCmd(Bot bot) {
-        super(bot);
+    public StopCmd() {
         name = "stop";
         help = "stops the current song and clears the queue";
-        aliases = bot.getConfig().getAliases(name);
         bePlaying = false;
     }
 

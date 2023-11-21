@@ -27,12 +27,10 @@ import a9lim.raiko.queue.DoubleDealingQueue;
 
 public class MoveTrackCmd extends MusicCommand {
 
-    public MoveTrackCmd(Bot bot) {
-        super(bot);
+    public MoveTrackCmd() {
         name = "movetrack";
         help = "move a track in the current queue to a different position";
         arguments = "<from> <to>";
-        aliases = bot.getConfig().getAliases(name);
         bePlaying = true;
     }
 

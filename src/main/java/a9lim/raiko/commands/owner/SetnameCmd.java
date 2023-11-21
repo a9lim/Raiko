@@ -19,16 +19,14 @@
 package a9lim.raiko.commands.owner;
 
 import a9lim.jdautilities.command.CommandEvent;
-import a9lim.raiko.Bot;
 import a9lim.raiko.commands.OwnerCommand;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 @Deprecated
 public class SetnameCmd extends OwnerCommand {
-    public SetnameCmd(Bot bot) {
+    public SetnameCmd() {
         name = "setname";
         help = "sets the name of the bot";
         arguments = "<name>";
-        aliases = bot.getConfig().getAliases(name);
         guildOnly = false;
     }
 

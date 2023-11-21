@@ -24,17 +24,15 @@ import a9lim.raiko.commands.general.HelpCmd;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.function.Consumer;
 
 public class CommandClientBuilder {
     private Activity activity = Activity.playing("default");
     private OnlineStatus status = OnlineStatus.ONLINE;
     private String ownerId, serverInvite, success, warning, error, carbonKey, botsKey;
-    private String[] coOwnerIds, helpWords;
+    private String[] coOwnerIds;
     private List<String> prefixes;
     private final LinkedList<Command> commands = new LinkedList<>();
     private CommandListener listener;
@@ -48,8 +46,7 @@ public class CommandClientBuilder {
         CommandClient client = new CommandClientImpl(ownerId, coOwnerIds, prefixes, activity, status, serverInvite,
             success, warning, error, carbonKey, botsKey, commands,
             shutdownAutomatically, executor, linkedCacheSize, compiler, manager);
-        client.setHelp(new HelpCmd(client,helpWords));
-        System.out.println(client.getCommands());
+        client.setHelp(new HelpCmd(client));
         if (listener != null)
             client.setListener(listener);
         return client;
@@ -72,11 +69,6 @@ public class CommandClientBuilder {
 
     public CommandClientBuilder addPrefix(String prefix) {
         prefixes.add(prefix);
-        return this;
-    }
-
-    public CommandClientBuilder setHelpWords(String[] s) {
-        helpWords = s;
         return this;
     }
 

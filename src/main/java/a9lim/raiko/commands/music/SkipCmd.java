@@ -25,12 +25,10 @@ import a9lim.raiko.audio.RequestMetadata;
 import a9lim.raiko.commands.MusicCommand;
 
 public class SkipCmd extends MusicCommand {
-    public SkipCmd(Bot bot) {
-        super(bot);
+    public SkipCmd() {
         name = "skip";
         help = "skips songs";
         arguments = "<position>";
-        aliases = bot.getConfig().getAliases(name);
         bePlaying = true;
     }
 

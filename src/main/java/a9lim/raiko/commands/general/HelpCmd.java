@@ -22,26 +22,18 @@ package a9lim.raiko.commands.general;
 import a9lim.jdautilities.command.Command;
 import a9lim.jdautilities.command.CommandClient;
 import a9lim.jdautilities.command.CommandEvent;
-import a9lim.jdautilities.command.impl.CommandClientImpl;
-import a9lim.raiko.Bot;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.ApplicationInfo;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
-import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.util.Objects;
 
 public class HelpCmd extends Command {
     private final CommandClient client;
 
-    public HelpCmd(CommandClient c, String[] a) {
+    public HelpCmd(CommandClient c) {
         name = "help";
         help = "lists commands";
         category = new Category("General");
-        aliases = a;
         guildOnly = false;
         client = c;
     }
