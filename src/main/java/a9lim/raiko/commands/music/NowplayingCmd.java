@@ -26,11 +26,9 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 public class NowplayingCmd extends MusicCommand {
-    public NowplayingCmd(Bot bot) {
-        super(bot);
+    public NowplayingCmd() {
         name = "nowplaying";
         help = "shows the song that is currently playing";
-        aliases = bot.getConfig().getAliases(name);
         botPermissions = new Permission[]{Permission.MESSAGE_EMBED_LINKS};
     }
 

@@ -47,16 +47,14 @@ public class PlayCmd extends MusicCommand {
 
     private final String loadingEmoji;
 
-    public PlayCmd(Bot bot) {
-        super(bot);
+    public PlayCmd() {
         loadingEmoji = bot.getConfig().getLoading();
         name = "play";
         arguments = "<title|URL|subcommand>";
         help = "plays the provided song";
-        aliases = bot.getConfig().getAliases(name);
         beListening = true;
         bePlaying = false;
-        children = new Command[]{new PlaylistCmd(bot)};
+        children = new Command[]{new PlaylistCmd()};
     }
 
     @Override
@@ -190,8 +188,7 @@ public class PlayCmd extends MusicCommand {
     }
 
     public class PlaylistCmd extends MusicCommand {
-        public PlaylistCmd(Bot bot) {
-            super(bot);
+        public PlaylistCmd() {
             name = "playlist";
             aliases = new String[]{"pl"};
             arguments = "<name>";

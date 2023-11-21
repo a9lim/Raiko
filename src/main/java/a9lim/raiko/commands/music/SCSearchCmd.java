@@ -21,11 +21,9 @@ package a9lim.raiko.commands.music;
 import a9lim.raiko.Bot;
 
 public class SCSearchCmd extends SearchCmd {
-    public SCSearchCmd(Bot bot) {
-        super(bot);
+    public SCSearchCmd() {
         searchPrefix = "scsearch:";
         name = "scsearch";
         help = "searches Soundcloud for a provided query";
-        aliases = bot.getConfig().getAliases(name);
     }
 }

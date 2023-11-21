@@ -23,12 +23,10 @@ import a9lim.raiko.commands.ChatCommand;
 
 public class ChatCmd extends ChatCommand {
 
-    public ChatCmd(Bot bot) {
-        super(bot);
+    public ChatCmd() {
         name = "chat";
         help = "talk to raiko";
         arguments = "<text>";
-        aliases = bot.getConfig().getAliases(name);
     }
     @Override
     protected void execute(CommandEvent event) {

@@ -29,11 +29,10 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import java.util.List;
 
 public class SettcCmd extends AdminCommand {
-    public SettcCmd(Bot bot) {
+    public SettcCmd() {
         name = "settc";
         help = "sets the text channel for music commands";
         arguments = "<channel|NONE>";
-        aliases = bot.getConfig().getAliases(name);
     }
 
     @Override

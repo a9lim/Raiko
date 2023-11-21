@@ -19,7 +19,6 @@
 package a9lim.jdautilities.command.impl;
 
 import a9lim.jdautilities.command.*;
-import a9lim.jdautilities.command.Command.Category;
 import a9lim.jdautilities.commons.utils.FixedSizeCache;
 import a9lim.jdautilities.commons.utils.SafeIdUtil;
 import net.dv8tion.jda.api.JDA;
@@ -28,7 +27,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -52,8 +50,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static a9lim.jdautilities.command.Command.COMPILE;
 
@@ -121,9 +117,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
         manager = inmanager;
 
         // Load commands
-        for (Command command : incommands) {
-            addCommand(command);
-        }
+        incommands.forEach(this::addCommand);
     }
 
     public void setHelp(Command c) {
@@ -203,6 +197,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
             //check for collision
             if (commandIndex.containsKey(name))
                 throw new IllegalArgumentException("Command added has a name or alias that has already been indexed: \"" + name + "\"!");
+            command.loadAliases();
             for (String alias : command.getAliases()) {
                 if (commandIndex.containsKey(alias.toLowerCase()))
                     throw new IllegalArgumentException("Command added has a name or alias that has already been indexed: \"" + alias + "\"!");
@@ -212,6 +207,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
             commandSet.add(command);
             for (String alias : command.getAliases())
                 commandIndex.put(alias.toLowerCase(), command);
+
         }
     }
 

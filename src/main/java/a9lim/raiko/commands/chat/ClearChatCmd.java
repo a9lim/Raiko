@@ -23,11 +23,9 @@ import a9lim.raiko.commands.ChatCommand;
 
 public class ClearChatCmd extends ChatCommand {
 
-    public ClearChatCmd(Bot bot) {
-        super(bot);
+    public ClearChatCmd() {
         name = "clearchat";
         help = "wipe raiko's memory";
-        aliases = bot.getConfig().getAliases(name);
     }
     @Override
     protected void execute(CommandEvent event) {

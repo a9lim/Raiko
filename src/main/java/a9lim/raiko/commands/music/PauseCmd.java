@@ -24,11 +24,9 @@ import a9lim.raiko.audio.AudioHandler;
 import a9lim.raiko.commands.MusicCommand;
 
 public class PauseCmd extends MusicCommand {
-    public PauseCmd(Bot bot) {
-        super(bot);
+    public PauseCmd() {
         name = "pause";
         help = "pauses the current song";
-        aliases = bot.getConfig().getAliases(name);
         bePlaying = true;
     }
 

@@ -26,12 +26,10 @@ import a9lim.raiko.commands.MusicCommand;
 import net.dv8tion.jda.api.entities.User;
 
 public class RemoveCmd extends MusicCommand {
-    public RemoveCmd(Bot bot) {
-        super(bot);
+    public RemoveCmd() {
         name = "remove";
         help = "removes a song from the queue";
         arguments = "<position|MINE|ALL>";
-        aliases = bot.getConfig().getAliases(name);
         beListening = true;
         bePlaying = true;
     }

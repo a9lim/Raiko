@@ -24,11 +24,10 @@ import a9lim.raiko.commands.AdminCommand;
 import a9lim.raiko.settings.Settings;
 
 public class PrefixCmd extends AdminCommand {
-    public PrefixCmd(Bot bot) {
+    public PrefixCmd() {
         name = "prefix";
         help = "sets a server-specific prefix";
         arguments = "<prefix|NONE>";
-        aliases = bot.getConfig().getAliases(name);
     }
 
     @Override

@@ -25,12 +25,10 @@ import a9lim.raiko.settings.RepeatMode;
 import a9lim.raiko.settings.Settings;
 
 public class RepeatCmd extends MusicCommand {
-    public RepeatCmd(Bot bot) {
-        super(bot);
+    public RepeatCmd() {
         name = "repeat";
         help = "re-adds music to the queue when finished";
         arguments = "[off|all|single]";
-        aliases = bot.getConfig().getAliases(name);
         guildOnly = true;
     }
 

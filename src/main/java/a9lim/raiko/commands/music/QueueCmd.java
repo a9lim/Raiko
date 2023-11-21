@@ -37,13 +37,10 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 public class QueueCmd extends MusicCommand {
     private final Paginator.Builder builder;
-
-    public QueueCmd(Bot bot) {
-        super(bot);
+    public QueueCmd() {
         name = "queue";
         help = "shows the current queue";
         arguments = "[pagenum]";
-        aliases = bot.getConfig().getAliases(name);
         bePlaying = true;
         botPermissions = new Permission[]{Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EMBED_LINKS};
         builder = new Paginator.Builder()

@@ -19,16 +19,14 @@
 package a9lim.raiko.commands.owner;
 
 import a9lim.jdautilities.command.CommandEvent;
-import a9lim.raiko.Bot;
 import a9lim.raiko.commands.OwnerCommand;
 import net.dv8tion.jda.api.OnlineStatus;
 
 public class SetstatusCmd extends OwnerCommand {
-    public SetstatusCmd(Bot bot) {
+    public SetstatusCmd() {
         name = "setstatus";
         help = "sets the status the bot displays";
         arguments = "<status>";
-        aliases = bot.getConfig().getAliases(name);
         guildOnly = false;
     }
 

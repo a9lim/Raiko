@@ -25,12 +25,10 @@ import a9lim.raiko.audio.AudioHandler;
 import a9lim.raiko.commands.MusicCommand;
 
 public class ShuffleCmd extends MusicCommand {
-    public ShuffleCmd(Bot bot) {
-        super(bot);
+    public ShuffleCmd() {
         name = "shuffle";
         help = "shuffles the queue";
         arguments = "<MINE|ALL>";
-        aliases = bot.getConfig().getAliases(name);
         beListening = true;
         bePlaying = true;
     }

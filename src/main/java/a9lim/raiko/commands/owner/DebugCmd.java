@@ -18,6 +18,7 @@
 
 package a9lim.raiko.commands.owner;
 
+import a9lim.raiko.BotConfig;
 import com.sedmelluq.discord.lavaplayer.tools.PlayerLibrary;
 import a9lim.jdautilities.command.CommandEvent;
 import a9lim.raiko.Bot;
@@ -28,16 +29,15 @@ import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.utils.FileUpload;
 
 public class DebugCmd extends OwnerCommand {
+
+    private final BotConfig c;
     private final static String[] PROPERTIES = {"java.version", "java.vm.name", "java.vm.specification.version",
             "java.runtime.name", "java.runtime.version", "java.specification.version", "os.arch", "os.name"};
 
-    private final Bot bot;
-
-    public DebugCmd(Bot b) {
-        bot = b;
+    public DebugCmd() {
+        c = bot.getConfig();
         name = "debug";
         help = "shows debug info";
-        aliases = bot.getConfig().getAliases(name);
         guildOnly = false;
     }
 
@@ -49,14 +49,14 @@ public class DebugCmd extends OwnerCommand {
             sb.append("\n  ").append(key).append(" = ").append(System.getProperty(key));
         sb.append("\n\nRaiko Information:")
                 //.append("\n  Version = ").append(OtherUtil.getCurrentVersion())
-                .append("\n  Owner = ").append(bot.getConfig().getOwnerId())
+                .append("\n  Owner = ").append(c.getOwnerId())
                 .append("Prefix = ");
-        for (String s : bot.getConfig().getPrefixes())
+        for (String s : c.getPrefixes())
                 sb.append(s).append(", ");
-        sb.append("\n  MaxSeconds = ").append(bot.getConfig().getMaxSeconds())
-                .append("\n  NPImages = ").append(bot.getConfig().useNPImages())
-                .append("\n  SongInStatus = ").append(bot.getConfig().getSongInStatus())
-                .append("\n  StayInChannel = ").append(bot.getConfig().getStay());
+        sb.append("\n  MaxSeconds = ").append(c.getMaxSeconds())
+                .append("\n  NPImages = ").append(c.useNPImages())
+                .append("\n  SongInStatus = ").append(c.getSongInStatus())
+                .append("\n  StayInChannel = ").append(c.getStay());
         sb.append("\n\nDependency Information:")
                 .append("\n  JDA Version = ").append(JDAInfo.VERSION)
 //                .append("\n  JDA-Utilities Version = ").append(JDAUtilitiesInfo.VERSION)

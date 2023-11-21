@@ -29,11 +29,10 @@ import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import java.util.List;
 
 public class SetvcCmd extends AdminCommand {
-    public SetvcCmd(Bot bot) {
+    public SetvcCmd() {
         name = "setvc";
         help = "sets the voice channel for playing music";
         arguments = "<channel|NONE>";
-        aliases = bot.getConfig().getAliases(name);
     }
 
     @Override

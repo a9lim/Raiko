@@ -33,13 +33,11 @@ import net.dv8tion.jda.api.entities.Message;
 public class PlaynextCmd extends MusicCommand {
     private final String loadingEmoji;
 
-    public PlaynextCmd(Bot bot) {
-        super(bot);
+    public PlaynextCmd() {
         loadingEmoji = bot.getConfig().getLoading();
         name = "playnext";
         arguments = "<title|URL>";
         help = "plays a single song next";
-        aliases = bot.getConfig().getAliases(name);
         beListening = true;
         bePlaying = false;
     }

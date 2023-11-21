@@ -26,10 +26,8 @@ import a9lim.raiko.settings.Settings;
 import a9lim.raiko.utils.FormatUtil;
 
 public class VolumeCmd extends MusicCommand {
-    public VolumeCmd(Bot bot) {
-        super(bot);
+    public VolumeCmd() {
         name = "volume";
-        aliases = bot.getConfig().getAliases(name);
         help = "sets or shows volume";
         arguments = "[0-150]";
     }

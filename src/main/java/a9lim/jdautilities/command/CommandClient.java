@@ -24,7 +24,6 @@ import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.function.Function;
 
 public interface CommandClient {
 
