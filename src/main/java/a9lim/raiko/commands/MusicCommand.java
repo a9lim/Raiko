@@ -18,9 +18,7 @@
 
 package a9lim.raiko.commands;
 
-import a9lim.jdautilities.command.Command;
 import a9lim.jdautilities.command.CommandEvent;
-import a9lim.raiko.Bot;
 import a9lim.raiko.audio.AudioHandler;
 import a9lim.raiko.settings.Settings;
 import net.dv8tion.jda.api.entities.GuildVoiceState;

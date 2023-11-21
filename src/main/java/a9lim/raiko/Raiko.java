@@ -170,10 +170,7 @@ public class Raiko {
                     .setStatus(config.getStatus() == OnlineStatus.INVISIBLE || config.getStatus() == OnlineStatus.OFFLINE
                             ? OnlineStatus.INVISIBLE : OnlineStatus.DO_NOT_DISTURB)
                     .addEventListeners(cb.build(), waiter, new Listener(bot))
-                    .setBulkDeleteSplittingEnabled(true)
-                    // maybe
-//                    .setAudioSendFactory(new NativeAudioSendFactory())
-                    .build() );
+                    .setBulkDeleteSplittingEnabled(true).build() );
         } catch (IllegalArgumentException ex) {
             prompt.alert(Prompt.Level.ERROR, "Raiko", "Some aspect of the configuration is "
                     + "invalid: " + ex + "\nConfig Location: " + config.getConfigLocation());

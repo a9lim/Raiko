@@ -19,7 +19,6 @@
 package a9lim.raiko.commands.music;
 
 import a9lim.jdautilities.command.CommandEvent;
-import a9lim.raiko.Bot;
 import a9lim.raiko.audio.AudioHandler;
 import a9lim.raiko.commands.MusicCommand;
 import a9lim.raiko.settings.Settings;

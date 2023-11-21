@@ -57,8 +57,6 @@ public abstract class Command implements Comparable<Command>{
 
     protected Command[] children = new Command[0];
 
-//    protected BiConsumer<CommandEvent, Command> helpBiConsumer;
-
     protected boolean usesTopicTags = true;
 
     protected CooldownScope cooldownScope = CooldownScope.USER;
@@ -72,10 +70,6 @@ public abstract class Command implements Comparable<Command>{
         // child check
         if (!event.getArgs().isEmpty()) {
             String[] parts = Arrays.copyOf(COMPILE.split(event.getArgs(), 2), 2);
-//            if (helpBiConsumer != null && parts[0].equalsIgnoreCase(event.getClient().getHelpWord())) {
-//                helpBiConsumer.accept(event, this);
-//                return;
-//            }
             for (Command cmd : children) {
                 if (cmd.isCommandFor(parts[0])) {
                     event.setArgs(parts[1] == null ? "" : parts[1]);

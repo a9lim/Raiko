@@ -18,7 +18,6 @@
 package a9lim.raiko.commands.chat;
 
 import a9lim.jdautilities.command.CommandEvent;
-import a9lim.raiko.Bot;
 import a9lim.raiko.commands.ChatCommand;
 
 public class RewindChatCmd extends ChatCommand {

@@ -40,7 +40,7 @@ public class BotConfig {
     private final static String END_TOKEN = "/// END OF RAIKO CONFIG ///";
 
     private Path path;
-    private String token, helpWord, playlistsFolder,
+    private String token, playlistsFolder,
             successEmoji, warningEmoji, errorEmoji, loadingEmoji, searchingEmoji,
             cgpttoken, preprompt;
     private List<String> prefixes;
@@ -70,7 +70,6 @@ public class BotConfig {
             // set values
             token = config.getString("token");
             prefixes = config.getStringList("prefixes");
-            helpWord = config.getString("help");
             owner = config.getLong("owner");
             successEmoji = config.getString("success");
             warningEmoji = config.getString("warning");

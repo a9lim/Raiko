@@ -18,8 +18,6 @@
 
 package a9lim.raiko.commands.music;
 
-import a9lim.raiko.Bot;
-
 public class SCSearchCmd extends SearchCmd {
     public SCSearchCmd() {
         searchPrefix = "scsearch:";

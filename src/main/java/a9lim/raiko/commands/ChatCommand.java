@@ -19,7 +19,6 @@
 package a9lim.raiko.commands;
 
 import a9lim.jdautilities.command.Command;
-import a9lim.raiko.Bot;
 import a9lim.raiko.chat.ChatBot;
 
 public abstract class ChatCommand extends Command {

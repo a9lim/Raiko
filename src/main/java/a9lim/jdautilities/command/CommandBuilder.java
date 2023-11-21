@@ -22,6 +22,7 @@ import net.dv8tion.jda.api.Permission;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -35,8 +36,8 @@ public class CommandBuilder {
     private int cooldown;
     private Permission[] userPermissions = new Permission[0];
     private Permission[] botPermissions = new Permission[0];
-    private final LinkedList<String> aliases = new LinkedList<>();
-    private final LinkedList<Command> children = new LinkedList<>();
+    private final List<String> aliases = new LinkedList<>();
+    private final List<Command> children = new LinkedList<>();
     private boolean usesTopicTags = true;
     private Command.CooldownScope cooldownScope = Command.CooldownScope.USER;
 
