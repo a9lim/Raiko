@@ -18,18 +18,17 @@
 
 package a9lim.raiko.commands.music;
 
+import a9lim.jdautilities.command.CommandEvent;
+import a9lim.jdautilities.menu.OrderedMenu;
+import a9lim.raiko.audio.AudioHandler;
+import a9lim.raiko.audio.QueuedTrack;
+import a9lim.raiko.commands.MusicCommand;
+import a9lim.raiko.utils.FormatUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException.Severity;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import a9lim.jdautilities.command.CommandEvent;
-import a9lim.jdautilities.menu.OrderedMenu;
-import a9lim.raiko.Bot;
-import a9lim.raiko.audio.AudioHandler;
-import a9lim.raiko.audio.QueuedTrack;
-import a9lim.raiko.commands.MusicCommand;
-import a9lim.raiko.utils.FormatUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 

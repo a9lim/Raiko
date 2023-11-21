@@ -34,7 +34,7 @@ public class CommandClientBuilder {
     private String ownerId, serverInvite, success, warning, error, carbonKey, botsKey;
     private String[] coOwnerIds;
     private List<String> prefixes;
-    private final LinkedList<Command> commands = new LinkedList<>();
+    private final List<Command> commands = new LinkedList<>();
     private CommandListener listener;
     private boolean shutdownAutomatically = true;
     private ScheduledExecutorService executor;

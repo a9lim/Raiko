@@ -19,7 +19,6 @@
 package a9lim.raiko.commands.owner;
 
 import a9lim.jdautilities.command.CommandEvent;
-import a9lim.raiko.Bot;
 import a9lim.raiko.commands.OwnerCommand;
 import a9lim.raiko.settings.Settings;
 

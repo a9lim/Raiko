@@ -18,11 +18,10 @@
 
 package a9lim.raiko.commands.owner;
 
-import a9lim.raiko.BotConfig;
-import com.sedmelluq.discord.lavaplayer.tools.PlayerLibrary;
 import a9lim.jdautilities.command.CommandEvent;
-import a9lim.raiko.Bot;
+import a9lim.raiko.BotConfig;
 import a9lim.raiko.commands.OwnerCommand;
+import com.sedmelluq.discord.lavaplayer.tools.PlayerLibrary;
 import net.dv8tion.jda.api.JDAInfo;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
