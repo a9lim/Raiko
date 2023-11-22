@@ -44,10 +44,11 @@ public class PlaylistLoader {
     }
 
     public List<String> getPlaylistNames() {
-        if (folderExists()) {
-            File folder = new File(OtherUtil.getPath(config.getPlaylistsFolder()).toString());
-            return Arrays.stream(folder.listFiles((pathname) -> pathname.getName().endsWith(".txt"))).map(f -> f.getName().substring(0, f.getName().length() - 4)).collect(Collectors.toList());
-        }
+        if (folderExists())
+            return Arrays.stream(new File(OtherUtil.getPath(config.getPlaylistsFolder()).toString())
+                    .listFiles((pathname) -> pathname.getName().endsWith(".txt")))
+                    .map(f -> f.getName().substring(0, f.getName().length() - 4))
+                    .collect(Collectors.toList());
         createFolder();
         return Collections.emptyList();
     }

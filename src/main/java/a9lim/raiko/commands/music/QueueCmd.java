@@ -80,14 +80,13 @@ public class QueueCmd extends MusicCommand {
         String[] songs = new String[deque.size()];
         long total = 0;
         Iterator<QueuedTrack> iterator = deque.iterator();
-        for (int i = 0; i < deque.size(); i++) {
+        for (int i = 0; i < songs.length; i++) {
             QueuedTrack track = iterator.next();
             total += track.getTrack().getDuration();
             songs[i] = track.toString();
         }
-        Settings settings = event.getClient().getSettingsFor(event.getGuild());
         long fintotal = total;
-        builder.setText((i1, i2) -> GuildUtil.getQueueTitle(ah, event.getClient().getSuccess(), songs.length, fintotal, settings.getRepeatMode()))
+        builder.setText((i1, i2) -> GuildUtil.getQueueTitle(ah, event.getClient().getSuccess(), songs.length, fintotal, ((Settings) event.getClient().getSettingsFor(event.getGuild())).getRepeatMode()))
                 .setItems(songs)
                 .setUsers(event.getAuthor())
                 .setColor(event.getSelfMember().getColor());

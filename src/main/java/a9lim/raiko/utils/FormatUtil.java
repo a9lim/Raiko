@@ -40,10 +40,7 @@ public class FormatUtil {
     public static String progressBar(double percent) {
         StringBuilder str = new StringBuilder();
         for (int i = 0; i < 12; i++)
-            if (i == (int) (percent * 12))
-                str.append("\uD83D\uDD18"); // 🔘
-            else
-                str.append("▬");
+            str.append((i == (int) (percent * 12)) ? "\uD83D\uDD18" : "▬");// 🔘
         return str.toString();
     }
 
@@ -59,8 +56,10 @@ public class FormatUtil {
 
     public static String listOfTChannels(List<TextChannel> list, String query) {
         StringBuilder out = new StringBuilder(" Multiple text channels found matching \"" + query + "\":");
-        for (int i = 0; i < 6 && i < list.size(); i++)
-            out.append("\n - ").append(list.get(i).getName()).append(" (<#").append(list.get(i).getId()).append(">)");
+        for (int i = 0; i < 6 && i < list.size(); i++) {
+            TextChannel channel = list.get(i);
+            out.append("\n - ").append(channel.getName()).append(" (<#").append(channel.getId()).append(">)");
+        }
         if (list.size() > 6)
             out.append("\n**And ").append(list.size() - 6).append(" more...**");
         return out.toString();
@@ -68,8 +67,10 @@ public class FormatUtil {
 
     public static String listOfVChannels(List<VoiceChannel> list, String query) {
         StringBuilder out = new StringBuilder(" Multiple voice channels found matching \"" + query + "\":");
-        for (int i = 0; i < 6 && i < list.size(); i++)
-            out.append("\n - ").append(list.get(i).getAsMention()).append(" (ID:").append(list.get(i).getId()).append(")");
+        for (int i = 0; i < 6 && i < list.size(); i++) {
+            VoiceChannel channel = list.get(i);
+            out.append("\n - ").append(channel.getAsMention()).append(" (ID:").append(channel.getId()).append(")");
+        }
         if (list.size() > 6)
             out.append("\n**And ").append(list.size() - 6).append(" more...**");
         return out.toString();
@@ -77,8 +78,10 @@ public class FormatUtil {
 
     public static String listOfRoles(List<Role> list, String query) {
         StringBuilder out = new StringBuilder(" Multiple text channels found matching \"" + query + "\":");
-        for (int i = 0; i < 6 && i < list.size(); i++)
-            out.append("\n - ").append(list.get(i).getName()).append(" (ID:").append(list.get(i).getId()).append(")");
+        for (int i = 0; i < 6 && i < list.size(); i++) {
+            Role role = list.get(i);
+            out.append("\n - ").append(role.getName()).append(" (ID:").append(role.getId()).append(")");
+        }
         if (list.size() > 6)
             out.append("\n**And ").append(list.size() - 6).append(" more...**");
         return out.toString();

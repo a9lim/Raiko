@@ -496,8 +496,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
     }
 
     private GuildSettingsProvider provideSettings(Guild guild) {
-        Object settings = getSettingsFor(guild);
-        return settings instanceof GuildSettingsProvider e ? e : null;
+        return getSettingsFor(guild) instanceof GuildSettingsProvider e ? e : null;
     }
 
     private static String[] splitOnPrefixLength(String rawContent, int length) {

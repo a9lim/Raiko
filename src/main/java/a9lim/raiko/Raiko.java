@@ -18,11 +18,10 @@
 
 package a9lim.raiko;
 
-import a9lim.jdautilities.command.Command;
 import a9lim.jdautilities.command.CommandClientBuilder;
 import a9lim.jdautilities.commons.waiter.EventWaiter;
+import a9lim.raiko.commands.BotCommand;
 import a9lim.raiko.commands.ChatCommand;
-import a9lim.raiko.commands.MusicCommand;
 import a9lim.raiko.commands.admin.PrefixCmd;
 import a9lim.raiko.commands.admin.SettcCmd;
 import a9lim.raiko.commands.admin.SetvcCmd;
@@ -87,8 +86,7 @@ public class Raiko {
         aboutCmd.setIsAuthor(false);
         aboutCmd.setReplacementCharacter("\uD83C\uDFB6"); // 🎶
 
-        Command.setAliasSource(config);
-        MusicCommand.setBot(bot);
+        BotCommand.setBot(bot);
         ChatCommand.setChatBot(bot.getChatBot());
 
         // set up the command client

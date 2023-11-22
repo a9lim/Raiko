@@ -96,16 +96,13 @@ public class NowplayingHandler {
             return;
         TextChannel tchan = bot.getSettingsManager().getSettings(guildId).getTextChannel(guild);
         if(tchan!=null && guild.getSelfMember().hasPermission(tchan, Permission.MANAGE_CHANNEL)) {
-            String otherText;
             String topic = tchan.getTopic();
-            if(topic==null || topic.isEmpty())
-                otherText = "\u200B";
-            else if(topic.contains("\u200B"))
-                otherText = topic.substring(topic.lastIndexOf('\u200B'));
-            else
-                otherText = "\u200B\n "+topic;
-            String text = handler.getTopicFormat(bot.getJDA()) + otherText;
-            if(!text.equals(tchan.getTopic()))
+            String text = handler.getTopicFormat(bot.getJDA()) +
+                    ((topic==null || topic.isEmpty()) ? "\u200B" :
+                    (topic.contains("\u200B") ?
+                            topic.substring(topic.lastIndexOf('\u200B')) :
+                            "\u200B\n "+topic));
+            if(!text.equals(topic))
                 try {
                     // normally here if 'wait' was false, we'd want to queue, however,
                     // new discord ratelimits specifically limiting changing channel topics
@@ -126,7 +123,7 @@ public class NowplayingHandler {
                 bot.resetGame();
         }
         // update channel topic if applicable
-//        updateTopic(guildId, handler, false);
+        updateTopic(guildId, handler, false);
     }
     
     public void onMessageDelete(Guild guild, long messageId) {
