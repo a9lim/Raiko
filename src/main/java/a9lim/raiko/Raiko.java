@@ -115,6 +115,8 @@ public class Raiko {
                         new RepeatCmd(),
                         new StopCmd(),
                         new VolumeCmd(),
+                        new SwapTrackCmd(),
+                        new ReverseQueueCmd(),
 
                         new PrefixCmd(),
                         new SettcCmd(),

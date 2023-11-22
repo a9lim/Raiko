@@ -330,12 +330,10 @@ public class CommandClientImpl implements CommandClient, EventListener {
         else if (usesLinkedDeletion() && event instanceof MessageDeleteEvent e)
             onMessageDelete(e);
 
-        else if (event instanceof GuildJoinEvent e) {
-            if (e.getGuild().getSelfMember().getTimeJoined()
-                .plusMinutes(10).isAfter(OffsetDateTime.now()))
+        else if (event instanceof GuildLeaveEvent ||
+                (event instanceof GuildJoinEvent e &&
+                        e.getGuild().getSelfMember().getTimeJoined().plusMinutes(10).isAfter(OffsetDateTime.now())))
                 sendStats(event.getJDA());
-        } else if (event instanceof GuildLeaveEvent)
-            sendStats(event.getJDA());
         else if (event instanceof ReadyEvent e)
             onReady(e);
         else if (shutdownAutomatically && event instanceof ShutdownEvent) {
@@ -373,19 +371,18 @@ public class CommandClientImpl implements CommandClient, EventListener {
             parts = splitOnPrefixLength(rawContent, rawContent.indexOf('>') + 1);
         // Check for prefix
         else if(prefixes != null)
-            for(String s: prefixes)
+            for (String s: prefixes)
                 if (rawContent.toLowerCase().startsWith(s.toLowerCase()))
                     parts = splitOnPrefixLength(rawContent, s.length());
         // Check for guild specific prefixes
-        if(parts == null) {
-            GuildSettingsProvider settings = event.isFromType(ChannelType.TEXT) ? provideSettings(event.getGuild()) : null;
-            if (settings != null) {
-                Collection<String> prefixes = settings.getPrefixes();
-                if (prefixes != null)
-                    for (String prefix : prefixes)
-                        if (parts == null && rawContent.toLowerCase().startsWith(prefix.toLowerCase()))
-                            parts = splitOnPrefixLength(rawContent, prefix.length());
-            }
+        if(parts == null && event.isFromType(ChannelType.TEXT)) {
+            Collection<String> prefixes = provideSettings(event.getGuild()).getPrefixes();
+            if (prefixes != null)
+                for (String prefix : prefixes)
+                    if (rawContent.toLowerCase().startsWith(prefix.toLowerCase())) {
+                        parts = splitOnPrefixLength(rawContent, prefix.length());
+                        break;
+                    }
         }
 
         //starts with valid prefix
@@ -394,7 +391,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
                 final Command command; // this will be null if it's not a command
                 // this may be cleanable
                 synchronized (commandIndex) {
-                    command = commandIndex.getOrDefault(parts[0].toLowerCase(), null);
+                    command = commandIndex.get(parts[0].toLowerCase());
                 }
                 if (command != null) {
                     CommandEvent cevent = new CommandEvent(event, parts[1] == null ? "" : parts[1], this);
