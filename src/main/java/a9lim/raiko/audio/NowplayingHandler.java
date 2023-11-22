@@ -21,13 +21,10 @@ package a9lim.raiko.audio;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import a9lim.raiko.Bot;
 import a9lim.raiko.entities.Pair;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.exceptions.PermissionException;
-import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
@@ -89,32 +86,8 @@ public class NowplayingHandler {
         toRemove.forEach(lastNP::remove);
     }
 
-    //rework
-    public void updateTopic(long guildId, AudioHandler handler, boolean wait) {
-        Guild guild = bot.getJDA().getGuildById(guildId);
-        if(guild==null)
-            return;
-        TextChannel tchan = bot.getSettingsManager().getSettings(guildId).getTextChannel(guild);
-        if(tchan!=null && guild.getSelfMember().hasPermission(tchan, Permission.MANAGE_CHANNEL)) {
-            String topic = tchan.getTopic();
-            String text = handler.getTopicFormat(bot.getJDA()) +
-                    ((topic==null || topic.isEmpty()) ? "\u200B" :
-                    (topic.contains("\u200B") ?
-                            topic.substring(topic.lastIndexOf('\u200B')) :
-                            "\u200B\n "+topic));
-            if(!text.equals(topic))
-                try {
-                    // normally here if 'wait' was false, we'd want to queue, however,
-                    // new discord ratelimits specifically limiting changing channel topics
-                    // mean we don't want a backlog of changes piling up, so if we hit a
-                    // ratelimit, we just won't change the topic this time
-                    tchan.getManager().setTopic(text).complete(wait);
-                } catch(PermissionException | RateLimitedException ignore) {}
-        }
-    }
-    
     // "event"-based methods
-    public void onTrackUpdate(long guildId, AudioTrack track, AudioHandler handler) {
+    public void onTrackUpdate(AudioTrack track) {
         // update bot status if applicable
         if(bot.getConfig().getSongInStatus()) {
             if(track!=null && bot.getJDA().getGuilds().stream().filter(g -> g.getSelfMember().getVoiceState().inAudioChannel()).count()<=1)
@@ -122,8 +95,6 @@ public class NowplayingHandler {
             else
                 bot.resetGame();
         }
-        // update channel topic if applicable
-        updateTopic(guildId, handler, false);
     }
     
     public void onMessageDelete(Guild guild, long messageId) {

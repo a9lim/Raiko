@@ -22,7 +22,6 @@ import a9lim.raiko.BotConfig;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,8 +56,6 @@ public abstract class Command implements Comparable<Command>{
 
     protected Command[] children = new Command[0];
 
-    protected boolean usesTopicTags = true;
-
     protected CooldownScope cooldownScope = CooldownScope.USER;
 
     private final static String BOT_PERM = "%s I need the %s permission in this %s!";
@@ -89,12 +86,6 @@ public abstract class Command implements Comparable<Command>{
         // fix later
         if (category != null && !category.test(event)) {
             terminate(event, null);
-            return;
-        }
-
-        // is allowed check
-        if (event.isFromType(ChannelType.TEXT) && !isAllowed(event.getTextChannel())) {
-            terminate(event, "That command cannot be used in this channel!");
             return;
         }
 
@@ -180,28 +171,6 @@ public abstract class Command implements Comparable<Command>{
             if (alias.equalsIgnoreCase(input))
                 return true;
         return false;
-    }
-
-    public boolean isAllowed(TextChannel channel) {
-        if (!usesTopicTags || channel == null)
-            return true;
-        String topic = channel.getTopic();
-        if (topic == null || topic.isEmpty())
-            return true;
-        topic = topic.toLowerCase();
-        String lowerName = name.toLowerCase();
-        if (topic.contains("{" + lowerName + "}"))
-            return true;
-        if (topic.contains("{-" + lowerName + "}"))
-            return false;
-        lowerName = category == null ? null : category.name().toLowerCase();
-        if (lowerName != null) {
-            if (topic.contains("{" + lowerName + "}"))
-                return true;
-            if (topic.contains("{-" + lowerName + "}"))
-                return false;
-        }
-        return !topic.contains("{-all}");
     }
 
     public String getName() {

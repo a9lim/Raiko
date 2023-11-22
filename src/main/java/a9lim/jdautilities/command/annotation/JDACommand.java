@@ -48,8 +48,6 @@ public @interface JDACommand {
 
     Permission[] userPermissions() default {};
 
-//    boolean useTopicTags() default true;
-
     String[] children() default {};
 
     boolean isHidden() default false;

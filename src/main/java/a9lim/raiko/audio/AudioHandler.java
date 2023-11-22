@@ -142,7 +142,7 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
             return;
         }
         if (!playFromDefault()) {
-            manager.getBot().getNowplayingHandler().onTrackUpdate(guildId, null, this);
+            manager.getBot().getNowplayingHandler().onTrackUpdate(null);
             if (!manager.getBot().getConfig().getStay())
                 manager.getBot().closeAudioConnection(guildId);
             // unpause, in the case when the player was paused and the track has been skipped.
@@ -153,7 +153,7 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
 
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
-        manager.getBot().getNowplayingHandler().onTrackUpdate(guildId, track, this);
+        manager.getBot().getNowplayingHandler().onTrackUpdate(track);
     }
 
 
@@ -203,20 +203,6 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
                         .setDescription(STOP_EMOJI + " " + FormatUtil.progressBar(-1) + " " + FormatUtil.volumeIcon(audioPlayer.getVolume()))
                         .setColor(guild(jda).getSelfMember().getColor())
                         .build()).build();
-    }
-
-    public String getTopicFormat(JDA jda) {
-        if (noMusicPlaying(jda))
-            return "No music playing " + STOP_EMOJI + " " + FormatUtil.volumeIcon(audioPlayer.getVolume());
-        long userid = getRequestMetadata().getOwner();
-        AudioTrack track = audioPlayer.getPlayingTrack();
-        String title = track.getInfo().title;
-        if (title == null || "Unknown Title".equals(title))
-            title = track.getInfo().uri;
-        return "**" + title + "** [" + (userid == 0 ? "autoplay" : "<@" + userid + ">") + "]"
-                + "\n" + getStatusEmoji() + " "
-                + "[" + FormatUtil.formatTime(track.getDuration()) + "] "
-                + FormatUtil.volumeIcon(audioPlayer.getVolume());
     }
 
     public String getStatusEmoji() {
