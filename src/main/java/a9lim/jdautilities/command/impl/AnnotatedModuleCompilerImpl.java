@@ -103,7 +103,7 @@ public class AnnotatedModuleCompilerImpl implements AnnotatedModuleCompiler {
                 .setCooldownScope(properties.cooldown().scope())
                 .setBotPermissions(properties.botPermissions())
                 .setUserPermissions(properties.userPermissions())
-                .setUsesTopicTags(properties.useTopicTags())
+//                .setUsesTopicTags(properties.useTopicTags())
                 .setHidden(properties.isHidden());
 
         // Child Commands

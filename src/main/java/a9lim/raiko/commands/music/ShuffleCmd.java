@@ -21,7 +21,9 @@ package a9lim.raiko.commands.music;
 
 import a9lim.jdautilities.command.CommandEvent;
 import a9lim.raiko.audio.AudioHandler;
+import a9lim.raiko.audio.QueuedTrack;
 import a9lim.raiko.commands.MusicCommand;
+import a9lim.raiko.queue.DoubleDealingQueue;
 
 public class ShuffleCmd extends MusicCommand {
     public ShuffleCmd() {
@@ -34,18 +36,18 @@ public class ShuffleCmd extends MusicCommand {
 
     @Override
     public void doCommand(CommandEvent event) {
-        AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
+        DoubleDealingQueue<QueuedTrack> queue = ((AudioHandler) event.getGuild().getAudioManager().getSendingHandler()).getQueue();
         int s;
         if ("mine".equalsIgnoreCase(event.getArgs())) {
-            if ((s = handler.getQueue().shuffle(event.getAuthor().getIdLong())) < 2)
+            if ((s = queue.shuffle(event.getAuthor().getIdLong())) < 2)
                 event.replyError("You don't have enough songs in the queue!");
             else
                 event.replySuccess("You successfully shuffled your " + s + " entries.");
         } else {
-            if ((s = handler.getQueue().size()) < 2)
+            if ((s = queue.size()) < 2)
                 event.replyWarning("There aren't enough songs in the queue!");
             else {
-                handler.getQueue().shuffle();
+                queue.shuffle();
                 event.replySuccess("You successfully shuffled all " + s + " entries.");
             }
         }

@@ -85,7 +85,7 @@ public interface CommandClient {
 
     <S> S getSettingsFor(Guild guild);
 
-    <M extends GuildSettingsManager> M getSettingsManager();
+    <M extends GuildSettingsManager<?>> M getSettingsManager();
 
     void shutdown();
 }

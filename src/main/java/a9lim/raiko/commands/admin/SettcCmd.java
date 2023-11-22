@@ -52,8 +52,8 @@ public class SettcCmd extends AdminCommand {
         else if (list.size() > 1)
             event.replyWarning(FormatUtil.listOfTChannels(list, event.getArgs()));
         else {
-            s.setTextChannel(list.get(0));
-            event.replyWarning(" Music commands can now only be used in <#" + list.get(0).getId() + ">");
+            s.setTextChannel(list.getFirst());
+            event.replyWarning(" Music commands can now only be used in <#" + list.getFirst().getId() + ">");
         }
     }
 

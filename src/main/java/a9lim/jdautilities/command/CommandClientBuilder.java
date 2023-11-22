@@ -40,7 +40,7 @@ public class CommandClientBuilder {
     private ScheduledExecutorService executor;
     private int linkedCacheSize;
     private AnnotatedModuleCompiler compiler = new AnnotatedModuleCompilerImpl();
-    private GuildSettingsManager manager;
+    private GuildSettingsManager<?> manager;
 
     public CommandClient build() {
         CommandClient client = new CommandClientImpl(ownerId, coOwnerIds, prefixes, activity, status, serverInvite,
@@ -156,7 +156,7 @@ public class CommandClientBuilder {
         return this;
     }
 
-    public CommandClientBuilder setGuildSettingsManager(GuildSettingsManager man) {
+    public CommandClientBuilder setGuildSettingsManager(GuildSettingsManager<?> man) {
         manager = man;
         return this;
     }

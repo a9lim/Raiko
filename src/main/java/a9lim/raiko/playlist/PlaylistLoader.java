@@ -122,8 +122,8 @@ public class PlaylistLoader {
             loaded = true;
             int i = 0;
             for (String item : items) {
-                boolean last = i + 1 == items.size();
                 int finalI = i;
+                boolean last = ++i == items.size();
                 manager.loadItemOrdered(name, item, new AudioLoadResultHandler() {
                     private void done() {
                         if (last) {
@@ -149,7 +149,7 @@ public class PlaylistLoader {
                     @Override
                     public void playlistLoaded(AudioPlaylist ap) {
                         if (ap.isSearchResult()) {
-                            trackLoaded(ap.getTracks().get(0));
+                            trackLoaded(ap.getTracks().getFirst());
                         } else if (ap.getSelectedTrack() != null) {
                             trackLoaded(ap.getSelectedTrack());
                         } else {
@@ -176,7 +176,6 @@ public class PlaylistLoader {
                         done();
                     }
                 });
-                i++;
             }
         }
 

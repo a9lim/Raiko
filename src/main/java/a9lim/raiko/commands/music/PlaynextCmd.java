@@ -49,11 +49,11 @@ public class PlaynextCmd extends MusicCommand {
         }
         String args = !event.getArgs().isEmpty() && event.getArgs().charAt(0) == '<' && event.getArgs().charAt(event.getArgs().length() - 1) == '>'
                 ? event.getArgs().substring(1, event.getArgs().length() - 1)
-                : event.getArgs().isEmpty() ? event.getMessage().getAttachments().get(0).getUrl() : event.getArgs();
+                : event.getArgs().isEmpty() ? event.getMessage().getAttachments().getFirst().getUrl() : event.getArgs();
         event.reply(loadingEmoji + " Loading... `[" + args + "]`", m -> bot.getPlayerManager().loadItemOrdered(event.getGuild(), args, new ResultHandler(m, event, false)));
     }
 
-    private final class ResultHandler implements AudioLoadResultHandler {
+    private static final class ResultHandler implements AudioLoadResultHandler {
         private final Message m;
         private final CommandEvent event;
         private final boolean ytsearch;
@@ -84,7 +84,7 @@ public class PlaynextCmd extends MusicCommand {
         @Override
         public void playlistLoaded(AudioPlaylist playlist) {
             AudioTrack single = playlist.getSelectedTrack();
-            loadSingle(single == null ? playlist.getTracks().get(0) : single);
+            loadSingle(single == null ? playlist.getTracks().getFirst() : single);
         }
 
         @Override

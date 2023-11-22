@@ -52,8 +52,8 @@ public class SetvcCmd extends AdminCommand {
         else if (list.size() > 1)
             event.replyWarning(FormatUtil.listOfVChannels(list, event.getArgs()));
         else {
-            s.setVoiceChannel(list.get(0));
-            event.replySuccess(" Music can now only be played in " + list.get(0).getAsMention());
+            s.setVoiceChannel(list.getFirst());
+            event.replySuccess(" Music can now only be played in " + list.getFirst().getAsMention());
         }
     }
 }

@@ -49,7 +49,7 @@ public class SkipCmd extends MusicCommand {
             return;
         }
         handler.getQueue().skip(index - 1);
-        event.replySuccess(" Skipped to **" + handler.getQueue().get(0).getTrack().getInfo().title + "**");
+        event.replySuccess(" Skipped to **" + handler.getQueue().peek().getTrack().getInfo().title + "**");
         handler.getPlayer().stopTrack();
     }
 }
