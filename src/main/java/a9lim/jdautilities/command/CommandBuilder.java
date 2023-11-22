@@ -38,7 +38,6 @@ public class CommandBuilder {
     private Permission[] botPermissions = new Permission[0];
     private final List<String> aliases = new LinkedList<>();
     private final List<Command> children = new LinkedList<>();
-    private boolean usesTopicTags = true;
     private Command.CooldownScope cooldownScope = Command.CooldownScope.USER;
 
     public CommandBuilder setName(String n) {
@@ -153,11 +152,6 @@ public class CommandBuilder {
         return this;
     }
 
-    public CommandBuilder setUsesTopicTags(boolean b) {
-        usesTopicTags = b;
-        return this;
-    }
-
     public CommandBuilder setCooldownScope(Command.CooldownScope scope) {
         cooldownScope = scope != null ? scope : Command.CooldownScope.USER;
         return this;
@@ -177,7 +171,6 @@ public class CommandBuilder {
             guildOnly, requiredRole, ownerCommand, cooldown,
             userPermissions, botPermissions, aliases.toArray(new String[0]),
             children.toArray(new Command[0]),
-                usesTopicTags,
             cooldownScope, hidden) {
             @Override
             protected void execute(CommandEvent event) {
@@ -191,7 +184,6 @@ public class CommandBuilder {
                      String args, boolean b1, String role,
                      boolean b2, int c, Permission[] uperms,
                      Permission[] bperms, String[] al, Command[] commands,
-                     boolean b3,
                      CooldownScope scope, boolean b4) {
             name = n;
             help = h;
@@ -205,7 +197,6 @@ public class CommandBuilder {
             botPermissions = bperms;
             aliases = al;
             children = commands;
-            usesTopicTags = b3;
             cooldownScope = scope;
             hidden = b4;
         }

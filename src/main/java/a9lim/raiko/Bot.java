@@ -128,7 +128,6 @@ public class Bot {
                 if (ah != null) {
                     ah.stopAndClear();
                     ah.getPlayer().destroy();
-//                    nowplaying.updateTopic(g.getIdLong(), ah, true);
                 }
             });
             jda.shutdown();

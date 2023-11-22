@@ -85,7 +85,7 @@ public abstract class DirectionalMenu extends Menu{
         } else if (emoji.equals(BIG_LEFT)) {
             if (newPageNum > 1 || wrapPageEnds) {
                 for (int i = 1; (newPageNum > 1 || wrapPageEnds) && i < bulkSkipNumber; i++) {
-                    if (newPageNum == 1 && wrapPageEnds)
+                    if (newPageNum == 1)
                         newPageNum = pages + 1;
                     newPageNum--;
                 }
@@ -93,7 +93,7 @@ public abstract class DirectionalMenu extends Menu{
         } else if (emoji.equals(BIG_RIGHT)) {
             if (newPageNum < pages || wrapPageEnds) {
                 for (int i = 1; (newPageNum < pages || wrapPageEnds) && i < bulkSkipNumber; i++) {
-                    if (newPageNum == pages && wrapPageEnds)
+                    if (newPageNum == pages)
                         newPageNum = 0;
                     newPageNum++;
                 }
@@ -194,7 +194,7 @@ public abstract class DirectionalMenu extends Menu{
                 String rawContent = mre.getMessage().getContentRaw().trim();
 
                 final int targetPage = (rawContent.equalsIgnoreCase(leftText) && (1 < pageNum || wrapPageEnds)) ?
-                        (pageNum - 1 < 1 && wrapPageEnds ? pages : pageNum - 1) :
+                        (pageNum - 1 < 1 ? pages : pageNum - 1) :
                         ((rawContent.equalsIgnoreCase(rightText) && (pageNum < pages || wrapPageEnds)) ?
                                 pageNum + 1 > pages && wrapPageEnds ? 1 : pageNum + 1 :
                                 Integer.parseInt(rawContent));
