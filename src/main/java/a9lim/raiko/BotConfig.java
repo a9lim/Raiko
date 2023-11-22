@@ -18,6 +18,7 @@
 
 package a9lim.raiko;
 
+import a9lim.jdautilities.command.AliasSource;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
@@ -33,7 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-public class BotConfig {
+public class BotConfig implements AliasSource {
     private final Prompt prompt;
     private final static String CONTEXT = "Config";
     private final static String START_TOKEN = "/// START OF RAIKO CONFIG ///";

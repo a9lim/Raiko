@@ -69,7 +69,8 @@ public class PlayCmd extends MusicCommand {
                     .append("\n`").append(event.getClient().getDefaultPrefix()).append(name).append(" <song title>` - plays the first result from Youtube")
                     .append("\n`").append(event.getClient().getDefaultPrefix()).append(name).append(" <URL>` - plays the provided song, playlist, or stream");
             for (Command cmd : children)
-                builder.append("\n`").append(event.getClient().getDefaultPrefix()).append(name).append(" ").append(cmd.getName()).append(" ").append(cmd.getArguments()).append("` - ").append(cmd.getHelp());
+                builder.append("\n`").append(event.getClient().getDefaultPrefix()).append(name).append(" ")
+                        .append(cmd.getName()).append(" ").append(cmd.getArguments()).append("` - ").append(cmd.getHelp());
             event.replyWarning(builder.toString());
             return;
         }
@@ -110,12 +111,10 @@ public class PlayCmd extends MusicCommand {
                     .setChoices(LOAD, CANCEL)
                     .setEventWaiter(bot.getWaiter())
                     .setTimeout(30, TimeUnit.SECONDS)
-                    .setAction(re -> {
-                        if (re.equals(LOAD))
-                            m.editMessage(addMsg + "\n" + event.getClient().getSuccess() + " Loaded **" + loadPlaylist(playlist, track) + "** additional tracks!").queue();
-                        else
-                            m.editMessage(addMsg).queue();
-                    }).setFinalAction(m -> {
+                    .setAction(re -> m.editMessage(re.equals(LOAD) ?
+                                    (addMsg + "\n" + event.getClient().getSuccess() + " Loaded **" + loadPlaylist(playlist, track) + "** additional tracks!") :
+                                    addMsg).queue())
+                    .setFinalAction(m -> {
                         try {
                             m.clearReactions().queue();
                         } catch (PermissionException ignore) {}
@@ -128,8 +127,7 @@ public class PlayCmd extends MusicCommand {
             AtomicInteger count = new AtomicInteger();
             playlist.getTracks().forEach((track) -> {
                 if (!bot.getConfig().isTooLong(track) && !track.equals(exclude)) {
-                    AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
-                    handler.addTrack(new QueuedTrack(track, event.getAuthor()));
+                    ((AudioHandler) event.getGuild().getAudioManager().getSendingHandler()).addTrack(new QueuedTrack(track, event.getAuthor()));
                     count.getAndIncrement();
                 }
             });
@@ -172,11 +170,10 @@ public class PlayCmd extends MusicCommand {
 
         @Override
         public void noMatches() {
-            if (ytsearch) {
+            if (ytsearch)
                 m.editMessage(FormatUtil.filter(event.getClient().getWarning() + " No results found for `" + event.getArgs() + "`.")).queue();
-                return;
-            }
-            bot.getPlayerManager().loadItemOrdered(event.getGuild(), "ytsearch:" + event.getArgs(), new ResultHandler(m, event, true));
+            else
+                bot.getPlayerManager().loadItemOrdered(event.getGuild(), "ytsearch:" + event.getArgs(), new ResultHandler(m, event, true));
         }
 
         @Override
@@ -207,9 +204,9 @@ public class PlayCmd extends MusicCommand {
                 event.replyError("I could not find `" + event.getArgs() + ".txt` in the Playlists folder.");
                 return;
             }
-            event.getChannel().sendMessage(loadingEmoji + " Loading playlist **" + event.getArgs() + "**... (" + playlist.getItems().size() + " items)").queue(m -> {
-                AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
-                playlist.loadTracks(bot.getPlayerManager(), (at) -> handler.addTrack(new QueuedTrack(at, event.getAuthor())), () -> {
+            event.getChannel().sendMessage(loadingEmoji + " Loading playlist **" + event.getArgs() + "**... (" + playlist.getItems().size() + " items)").queue(m ->
+                playlist.loadTracks(bot.getPlayerManager(), (at) -> ((AudioHandler) event.getGuild().getAudioManager().getSendingHandler())
+                        .addTrack(new QueuedTrack(at, event.getAuthor())), () -> {
                     StringBuilder builder = new StringBuilder(playlist.getTracks().isEmpty()
                             ? event.getClient().getWarning() + " No tracks were loaded!"
                             : event.getClient().getSuccess() + " Loaded **" + playlist.getTracks().size() + "** tracks!");
@@ -218,8 +215,7 @@ public class PlayCmd extends MusicCommand {
                     playlist.getErrors().forEach(err ->
                             builder.append("\n`[").append(err.getIndex() + 1).append("]` **").append(err.getItem()).append("**: ").append(err.getReason()));
                     m.editMessage(FormatUtil.filter(builder.length() > 2000 ? builder.append(" (...)").substring(0,1994) : builder.toString())).queue();
-                });
-            });
+                }));
         }
     }
 }

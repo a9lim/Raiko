@@ -138,11 +138,10 @@ public class TextAreaOutputStream extends OutputStream {
         public synchronized void run() {
             if (clear)
                 textArea.setText("");
-            values.stream().peek((val) -> curLength += val.length()).peek((val) -> {
+            values.stream().peek(val -> curLength += val.length()).peek(val -> {
                 if (val.endsWith(EOL1) || val.endsWith(EOL2)) {
-                    if (lengths.size() >= maxLines) {
+                    if (lengths.size() >= maxLines)
                         textArea.replaceRange("", 0, lengths.removeFirst());
-                    }
                     lengths.addLast(curLength);
                     curLength = 0;
                 }

@@ -108,8 +108,7 @@ public class SearchCmd extends MusicCommand {
                                 + "** (`" + FormatUtil.formatTime(track.getDuration()) + "`) " + (pos == 0 ? "to begin playing"
                                 : " to the queue at position " + pos));
                     })
-                    .setCancel((msg) -> {
-                    })
+                    .setCancel((msg) -> {})
                     .setUsers(event.getAuthor())
             ;
             for (int i = 0; i < 4 && i < playlist.getTracks().size(); i++) {

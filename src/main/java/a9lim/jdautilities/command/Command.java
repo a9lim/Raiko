@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 public abstract class Command implements Comparable<Command>{
     public static final Pattern COMPILE = Pattern.compile("\\s+");
 
-    protected static BotConfig aliasSource;
+    protected static AliasSource aliasSource;
 
     protected String name = "null";
 

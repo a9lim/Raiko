@@ -43,11 +43,12 @@ public class PlayerManager extends DefaultAudioPlayerManager {
     }
 
     public AudioHandler setUpHandler(Guild guild) {
-        if (guild.getAudioManager().getSendingHandler() != null)
-            return (AudioHandler) guild.getAudioManager().getSendingHandler();
+        AudioHandler handler = (AudioHandler) guild.getAudioManager().getSendingHandler();
+        if (handler != null)
+            return handler;
         AudioPlayer player = createPlayer();
         player.setVolume(bot.getSettingsManager().getSettings(guild).getVolume());
-        AudioHandler handler = new AudioHandler(this, guild, player);
+        handler = new AudioHandler(this, guild, player);
         player.addListener(handler);
         guild.getAudioManager().setSendingHandler(handler);
         return handler;
