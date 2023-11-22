@@ -2,7 +2,6 @@ package a9lim.raiko.commands;
 
 import a9lim.jdautilities.command.Command;
 import a9lim.raiko.Bot;
-import a9lim.raiko.BotConfig;
 
 public abstract class BotCommand extends Command {
     protected static Bot bot;
