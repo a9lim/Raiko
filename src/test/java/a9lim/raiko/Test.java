@@ -25,7 +25,64 @@ import java.util.Iterator;
 public class Test {
 
     public static void main(String[] args){
-        testMoveTo(10);
+        testSwap(20, 0, 20);
+        System.out.println();
+        testSwap(20, 1, 20);
+        System.out.println();
+        testSwap(20, 0, 20);
+        System.out.println();
+        testSwap(20, 0, 19);
+        System.out.println();
+        testSwap(20, 1, 19);
+    }
+
+    public static void testAdd(int len, int target){
+        DoubleDealingQueue<TestQueuable<Integer>> queue = new DoubleDealingQueue<>();
+        int[] arr = new int[len];
+        for(int i = 0; i < len; i++)
+            arr[i] = i+10;
+
+        for(int s: arr)
+            queue.add(new TestQueuable<>(s,0));
+
+//        queue.getDeque().forEach(t -> System.out.print(t + "  "));
+        System.out.println();
+        queue.add(target, new TestQueuable<>(99,0));
+        queue.getDeque().forEach(t -> System.out.print(t + "  "));
+
+    }
+
+    public static void testRemove(int len, int target){
+        DoubleDealingQueue<TestQueuable<Integer>> queue = new DoubleDealingQueue<>();
+        int[] arr = new int[len];
+        for(int i = 0; i < len; i++)
+            arr[i] = i+10;
+
+        for(int s: arr)
+            queue.add(new TestQueuable<>(s,0));
+
+        queue.getDeque().forEach(t -> System.out.print(t + "  "));
+        System.out.println();
+        System.out.println( "removed " + queue.remove(target) );
+        queue.getDeque().forEach(t -> System.out.print(t + "  "));
+
+    }
+
+    public static void testGet(int len){
+        DoubleDealingQueue<TestQueuable<Integer>> queue = new DoubleDealingQueue<>();
+        int[] arr = new int[len];
+        for(int i = 0; i < len; i++)
+            arr[i] = i+10;
+
+        for(int s: arr)
+            queue.add(new TestQueuable<>(s,0));
+
+        queue.getDeque().forEach(t -> System.out.print(t + "  "));
+        System.out.println();
+        System.out.println();
+
+        for(int i = 0; i < len; i++)
+            System.out.print(queue.get(i) + "  ");
 
     }
     public static void testShuffleMine(int len){
@@ -83,7 +140,7 @@ public class Test {
             System.out.print(i/(double)num + " ");
     }
 
-    public static void testMoveTo(int len){
+    public static void testMoveTo(int len, int a, int b){
         DoubleDealingQueue<TestQueuable<Integer>> queue = new DoubleDealingQueue<>();
         int[] arr = new int[len];
         for(int i = 0; i < len; i++)
@@ -95,7 +152,24 @@ public class Test {
         queue.getDeque().forEach(t -> System.out.print(t + "  "));
 
         System.out.println();
-        queue.moveItem(4,7);
+        queue.moveItem(a,b);
+
+        queue.getDeque().forEach(t -> System.out.print(t + "  "));
+    }
+
+    public static void testSwap(int len, int a, int b){
+        DoubleDealingQueue<TestQueuable<Integer>> queue = new DoubleDealingQueue<>();
+        int[] arr = new int[len];
+        for(int i = 0; i < len; i++)
+            arr[i] = i+10;
+
+        for(int s: arr)
+            queue.add(new TestQueuable<>(s));
+
+        queue.getDeque().forEach(t -> System.out.print(t + "  "));
+
+        System.out.println();
+        queue.swap(a,b);
 
         queue.getDeque().forEach(t -> System.out.print(t + "  "));
     }

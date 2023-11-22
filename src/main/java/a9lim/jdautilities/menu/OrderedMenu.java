@@ -215,7 +215,7 @@ public class OrderedMenu extends Menu {
         if (text != null)
             mbuilder.setContent(text);
         StringBuilder sb = new StringBuilder();
-        if(description == null)
+        if(description != null)
             sb.append(description);
         int i = 0;
         for (String c : choices) {

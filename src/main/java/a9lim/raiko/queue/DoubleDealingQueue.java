@@ -21,7 +21,7 @@ package a9lim.raiko.queue;
 import java.util.*;
 
 public class DoubleDealingQueue<T extends Queueable> {
-    private final Deque<T> deque;
+    private Deque<T> deque;
 
     public DoubleDealingQueue(){
          deque = new ArrayDeque<>();
@@ -39,20 +39,22 @@ public class DoubleDealingQueue<T extends Queueable> {
         deque.push(item);
     }
 
-    public void add(int i, T item) {
-        if (i >= deque.size()) {
-            deque.add(item);
-            return;
-        }
-        if (i <= 0) {
+    public void add(int index, T item) {
+        ArrayDeque<T> helper;
+        if(index < deque.size()/2) {
+            helper = new ArrayDeque<>(index);
+            while(index-- > 0)
+                helper.push(deque.pop());
             deque.push(item);
-            return;
+            helper.forEach(deque::push);
+        } else {
+            int size = deque.size();
+            helper = new ArrayDeque<>(size - index);
+            while(index++ < size)
+                helper.push(deque.removeLast());
+            deque.add(item);
+            deque.addAll(helper);
         }
-        ArrayDeque<T> helper = new ArrayDeque<>(i);
-        for (; i > 0; i--)
-            helper.push(deque.pop());
-        deque.push(item);
-        helper.forEach(deque::push);
     }
 
     public int size() {
@@ -63,6 +65,10 @@ public class DoubleDealingQueue<T extends Queueable> {
         return deque.pop();
     }
 
+    public T popLast() {
+        return deque.removeLast();
+    }
+
     public boolean isEmpty() {
         return deque.isEmpty();
     }
@@ -71,17 +77,39 @@ public class DoubleDealingQueue<T extends Queueable> {
         return deque;
     }
 
+    public T peek() {
+        return deque.peek();
+    }
+
+    public T peekLast() {
+        return deque.peekLast();
+    }
+
     public T get(int index) {
-        Iterator<T> iterator = deque.iterator();
-        while (--index > 1)
-            iterator.next();
+        Iterator<T> iterator;
+        if(index < deque.size()/2) {
+            iterator = deque.iterator();
+            while (index-- > 0)
+                iterator.next();
+        } else {
+            iterator = deque.descendingIterator();
+            while (++index < deque.size())
+                iterator.next();
+        }
         return iterator.next();
     }
 
     public T remove(int index) {
-        Iterator<T> iterator = deque.iterator();
-        while (--index > 1)
-            iterator.next();
+        Iterator<T> iterator;
+        if(index < deque.size()/2) {
+            iterator = deque.iterator();
+            while (index-- > 0)
+                iterator.next();
+        } else {
+            iterator = deque.descendingIterator();
+            while (++index < deque.size())
+                iterator.next();
+        }
         T out = iterator.next();
         iterator.remove();
         return out;
@@ -131,7 +159,7 @@ public class DoubleDealingQueue<T extends Queueable> {
         ArrayList<T> out = new ArrayList<>(deque);
         Collections.shuffle(out);
         deque.clear();
-        out.forEach(deque::push);
+        deque.addAll(out);
     }
 
     public void skip(int number) {
@@ -145,23 +173,23 @@ public class DoubleDealingQueue<T extends Queueable> {
     }
 
     public T moveItem(int from, int to) {
-        int i;
+        int i = 0;
         ArrayDeque<T> helper = new ArrayDeque<>(to);
-        for (i = 0; i < from; i++)
+        while (i++ < from)
             helper.push(deque.pop());
         T B = deque.pop();
         if (to > from)
-            for (; i < to; i++)
+            while (i++ < to)
                 helper.push(deque.pop());
         else
-            for (; i > to; i--)
+            while (i-- > to)
                 deque.push(helper.pop());
         deque.push(B);
         helper.forEach(deque::push);
         return B;
     }
 
-    public void swap(int a, int b) {
+    public List<T> swap(int a, int b) {
         int i;
         if (b > a) {
             i = a;
@@ -169,18 +197,28 @@ public class DoubleDealingQueue<T extends Queueable> {
             b = i;
         }
         a--;
+        b++;
+        i = 0;
         ArrayDeque<T> helper = new ArrayDeque<>(a);
-        for (i = 0; i < b; i++)
+        while (++i < b)
             helper.push(deque.pop());
         T B = deque.pop();
-        for (; i < a; i++)
+        while (i++ < a)
             helper.push(deque.pop());
         T A = deque.pop();
         deque.push(B);
-        for (; i > b; i--)
+        while (--i > b)
             deque.push(helper.pop());
         deque.push(A);
         helper.forEach(deque::push);
+        List<T> out = new LinkedList<>();
+        out.add(A);
+        out.add(B);
+        return out;
+    }
+
+    public void reverse(){
+        deque = deque.reversed();
     }
 
     public String toString(){

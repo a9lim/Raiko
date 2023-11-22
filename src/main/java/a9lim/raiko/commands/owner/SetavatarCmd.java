@@ -36,15 +36,11 @@ public class SetavatarCmd extends OwnerCommand {
 
     @Override
     protected void execute(CommandEvent event) {
-        String url;
-        if (event.getArgs().isEmpty())
-            if (!event.getMessage().getAttachments().isEmpty() && event.getMessage().getAttachments().get(0).isImage())
-                url = event.getMessage().getAttachments().get(0).getUrl();
-            else
-                url = null;
-        else
-            url = event.getArgs();
-        InputStream s = OtherUtil.imageFromUrl(url);
+        InputStream s = OtherUtil.imageFromUrl(event.getArgs().isEmpty() ?
+                (!event.getMessage().getAttachments().isEmpty() && event.getMessage().getAttachments().getFirst().isImage() ?
+                        event.getMessage().getAttachments().getFirst().getUrl() :
+                        null) :
+                event.getArgs());
         if (s == null) {
             event.replyError(" Invalid or missing URL");
             return;

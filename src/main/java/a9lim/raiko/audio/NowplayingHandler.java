@@ -109,7 +109,7 @@ public class NowplayingHandler {
                 try {
                     // normally here if 'wait' was false, we'd want to queue, however,
                     // new discord ratelimits specifically limiting changing channel topics
-                    // mean we don't want a backlog of changes piling up, so if we hit a 
+                    // mean we don't want a backlog of changes piling up, so if we hit a
                     // ratelimit, we just won't change the topic this time
                     tchan.getManager().setTopic(text).complete(wait);
                 } catch(PermissionException | RateLimitedException ignore) {}
@@ -126,7 +126,7 @@ public class NowplayingHandler {
                 bot.resetGame();
         }
         // update channel topic if applicable
-        updateTopic(guildId, handler, false);
+//        updateTopic(guildId, handler, false);
     }
     
     public void onMessageDelete(Guild guild, long messageId) {

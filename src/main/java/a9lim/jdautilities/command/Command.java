@@ -93,7 +93,8 @@ public abstract class Command implements Comparable<Command>{
         }
 
         // is allowed check
-        if (event.isFromType(ChannelType.TEXT) && !isAllowed(event.getTextChannel())) {
+//        if (event.isFromType(ChannelType.TEXT) && !isAllowed(event.getTextChannel())) {
+        if (event.isFromType(ChannelType.TEXT)){
             terminate(event, "That command cannot be used in this channel!");
             return;
         }

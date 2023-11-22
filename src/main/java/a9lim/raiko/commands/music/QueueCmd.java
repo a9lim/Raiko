@@ -70,7 +70,7 @@ public class QueueCmd extends MusicCommand {
             MessageCreateData nowp = ah.getNowPlaying(event.getJDA());
             event.reply(new MessageCreateBuilder()
                     .setContent(event.getClient().getWarning() + " There is no music in the queue!")
-                    .setEmbeds((nowp == null ? ah.getNoMusicPlaying(event.getJDA()) : nowp).getEmbeds().get(0)).build()
+                    .setEmbeds((nowp == null ? ah.getNoMusicPlaying(event.getJDA()) : nowp).getEmbeds().getFirst()).build()
                     , m -> {
                 if (nowp != null)
                     bot.getNowplayingHandler().setLastNPMessage(m);

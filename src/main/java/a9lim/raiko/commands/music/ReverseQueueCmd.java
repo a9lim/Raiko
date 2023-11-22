@@ -1,5 +1,4 @@
 // Copyright 2023 Aidan Lim (a9lim) <aidanlim192@gmail.com>.
-// Copyright 2018 John Grosh (jagrosh) <john.a.grosh@gmail.com>.
 //
 // This file is part of Raiko.
 //
@@ -16,7 +15,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Raiko. If not, see <http://www.gnu.org/licenses/>.
 
-
 package a9lim.raiko.commands.music;
 
 import a9lim.jdautilities.command.CommandEvent;
@@ -25,32 +23,22 @@ import a9lim.raiko.audio.QueuedTrack;
 import a9lim.raiko.commands.MusicCommand;
 import a9lim.raiko.queue.DoubleDealingQueue;
 
-public class ShuffleCmd extends MusicCommand {
-    public ShuffleCmd() {
-        name = "shuffle";
-        help = "shuffles the queue";
-        arguments = "<MINE|ALL>";
-        beListening = true;
+public class ReverseQueueCmd extends MusicCommand {
+
+    public ReverseQueueCmd() {
+        name = "reverse";
+        help = "seija gaming";
         bePlaying = true;
     }
 
     @Override
     public void doCommand(CommandEvent event) {
         DoubleDealingQueue<QueuedTrack> queue = ((AudioHandler) event.getGuild().getAudioManager().getSendingHandler()).getQueue();
-        int s;
-        if ("mine".equalsIgnoreCase(event.getArgs())) {
-            if ((s = queue.shuffle(event.getAuthor().getIdLong())) < 2)
-                event.replyError("You don't have enough songs in the queue!");
-            else
-                event.replySuccess("You successfully shuffled your " + s + " entries.");
-        } else {
-            if ((s = queue.size()) < 2)
-                event.replyWarning("There aren't enough songs in the queue!");
-            else {
-                queue.shuffle();
-                event.replySuccess("You successfully shuffled all " + s + " entries.");
-            }
+        if (queue.size() < 2)
+            event.replyError("There is no music in the queue!");
+        else {
+            queue.reverse();
+            event.replySuccess("Queue Reversed!");
         }
     }
-
 }

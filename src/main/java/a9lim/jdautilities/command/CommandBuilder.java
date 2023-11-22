@@ -87,7 +87,7 @@ public class CommandBuilder {
     }
 
     public CommandBuilder setUserPermissions(Collection<Permission> permissions) {
-        userPermissions = permissions != null ? (Permission[]) permissions.toArray() : new Permission[0];
+        userPermissions = permissions != null ? permissions.toArray(new Permission[0]) : new Permission[0];
         return this;
     }
 
@@ -97,7 +97,7 @@ public class CommandBuilder {
     }
 
     public CommandBuilder setBotPermissions(Collection<Permission> permissions) {
-        botPermissions = permissions != null ? (Permission[]) permissions.toArray() : new Permission[0];
+        botPermissions = permissions != null ? permissions.toArray(new Permission[0]) : new Permission[0];
         return this;
     }
 
@@ -176,7 +176,8 @@ public class CommandBuilder {
         return new BlankCommand(name, help, category, arguments,
             guildOnly, requiredRole, ownerCommand, cooldown,
             userPermissions, botPermissions, aliases.toArray(new String[0]),
-            children.toArray(new Command[0]), usesTopicTags,
+            children.toArray(new Command[0]),
+                usesTopicTags,
             cooldownScope, hidden) {
             @Override
             protected void execute(CommandEvent event) {
@@ -190,7 +191,8 @@ public class CommandBuilder {
                      String args, boolean b1, String role,
                      boolean b2, int c, Permission[] uperms,
                      Permission[] bperms, String[] al, Command[] commands,
-                     boolean b3, CooldownScope scope, boolean b4) {
+                     boolean b3,
+                     CooldownScope scope, boolean b4) {
             name = n;
             help = h;
             category = cat;

@@ -69,7 +69,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
     private final boolean shutdownAutomatically;
     private final ScheduledExecutorService executor;
     private final AnnotatedModuleCompiler compiler;
-    private final GuildSettingsManager manager;
+    private final GuildSettingsManager<?> manager;
     private final MediaType mediaType = MediaType.parse("application/json");
 
     private CommandListener listener;
@@ -79,7 +79,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
     public CommandClientImpl(String inownerId, String[] incoOwnerIds, List<String> inprefix, Activity inactivity, OnlineStatus instatus, String inserverInvite,
                              String insuccess, String inwarning, String inerror, String incarbonKey, String inbotsKey, List<Command> incommands,
                              boolean inshutdownAutomatically, ScheduledExecutorService inexecutor,
-                             int linkedCacheSize, AnnotatedModuleCompiler incompiler, GuildSettingsManager inmanager) {
+                             int linkedCacheSize, AnnotatedModuleCompiler incompiler, GuildSettingsManager<?> inmanager) {
         Checks.check(inownerId != null, "Owner ID was set null or not set! Please provide an User ID to register as the owner!");
 
         if (SafeIdUtil.badId(inownerId))
@@ -310,7 +310,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <M extends GuildSettingsManager> M getSettingsManager() {
+    public <M extends GuildSettingsManager<?>> M getSettingsManager() {
         return (M) manager;
     }
 
