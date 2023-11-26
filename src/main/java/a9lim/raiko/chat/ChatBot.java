@@ -28,6 +28,8 @@ import org.json.JSONObject;
 import java.util.concurrent.TimeUnit;
 
 public class ChatBot {
+
+    // HttpClient with long wait times because gpt often takes a while
     private final OkHttpClient client = new OkHttpClient.Builder()
             .callTimeout(10, TimeUnit.MINUTES)
                 .readTimeout(10, TimeUnit.MINUTES)
@@ -41,6 +43,8 @@ public class ChatBot {
     private boolean cheap;
     private final String apiKey;
     private final MediaType mediaType = MediaType.parse("application/json");
+
+    // Set up details with config
     public ChatBot(BotConfig c) {
         apiKey = c.getCgpttoken();
         cheap = c.getModel();
@@ -48,23 +52,24 @@ public class ChatBot {
         clearHead();
     }
 
+    // Get model in use
     public String getModel(){
         return (cheap ? "gpt-3.5-turbo-1106" : "gpt-4-1106-preview");
     }
 
-    // chat function
+    // Function to chat
     public String chat(String s, long l) {
-        // append and json-ize new prompt to previous reply, escaping forbidden characters (\n and ")
+        // Append and json-ize new prompt to previous reply, escaping forbidden characters (\n and ")
         temp += "{\"role\": \"user\", \"content\": \"" + s.replace("\n","\\n").replace("\"", "\\\"") + "\"}";
 
-        // if chat history is full, clear out space
+        // If chat history is full, clear out space
         if(chathist.size() == capacity)
             chathist.pop();
 
-        // add new prompt to chat history
+        // Add new prompt to chat history
         chathist.add(new QueuedChat(temp,l));
         try {
-            // send full request to openai, and process and save result as reply
+            // Send full request to openai, and process and save result as reply
             String reply = (new JSONObject(client.newCall(new Request.Builder()
                             .url("https://api.openai.com/v1/chat/completions")
                             .post(RequestBody.create(head + chathist + "]}",mediaType))
@@ -75,13 +80,13 @@ public class ChatBot {
                     .getJSONArray("choices").getJSONObject(0)
                     .getJSONObject("message").getString("content"));
 
-            // save and json-ize new reply, escaping forbidden characters (\n and ")
+            // Save and json-ize new reply, escaping forbidden characters (\n and ")
             temp = ", {\"role\": \"assistant\", \"content\": \"" + reply.replace("\n","\\n").replace("\"", "\\\"") + "\"}, ";
 
-            // return reply
+            // Return reply
             return reply;
         } catch (Exception e){
-            // if something goes wrong, clear chat history and return error
+            // If something goes wrong, clear chat history in case some message was causing the issue and return error
             System.out.println(e);
             clear();
             return "Huh?";

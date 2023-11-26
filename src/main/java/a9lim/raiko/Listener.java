@@ -42,7 +42,7 @@ public class Listener extends ListenerAdapter {
             log.warn("This bot is not on any guilds! Use the following link to add the bot to your guilds!");
             log.warn(event.getJDA().getInviteUrl(Raiko.RECOMMENDED_PERMS));
         }
-        event.getJDA().getGuilds().forEach((guild) -> {
+        event.getJDA().getGuilds().forEach(guild -> {
             try {
                 VoiceChannel vc = bot.getSettingsManager().getSettings(guild).getVoiceChannel(guild);
                 if (bot.getSettingsManager().getSettings(guild).getDefaultPlaylist() != null

@@ -23,7 +23,7 @@ import net.dv8tion.jda.api.Permission;
 
 public abstract class AdminCommand extends Command {
     public AdminCommand() {
-        category = new Category("Admin", event -> event.getAuthor().getId().equals(event.getClient().getOwnerId()) || event.getGuild() == null || event.getMember().hasPermission(Permission.MANAGE_SERVER));
+        category = new Category("Admin", event -> event.getAuthor().getIdLong() == event.getClient().getOwnerId() || event.getGuild() == null || event.getMember().hasPermission(Permission.MANAGE_SERVER));
         guildOnly = true;
     }
 }

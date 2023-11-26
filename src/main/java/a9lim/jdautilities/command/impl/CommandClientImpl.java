@@ -20,7 +20,6 @@ package a9lim.jdautilities.command.impl;
 
 import a9lim.jdautilities.command.*;
 import a9lim.jdautilities.commons.utils.FixedSizeCache;
-import a9lim.jdautilities.commons.utils.SafeIdUtil;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
@@ -58,8 +57,9 @@ public class CommandClientImpl implements CommandClient, EventListener {
     private final OffsetDateTime start;
     private final Activity activity;
     private final OnlineStatus status;
-    private final String[] coOwnerIds;
-    private final String ownerId, serverInvite, success, warning, error, botsKey, carbonKey, defaultprefix;
+    private final long[] coOwnerIds;
+    private final long ownerId;
+    private final String serverInvite, success, warning, error, botsKey, carbonKey, defaultprefix;
     private final List<String> prefixes;
     private final HashMap<String, Integer> uses;
     private final HashMap<String, Command> commandIndex;
@@ -76,18 +76,17 @@ public class CommandClientImpl implements CommandClient, EventListener {
     private int totalGuilds;
     private String helpword;
 
-    public CommandClientImpl(String inownerId, String[] incoOwnerIds, List<String> inprefix, Activity inactivity, OnlineStatus instatus, String inserverInvite,
+    public CommandClientImpl(long inownerId, long[] incoOwnerIds, List<String> inprefix, Activity inactivity, OnlineStatus instatus, String inserverInvite,
                              String insuccess, String inwarning, String inerror, String incarbonKey, String inbotsKey, List<Command> incommands,
                              boolean inshutdownAutomatically, ScheduledExecutorService inexecutor,
                              int linkedCacheSize, AnnotatedModuleCompiler incompiler, GuildSettingsManager<?> inmanager) {
-        Checks.check(inownerId != null, "Owner ID was set null or not set! Please provide an User ID to register as the owner!");
 
-        if (SafeIdUtil.badId(inownerId))
+        if (inownerId < 0)
             LOG.warn(String.format("The provided Owner ID (%s) was found unsafe! Make sure ID is a non-negative long!", inownerId));
 
         if (incoOwnerIds != null) {
-            for (String coOwnerId : incoOwnerIds) {
-                if (SafeIdUtil.badId(coOwnerId))
+            for (long coOwnerId : incoOwnerIds) {
+                if (coOwnerId < 0)
                     LOG.warn(String.format("The provided CoOwner ID (%s) was found unsafe! Make sure ID is a non-negative long!", coOwnerId));
             }
         }
@@ -231,31 +230,16 @@ public class CommandClientImpl implements CommandClient, EventListener {
     }
 
     @Override
-    public String getOwnerId() {
+    public long getOwnerId() {
         return ownerId;
     }
 
     @Override
-    public long getOwnerIdLong() {
-        return Long.parseLong(ownerId);
-    }
-
-    @Override
-    public String[] getCoOwnerIds() {
-        return coOwnerIds;
-    }
-
-    @Override
-    public long[] getCoOwnerIdsLong() {
+    public long[] getCoOwnerIds() {
         // Thought about using java.util.Arrays#setAll(T[], IntFunction<T>)
         // here, but as it turns out it's actually the same thing as this but
         // it throws an error if null. Go figure.
-        if (coOwnerIds == null)
-            return null;
-        long[] ids = new long[coOwnerIds.length];
-        for (int i = 0; i < ids.length; i++)
-            ids[i] = Long.parseLong(coOwnerIds[i]);
-        return ids;
+        return coOwnerIds;
     }
 
     @Override
@@ -347,7 +331,8 @@ public class CommandClientImpl implements CommandClient, EventListener {
             event.getJDA().shutdown();
             return;
         }
-        event.getJDA().getPresence().setPresence(status == null ? OnlineStatus.ONLINE : status,
+        // todo: look at this
+        event.getJDA().getPresence().setPresence(status,
             activity == null ? null : "default".equals(activity.getName()) ? Activity.playing("Type " + defaultprefix + helpword) : activity);
 
         // Start SettingsManager if necessary

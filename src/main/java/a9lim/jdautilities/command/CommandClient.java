@@ -57,13 +57,9 @@ public interface CommandClient {
 
     int getCommandUses(String name);
 
-    String getOwnerId();
+    long getOwnerId();
 
-    long getOwnerIdLong();
-
-    String[] getCoOwnerIds();
-
-    long[] getCoOwnerIdsLong();
+    long[] getCoOwnerIds();
 
     String getSuccess();
 

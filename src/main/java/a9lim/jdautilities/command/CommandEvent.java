@@ -365,16 +365,15 @@ public class CommandEvent {
     }
 
     public boolean isOwner() {
-        if (event.getAuthor().getId().equals(client.getOwnerId()))
+        if (event.getAuthor().getIdLong() == client.getOwnerId())
             return true;
         if (client.getCoOwnerIds() == null)
             return false;
-        for (String id : client.getCoOwnerIds())
-            if (id.equals(event.getAuthor().getId()))
+        for (long id : client.getCoOwnerIds())
+            if (id == event.getAuthor().getIdLong())
                 return true;
         return false;
     }
-
 
     // shortcuts
 

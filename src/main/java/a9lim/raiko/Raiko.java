@@ -18,8 +18,10 @@
 
 package a9lim.raiko;
 
+import a9lim.jdautilities.command.Command;
 import a9lim.jdautilities.command.CommandClientBuilder;
 import a9lim.jdautilities.commons.waiter.EventWaiter;
+import a9lim.raiko.chat.ChatBot;
 import a9lim.raiko.commands.BotCommand;
 import a9lim.raiko.commands.ChatCommand;
 import a9lim.raiko.commands.admin.PrefixCmd;
@@ -87,12 +89,11 @@ public class Raiko {
         aboutCmd.setReplacementCharacter("\uD83C\uDFB6"); // 🎶
 
         BotCommand.setBot(bot);
-        ChatCommand.setChatBot(bot.getChatBot());
 
         // set up the command client
         CommandClientBuilder cb = new CommandClientBuilder()
                 .setPrefixes(config.getPrefixes())
-                .setOwnerId(Long.toString(config.getOwnerId()))
+                .setOwnerId(config.getOwnerId())
                 .setEmojis(config.getSuccess(), config.getWarning(), config.getError())
                 .setLinkedCacheSize(200)
                 .setGuildSettingsManager(settings)
@@ -129,25 +130,21 @@ public class Raiko {
                         new SetgameCmd(),
                         new SetnameCmd(),
                         new SetstatusCmd(),
-                        new ShutdownCmd(),
+                        new ShutdownCmd());
 
-                        new ChatCmd(),
-                        new ClearChatCmd(),
-                        new ToggleModelCmd(),
-                        new RemoveChatCmd(),
-                        new RewindChatCmd(),
-                        new SetPrepromptCmd()
-                );
-        boolean nogame = false;
-        if (config.getStatus() != OnlineStatus.UNKNOWN)
-            cb.setStatus(config.getStatus());
-        if (config.getGame() == null)
-            cb.useDefaultGame();
-        else if ("none".equalsIgnoreCase(config.getGame().getName())) {
-            cb.setActivity(null);
-            nogame = true;
-        } else
-            cb.setActivity(config.getGame());
+        if(config.getCgpttoken() != null) {
+            ChatCommand.setChatBot(new ChatBot(config));
+            cb.addCommands(
+                    new ChatCmd(),
+                    new ClearChatCmd(),
+                    new ToggleModelCmd(),
+                    new RemoveChatCmd(),
+                    new RewindChatCmd(),
+                    new SetPrepromptCmd());
+        }
+
+        cb.setStatus(config.getStatus());
+        cb.setActivity(config.getGame());
 
         if (!prompt.isNoGUI()) {
             try {
@@ -166,9 +163,8 @@ public class Raiko {
             bot.setJDA( JDABuilder.create(config.getToken(), Arrays.asList(INTENTS))
                     .enableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE)
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.ONLINE_STATUS, CacheFlag.SCHEDULED_EVENTS)
-                    .setActivity(nogame ? null : Activity.playing("loading..."))
-                    .setStatus(config.getStatus() == OnlineStatus.INVISIBLE || config.getStatus() == OnlineStatus.OFFLINE
-                            ? OnlineStatus.INVISIBLE : OnlineStatus.DO_NOT_DISTURB)
+//                    .setActivity(config.getGame())
+//                    .setStatus(config.getStatus())
                     .addEventListeners(cb.build(), waiter, new Listener(bot))
                     .setBulkDeleteSplittingEnabled(true).build() );
         } catch (IllegalArgumentException ex) {
