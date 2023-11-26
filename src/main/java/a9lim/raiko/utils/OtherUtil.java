@@ -67,8 +67,10 @@ public class OtherUtil {
     }
 
     public static Activity parseGame(String game) {
-        if (game == null || game.trim().isEmpty() || "default".equalsIgnoreCase(game.trim()))
+        if (game == null || game.isBlank())
             return null;
+        if("default".equalsIgnoreCase(game.trim()))
+            return Activity.playing("default");
         String lower = game.toLowerCase();
         if (lower.startsWith("playing"))
             return Activity.playing(makeNonEmpty(game.substring(7).trim()));
@@ -92,7 +94,7 @@ public class OtherUtil {
     }
 
     public static OnlineStatus parseStatus(String status) {
-        if (status == null || status.trim().isEmpty())
+        if (status == null || status.isBlank())
             return OnlineStatus.ONLINE;
         OnlineStatus st = OnlineStatus.fromKey(status);
         return st == null ? OnlineStatus.ONLINE : st;

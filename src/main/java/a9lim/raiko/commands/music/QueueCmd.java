@@ -27,6 +27,7 @@ import a9lim.jdautilities.menu.Paginator;
 import a9lim.raiko.audio.AudioHandler;
 import a9lim.raiko.audio.QueuedTrack;
 import a9lim.raiko.commands.MusicCommand;
+import a9lim.raiko.queue.DoubleDealingQueue;
 import a9lim.raiko.settings.Settings;
 import a9lim.raiko.utils.GuildUtil;
 import net.dv8tion.jda.api.Permission;
@@ -65,8 +66,8 @@ public class QueueCmd extends MusicCommand {
             pagenum = Integer.parseInt(event.getArgs());
         } catch (NumberFormatException ignore) {}
         AudioHandler ah = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
-        Deque<QueuedTrack> deque = ah.getQueue().getDeque();
-        if (deque.isEmpty()) {
+        DoubleDealingQueue<QueuedTrack> queue = ah.getQueue();
+        if (queue.isEmpty()) {
             MessageCreateData nowp = ah.getNowPlaying(event.getJDA());
             event.reply(new MessageCreateBuilder()
                     .setContent(event.getClient().getWarning() + " There is no music in the queue!")
@@ -77,9 +78,9 @@ public class QueueCmd extends MusicCommand {
             });
             return;
         }
-        String[] songs = new String[deque.size()];
+        String[] songs = new String[queue.size()];
         long total = 0;
-        Iterator<QueuedTrack> iterator = deque.iterator();
+        Iterator<QueuedTrack> iterator = queue.getDeque().iterator();
         for (int i = 0; i < songs.length; i++) {
             QueuedTrack track = iterator.next();
             total += track.getTrack().getDuration();

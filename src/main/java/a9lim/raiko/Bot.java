@@ -44,8 +44,6 @@ public class Bot {
     private final PlaylistLoader playlists;
     private final NowplayingHandler nowplaying;
     private final AloneInVoiceHandler aloneInVoiceHandler;
-    private final ChatBot chatBot;
-
     private boolean shuttingDown;
     private JDA jda;
     private GUI gui;
@@ -57,12 +55,11 @@ public class Bot {
         playlists = new PlaylistLoader(inconfig);
         threadpool = Executors.newSingleThreadScheduledExecutor();
         players = new PlayerManager(this);
-        players.init();
+        players.init(inconfig);
         nowplaying = new NowplayingHandler(this);
         nowplaying.init();
         aloneInVoiceHandler = new AloneInVoiceHandler(this);
         aloneInVoiceHandler.init();
-        chatBot = new ChatBot(inconfig);
     }
 
     public BotConfig getConfig() {
@@ -96,9 +93,6 @@ public class Bot {
     public AloneInVoiceHandler getAloneInVoiceHandler() {
         return aloneInVoiceHandler;
     }
-    public ChatBot getChatBot() {
-        return chatBot;
-    }
 
     public JDA getJDA() {
         return jda;
@@ -111,7 +105,7 @@ public class Bot {
     }
 
     public void resetGame() {
-        Activity game = config.getGame() == null || "none".equalsIgnoreCase(config.getGame().getName()) ? null : config.getGame();
+        Activity game = config.getGame();
         if (!Objects.equals(jda.getPresence().getActivity(), game))
             jda.getPresence().setActivity(game);
     }

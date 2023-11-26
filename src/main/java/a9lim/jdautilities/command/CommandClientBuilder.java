@@ -31,8 +31,9 @@ import java.util.concurrent.ScheduledExecutorService;
 public class CommandClientBuilder {
     private Activity activity = Activity.playing("default");
     private OnlineStatus status = OnlineStatus.ONLINE;
-    private String ownerId, serverInvite, success, warning, error, carbonKey, botsKey;
-    private String[] coOwnerIds;
+    private String serverInvite, success, warning, error, carbonKey, botsKey;
+    private long ownerId;
+    private long[] coOwnerIds;
     private List<String> prefixes;
     private final List<Command> commands = new LinkedList<>();
     private CommandListener listener;
@@ -52,12 +53,12 @@ public class CommandClientBuilder {
         return client;
     }
 
-    public CommandClientBuilder setOwnerId(String o) {
+    public CommandClientBuilder setOwnerId(long o) {
         ownerId = o;
         return this;
     }
 
-    public CommandClientBuilder setCoOwnerIds(String... co) {
+    public CommandClientBuilder setCoOwnerIds(long... co) {
         coOwnerIds = co;
         return this;
     }
@@ -86,11 +87,6 @@ public class CommandClientBuilder {
 
     public CommandClientBuilder setActivity(Activity a) {
         activity = a;
-        return this;
-    }
-
-    public CommandClientBuilder useDefaultGame() {
-        activity = Activity.playing("default");
         return this;
     }
 

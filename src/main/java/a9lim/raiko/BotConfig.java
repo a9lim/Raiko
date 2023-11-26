@@ -43,7 +43,7 @@ public class BotConfig implements AliasSource {
     private Path path;
     private String token, playlistsFolder,
             successEmoji, warningEmoji, errorEmoji, loadingEmoji, searchingEmoji,
-            cgpttoken, preprompt;
+            cgpttoken, preprompt, ytemail, ytpw, nndemail, nndpw;
     private List<String> prefixes;
     private boolean stayInChannel, songInGame, npImages,
             model, valid;
@@ -86,9 +86,15 @@ public class BotConfig implements AliasSource {
             aloneTimeUntilStop = config.getLong("alonetimeuntilstop");
             playlistsFolder = config.getString("playlistsfolder");
             aliases = config.getConfig("aliases");
-            cgpttoken = config.getString("gpttoken");
+
+            cgpttoken = noneblank(config.getString("gpttoken"));
             model = config.getBoolean("cheapmodel");
             preprompt = config.getString("preprompt");
+
+            ytemail = noneblank(config.getString("ytemail"));
+            ytpw = noneblank(config.getString("ytpw"));
+            nndemail = noneblank(config.getString("nndemail"));
+            nndpw = noneblank(config.getString("nndpw"));
 
             // we may need to write a new config file
             boolean write = false;
@@ -101,19 +107,6 @@ public class BotConfig implements AliasSource {
                         https://github.com/jagrosh/MusicBot/wiki/Getting-a-Bot-Token.
                         Bot Token:\s""");
                 if (token == null) {
-                    prompt.alert(Prompt.Level.WARNING, CONTEXT, "No token provided! Exiting.\n\nConfig Location: " + path.toAbsolutePath());
-                    return;
-                } else {
-                    write = true;
-                }
-            }
-
-            // validate chatgpt token
-            if (cgpttoken == null || cgpttoken.isEmpty() || "CGPTTOKEN".equalsIgnoreCase(cgpttoken)) {
-                cgpttoken = prompt.prompt("""
-                        Please provide an OpenAI token.
-                        OpenAI Token:\s""");
-                if (cgpttoken == null) {
                     prompt.alert(Prompt.Level.WARNING, CONTEXT, "No token provided! Exiting.\n\nConfig Location: " + path.toAbsolutePath());
                     return;
                 } else {
@@ -150,6 +143,8 @@ public class BotConfig implements AliasSource {
             prompt.alert(Prompt.Level.ERROR, CONTEXT, ex + ": " + ex.getMessage() + "\n\nConfig Location: " + path.toAbsolutePath());
         }
     }
+
+    //todo: fix this
 
     private void writeToFile() {
         byte[] bytes = loadDefaultConfig().replace("BOT_TOKEN_HERE", token)
@@ -194,6 +189,9 @@ public class BotConfig implements AliasSource {
         }
     }
 
+    public static String noneblank(String s){
+        return "none".equalsIgnoreCase(s) || s.isBlank() ? null : s;
+    }
     public boolean isValid() {
         return valid;
     }
@@ -292,5 +290,21 @@ public class BotConfig implements AliasSource {
 
     public String getPreprompt() {
         return preprompt;
+    }
+
+    public String getYTEmail() {
+        return ytemail;
+    }
+
+    public String getYTPW() {
+        return ytpw;
+    }
+
+    public String getNNDEmail() {
+        return nndemail;
+    }
+
+    public String getNNDPW() {
+        return nndpw;
     }
 }

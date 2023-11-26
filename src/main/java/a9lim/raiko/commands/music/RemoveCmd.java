@@ -22,6 +22,7 @@ import a9lim.jdautilities.command.CommandEvent;
 import a9lim.raiko.audio.AudioHandler;
 import a9lim.raiko.audio.QueuedTrack;
 import a9lim.raiko.commands.MusicCommand;
+import a9lim.raiko.queue.DoubleDealingQueue;
 import net.dv8tion.jda.api.entities.User;
 
 public class RemoveCmd extends MusicCommand {
@@ -35,57 +36,57 @@ public class RemoveCmd extends MusicCommand {
 
     @Override
     public void doCommand(CommandEvent event) {
-        AudioHandler handler = (AudioHandler) event.getGuild().getAudioManager().getSendingHandler();
-        if (handler.getQueue().isEmpty()) {
+        DoubleDealingQueue<QueuedTrack> queue = ((AudioHandler) event.getGuild().getAudioManager().getSendingHandler()).getQueue();
+        if (queue.isEmpty()) {
             event.replyError("There is nothing in the queue!");
             return;
         }
-
         int pos;
-        if ("all".equalsIgnoreCase(event.getArgs())) {
-            pos = handler.getQueue().size();
-            handler.getQueue().clear();
-            if (pos == 0)
-                event.replyWarning("There are no songs in the queue!");
-            else
-                event.replySuccess("Successfully removed " + pos + " entries.");
-            return;
-        }
-        if ("mine".equalsIgnoreCase(event.getArgs())) {
-            if ((pos = handler.getQueue().removeAll(event.getAuthor().getIdLong())) == 0)
-                event.replyWarning("You don't have any songs in the queue!");
-            else
-                event.replySuccess("Successfully removed your " + pos + " entries.");
-            return;
-        }
-        try {
-            pos = Integer.parseInt(event.getArgs());
-        } catch (NumberFormatException e) {
-            QueuedTrack qt = handler.getQueue().getDeque().peek();
-            handler.getQueue().getDeque().pop();
-            User u;
-            try {
-                u = event.getJDA().getUserById(qt.getIdentifier());
-            } catch (Exception f) {
-                u = null;
+        switch(event.getArgs().toLowerCase()) {
+            case "all" -> {
+                pos = queue.size();
+                if (pos == 0)
+                    event.replyWarning("There are no songs in the queue!");
+                else {
+                    queue.clear();
+                    event.replySuccess("Successfully removed " + pos + " entries.");
+                }
             }
-            event.replySuccess("Removed **" + qt.getTrack().getInfo().title
-                    + "** from the queue (requested by " + (u == null ? "someone" : "**" + u.getName() + "**") + ")");
-            return;
+            case "mine" -> {
+                if ((pos = queue.removeAll(event.getAuthor().getIdLong())) == 0)
+                    event.replyWarning("You don't have any songs in the queue!");
+                else
+                    event.replySuccess("Successfully removed your " + pos + " entries.");
+            }
+            default -> {
+                try {
+                    pos = Integer.parseInt(event.getArgs());
+                } catch (NumberFormatException e) {
+                    QueuedTrack qt = queue.pop();
+                    User u;
+                    try {
+                        u = event.getJDA().getUserById(qt.getIdentifier());
+                    } catch (Exception f) {
+                        u = null;
+                    }
+                    event.replySuccess("Removed **" + qt.getTrack().getInfo().title
+                            + "** from the queue (requested by " + (u == null ? "someone" : "**" + u.getName() + "**") + ")");
+                    return;
+                }
+                if (pos < 1 || pos > queue.size()) {
+                    event.replyError("Position must be a valid integer between 1 and " + queue.size() + "!");
+                    return;
+                }
+                QueuedTrack qt = queue.remove(pos);
+                User u;
+                try {
+                    u = event.getJDA().getUserById(qt.getIdentifier());
+                } catch (Exception e) {
+                    u = null;
+                }
+                event.replySuccess("Removed **" + qt.getTrack().getInfo().title
+                        + "** from the queue (requested by " + (u == null ? "someone" : "**" + u.getName() + "**") + ")");
+            }
         }
-        if (pos < 1 || pos > handler.getQueue().size()) {
-            event.replyError("Position must be a valid integer between 1 and " + handler.getQueue().size() + "!");
-            return;
-        }
-        QueuedTrack qt = handler.getQueue().remove(pos);
-        User u;
-        try {
-            u = event.getJDA().getUserById(qt.getIdentifier());
-        } catch (Exception e) {
-            u = null;
-        }
-        event.replySuccess("Removed **" + qt.getTrack().getInfo().title
-                + "** from the queue (requested by " + (u == null ? "someone" : "**" + u.getName() + "**") + ")");
-
     }
 }

@@ -15,22 +15,26 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Raiko. If not, see <http://www.gnu.org/licenses/>.
 
-
 package a9lim.raiko.queue;
 
 import java.util.*;
 
+
+// Deque with a few extra features
 public class DoubleDealingQueue<T extends Queueable> {
     private Deque<T> deque;
 
+    // Standard constructor
     public DoubleDealingQueue(){
          deque = new ArrayDeque<>();
     }
 
+    // Known size constructor
     public DoubleDealingQueue(int i){
         deque = new ArrayDeque<>(i);
     }
 
+    // Normal Deque adders
     public void add(T item) {
         deque.add(item);
     }
@@ -39,6 +43,7 @@ public class DoubleDealingQueue<T extends Queueable> {
         deque.push(item);
     }
 
+    // Arbitrary index add
     public void add(int index, T item) {
         ArrayDeque<T> helper;
         if(index < deque.size()/2) {
@@ -48,35 +53,16 @@ public class DoubleDealingQueue<T extends Queueable> {
             deque.push(item);
             helper.forEach(deque::push);
         } else {
-            int size = deque.size();
-            helper = new ArrayDeque<>(size - index);
-            while(index++ < size)
+            index = deque.size() - index;
+            helper = new ArrayDeque<>(index);
+            while(index-- > 0)
                 helper.push(deque.removeLast());
             deque.add(item);
             deque.addAll(helper);
         }
     }
 
-    public int size() {
-        return deque.size();
-    }
-
-    public T pop() {
-        return deque.pop();
-    }
-
-    public T popLast() {
-        return deque.removeLast();
-    }
-
-    public boolean isEmpty() {
-        return deque.isEmpty();
-    }
-
-    public Deque<T> getDeque() {
-        return deque;
-    }
-
+    // Normal Deque getters
     public T peek() {
         return deque.peek();
     }
@@ -85,6 +71,7 @@ public class DoubleDealingQueue<T extends Queueable> {
         return deque.peekLast();
     }
 
+    // Arbitrary index get
     public T get(int index) {
         Iterator<T> iterator;
         if(index < deque.size()/2) {
@@ -99,6 +86,16 @@ public class DoubleDealingQueue<T extends Queueable> {
         return iterator.next();
     }
 
+    // Normal Deque removers
+    public T pop() {
+        return deque.pop();
+    }
+
+    public T popLast() {
+        return deque.removeLast();
+    }
+
+    // Arbitrary index remove
     public T remove(int index) {
         Iterator<T> iterator;
         if(index < deque.size()/2) {
@@ -115,6 +112,7 @@ public class DoubleDealingQueue<T extends Queueable> {
         return out;
     }
 
+    // Removal by identity
     public int removeAll(long identifier) {
         int count = 0;
         Iterator<T> iterator = deque.iterator();
@@ -126,10 +124,28 @@ public class DoubleDealingQueue<T extends Queueable> {
         return count;
     }
 
+    // Normal Deque methods
+    public int size() {
+        return deque.size();
+    }
+
+    public boolean isEmpty() {
+        return deque.isEmpty();
+    }
+
     public void clear() {
         deque.clear();
     }
 
+    public Deque<T> getDeque() {
+        return deque;
+    }
+
+    public void reverse(){
+        deque = deque.reversed();
+    }
+
+    // Shuffle by identity
     public int shuffle(long identifier) {
         ArrayDeque<Integer> iset = new ArrayDeque<>();
         ArrayList<T> out = new ArrayList<>();
@@ -155,6 +171,7 @@ public class DoubleDealingQueue<T extends Queueable> {
         return out.size();
     }
 
+    // Shuffle deque
     public void shuffle() {
         ArrayList<T> out = new ArrayList<>(deque);
         Collections.shuffle(out);
@@ -162,16 +179,19 @@ public class DoubleDealingQueue<T extends Queueable> {
         deque.addAll(out);
     }
 
+    // Remove first n elements
     public void skip(int number) {
         while (--number > 0)
             deque.pop();
     }
 
+    // Remove last n elements
     public void backskip(int number) {
         while (--number > 0)
             deque.removeLast();
     }
 
+    // Move within deque
     public T moveItem(int from, int to) {
         int i = 0;
         ArrayDeque<T> helper = new ArrayDeque<>(to);
@@ -189,6 +209,7 @@ public class DoubleDealingQueue<T extends Queueable> {
         return B;
     }
 
+    // Swap two elements
     public List<T> swap(int a, int b) {
         int i;
         if (b > a) {
@@ -215,10 +236,6 @@ public class DoubleDealingQueue<T extends Queueable> {
         out.add(A);
         out.add(B);
         return out;
-    }
-
-    public void reverse(){
-        deque = deque.reversed();
     }
 
     public String toString(){

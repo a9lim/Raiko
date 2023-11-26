@@ -18,13 +18,25 @@
 
 package a9lim.raiko.audio;
 
+import a9lim.raiko.BotConfig;
+import com.sedmelluq.discord.lavaplayer.container.MediaContainerRegistry;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.source.bandcamp.BandcampAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.beam.BeamAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.getyarn.GetyarnAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.nico.NicoAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.yamusic.YandexMusicAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import a9lim.raiko.Bot;
 import net.dv8tion.jda.api.entities.Guild;
-
 public class PlayerManager extends DefaultAudioPlayerManager {
     private final Bot bot;
 
@@ -32,10 +44,21 @@ public class PlayerManager extends DefaultAudioPlayerManager {
         bot = b;
     }
 
-    public void init() {
-        AudioSourceManagers.registerRemoteSources(this);
-        AudioSourceManagers.registerLocalSource(this);
-        source(YoutubeAudioSourceManager.class).setPlaylistPageCount(10);
+    public void init(BotConfig config) {
+        // custom sources
+        YoutubeAudioSourceManager yt = new YoutubeAudioSourceManager(true,config.getYTEmail(),config.getYTPW());
+        yt.setPlaylistPageCount(10);
+        registerSourceManager(yt);
+        registerSourceManager(new NicoAudioSourceManager(config.getNNDEmail(),config.getNNDPW()));
+        registerSourceManager(new YandexMusicAudioSourceManager(true));
+        registerSourceManager(SoundCloudAudioSourceManager.createDefault());
+        registerSourceManager(new BandcampAudioSourceManager());
+        registerSourceManager(new VimeoAudioSourceManager());
+        registerSourceManager(new TwitchStreamAudioSourceManager());
+        registerSourceManager(new BeamAudioSourceManager());
+        registerSourceManager(new GetyarnAudioSourceManager());
+        registerSourceManager(new HttpAudioSourceManager(MediaContainerRegistry.DEFAULT_REGISTRY));
+        registerSourceManager(new LocalAudioSourceManager(MediaContainerRegistry.DEFAULT_REGISTRY));
     }
 
     public Bot getBot() {

@@ -15,19 +15,20 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Raiko. If not, see <http://www.gnu.org/licenses/>.
 
-
 package a9lim.raiko.commands;
 
 import a9lim.jdautilities.command.Command;
 import a9lim.raiko.chat.ChatBot;
 
 public abstract class ChatCommand extends Command {
+    // Store the chatbot used by all chat commands
     protected static ChatBot chatBot;
     public ChatCommand(){
         guildOnly = true;
         category = new Category("Chat");
     }
 
+    // Setter
     public static void setChatBot(ChatBot c){
         chatBot = c;
     }

@@ -25,15 +25,8 @@ import java.util.Iterator;
 public class Test {
 
     public static void main(String[] args){
-        testSwap(20, 0, 20);
-        System.out.println();
-        testSwap(20, 1, 20);
-        System.out.println();
-        testSwap(20, 0, 20);
-        System.out.println();
-        testSwap(20, 0, 19);
-        System.out.println();
-        testSwap(20, 1, 19);
+        for(int i = 0; i < 21; i++)
+            testAdd(20,i);
     }
 
     public static void testAdd(int len, int target){
