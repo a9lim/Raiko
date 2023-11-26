@@ -18,7 +18,6 @@
 
 package a9lim.raiko;
 
-import a9lim.jdautilities.command.Command;
 import a9lim.jdautilities.command.CommandClientBuilder;
 import a9lim.jdautilities.commons.waiter.EventWaiter;
 import a9lim.raiko.chat.ChatBot;
@@ -29,6 +28,7 @@ import a9lim.raiko.commands.admin.SettcCmd;
 import a9lim.raiko.commands.admin.SetvcCmd;
 import a9lim.raiko.commands.chat.*;
 import a9lim.raiko.commands.general.AboutCmd;
+import a9lim.raiko.commands.general.EchoCmd;
 import a9lim.raiko.commands.general.PingCmd;
 import a9lim.raiko.commands.general.SettingsCmd;
 import a9lim.raiko.commands.music.*;
@@ -37,9 +37,7 @@ import a9lim.raiko.entities.Prompt;
 import a9lim.raiko.gui.GUI;
 import a9lim.raiko.settings.SettingsManager;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -100,6 +98,7 @@ public class Raiko {
                 .addCommands(aboutCmd,
                         new PingCmd(),
                         new SettingsCmd(),
+                        new EchoCmd(),
 
                         new NowplayingCmd(),
                         new PlayCmd(),
@@ -118,6 +117,7 @@ public class Raiko {
                         new VolumeCmd(),
                         new SwapTrackCmd(),
                         new ReverseQueueCmd(),
+                        new SeekCmd(),
 
                         new PrefixCmd(),
                         new SettcCmd(),

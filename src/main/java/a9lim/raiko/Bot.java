@@ -23,7 +23,6 @@ import a9lim.raiko.audio.AloneInVoiceHandler;
 import a9lim.raiko.audio.AudioHandler;
 import a9lim.raiko.audio.NowplayingHandler;
 import a9lim.raiko.audio.PlayerManager;
-import a9lim.raiko.chat.ChatBot;
 import a9lim.raiko.gui.GUI;
 import a9lim.raiko.playlist.PlaylistLoader;
 import a9lim.raiko.settings.SettingsManager;

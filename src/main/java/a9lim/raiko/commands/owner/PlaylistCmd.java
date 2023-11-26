@@ -64,8 +64,7 @@ public class PlaylistCmd extends OwnerCommand {
 
         @Override
         protected void execute(CommandEvent event) {
-            String pname = COMPILE.matcher(event.getArgs()).replaceAll("_");
-            pname = PATTERN.matcher(pname).replaceAll("");
+            String pname = PATTERN.matcher(COMPILE.matcher(event.getArgs()).replaceAll("_")).replaceAll("");
             if (pname.isEmpty()) {
                 event.replyError("Please provide a name for the playlist!");
                 return;
