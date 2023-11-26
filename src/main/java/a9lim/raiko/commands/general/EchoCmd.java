@@ -15,18 +15,23 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with Raiko. If not, see <http://www.gnu.org/licenses/>.
 
-package a9lim.raiko.commands;
+package a9lim.raiko.commands.general;
 
 import a9lim.jdautilities.command.Command;
-import a9lim.raiko.Bot;
+import a9lim.jdautilities.command.CommandEvent;
 
-public abstract class BotCommand extends Command {
-    // Store the bot used by all bot commands
-    protected static Bot bot;
+public class EchoCmd extends Command {
 
-    public static void setBot(Bot b){
-        bot = b;
-        Command.setAliasSource(b.getConfig());
+    public EchoCmd() {
+        name = "echo";
+        category = new Category("General");
+        help = "repeats a message";
+        guildOnly = false;
+    }
+
+    @Override
+    protected void execute(CommandEvent event) {
+        event.reply(event.getArgs());
     }
 
 }

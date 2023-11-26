@@ -35,7 +35,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
-import net.dv8tion.jda.internal.utils.Checks;
 import okhttp3.*;
 import org.json.JSONObject;
 import org.json.JSONTokener;
