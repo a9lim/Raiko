@@ -18,7 +18,7 @@ Discord music + chatbot forked from [jagrosh's JMusicBot](https://github.com/jag
 3. Get a [Discord bot token](https://github.com/jagrosh/MusicBot/wiki/Getting-a-Bot-Token) and your [Discord user ID](https://github.com/jagrosh/MusicBot/wiki/Finding-Your-User-ID).
 4. If you have an [OpenAI API key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-api-key), NicoNico account, or Youtube account, get them ready as well.
 5. Save a copy of [this file](https://github.com/a9lim/Raiko/blob/main/src/main/resources/reference.conf) as 'config.txt' in the same folder as the .jar file, and edit it to add your tokens/accounts
-7. Run the .jar file with `java -jar /path/to/raiko.jar`
+6. Run the .jar file with `java -jar /path/to/raiko.jar`
 
 ## Main Changes
 * Migrated to Java 21

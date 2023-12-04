@@ -19,6 +19,7 @@
 package a9lim.raiko.audio;
 
 import a9lim.raiko.BotConfig;
+import a9lim.raiko.audio.sourcefix.FixNicoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.container.MediaContainerRegistry;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -47,7 +48,8 @@ public class PlayerManager extends DefaultAudioPlayerManager {
         YoutubeAudioSourceManager yt = new YoutubeAudioSourceManager(true,config.getYTEmail(),config.getYTPW());
         yt.setPlaylistPageCount(10);
         registerSourceManager(yt);
-        registerSourceManager(new NicoAudioSourceManager(config.getNNDEmail(),config.getNNDPW()));
+        registerSourceManager(new FixNicoAudioSourceManager(config.getNNDEmail(),config.getNNDPW()));
+//        registerSourceManager(new NicoAudioSourceManager(config.getNNDEmail(),config.getNNDPW()));
         registerSourceManager(new YandexMusicAudioSourceManager(true));
         registerSourceManager(SoundCloudAudioSourceManager.createDefault());
         registerSourceManager(new BandcampAudioSourceManager());

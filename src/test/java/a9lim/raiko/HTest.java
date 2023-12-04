@@ -1,5 +1,4 @@
 // Copyright 2023 a9lim (a9lim) <mx@a9l.im>
-// Copyright 2016-2018 John Grosh (jagrosh) <john.a.grosh@gmail.com> & Kaidan Gustave (TheMonitorLizard).
 //
 // This file is part of Raiko.
 //

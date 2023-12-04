@@ -45,10 +45,9 @@ public class AnnotatedModuleCompilerImpl implements AnnotatedModuleCompiler {
 
         List<Command> list = new ArrayList<>();
         collect((Method method) -> {
-            for (String name : module.value()) {
+            for (String name : module.value())
                 if (name.equalsIgnoreCase(method.getName()))
                     return true;
-            }
             return false;
         }, o.getClass().getMethods()).forEach(method -> {
             try {
@@ -108,10 +107,9 @@ public class AnnotatedModuleCompilerImpl implements AnnotatedModuleCompiler {
         // Child Commands
         if (properties.children().length > 0) {
             collect((Method m) -> {
-                for (String cName : properties.children()) {
+                for (String cName : properties.children())
                     if (cName.equalsIgnoreCase(m.getName()))
                         return true;
-                }
                 return false;
             }, o.getClass().getMethods()).forEach(cm -> {
                 try {

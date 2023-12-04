@@ -18,27 +18,25 @@
 
 package a9lim.raiko.commands.music;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException.Severity;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import a9lim.jdautilities.command.Command;
 import a9lim.jdautilities.command.CommandEvent;
 import a9lim.jdautilities.menu.ButtonMenu;
 import a9lim.raiko.audio.AudioHandler;
 import a9lim.raiko.audio.QueuedTrack;
 import a9lim.raiko.commands.MusicCommand;
-import a9lim.raiko.utils.FormatUtil;
-
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import a9lim.raiko.playlist.PlaylistLoader;
+import a9lim.raiko.utils.FormatUtil;
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException.Severity;
+import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.exceptions.PermissionException;
+
+import java.util.concurrent.TimeUnit;
 
 public class PlayCmd extends MusicCommand {
     private final static Emoji LOAD = Emoji.fromUnicode("\uD83D\uDCE5"); // 📥
@@ -122,16 +120,15 @@ public class PlayCmd extends MusicCommand {
 
         }
 
-        // why lambda
         private int loadPlaylist(AudioPlaylist playlist, AudioTrack exclude) {
-            AtomicInteger count = new AtomicInteger();
-            playlist.getTracks().forEach((track) -> {
+            int count = 0;
+            for(AudioTrack track : playlist.getTracks()) {
                 if (!bot.getConfig().isTooLong(track) && !track.equals(exclude)) {
                     ((AudioHandler) event.getGuild().getAudioManager().getSendingHandler()).addTrack(new QueuedTrack(track, event.getAuthor()));
-                    count.getAndIncrement();
+                    count++;
                 }
-            });
-            return count.get();
+            }
+            return count;
         }
 
         @Override

@@ -96,9 +96,8 @@ public class TableBuilder {
             for (String[] row : values) {
                 for (int j = 0; j < row.length; j++) {
                     String value = row[j];
-                    int adjustment = maxLengths[j] - value.length();
                     StringBuilder newValue = new StringBuilder();
-                    setAlignment(adjustment, value, newValue);
+                    setAlignment(maxLengths[j] - value.length(), value, newValue);
                     row[j] = newValue.toString();
                 }
             }

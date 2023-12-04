@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 
 public class CommandEvent {
     private static final Pattern COMPILE = Pattern.compile("<a?:(.+):(\\d+)>");
-    public static int MAX_MESSAGES = 2;
+    public static final int MAX_MESSAGES = 2;
 
     private final MessageReceivedEvent event;
     private String args;
