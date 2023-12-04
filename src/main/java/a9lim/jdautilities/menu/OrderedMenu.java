@@ -218,9 +218,8 @@ public class OrderedMenu extends Menu {
         if(description != null)
             sb.append(description);
         int i = 0;
-        for (String c : choices) {
+        for (String c : choices)
             sb.append("\n").append(getEmoji(i++).getFormatted()).append(" ").append(c);
-        }
         mbuilder.setEmbeds(new EmbedBuilder().setColor(color)
             .setDescription(sb.toString()).build());
         return mbuilder.build();

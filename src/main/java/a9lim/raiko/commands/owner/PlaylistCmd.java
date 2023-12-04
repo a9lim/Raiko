@@ -132,8 +132,8 @@ public class PlaylistCmd extends OwnerCommand {
             StringBuilder builder = new StringBuilder();
             playlist.getItems().forEach(item -> builder.append("\r\n").append(item));
             String[] urls = parts[1].split("\\|");
-            for (String url : urls) {
-                String u = url.trim();
+            for (String u : urls) {
+                u = u.trim();
                 if (!u.isEmpty() && u.charAt(0) == '<' && u.charAt(u.length() - 1) == '>')
                     u = u.substring(1, u.length() - 1);
                 builder.append("\r\n").append(u);

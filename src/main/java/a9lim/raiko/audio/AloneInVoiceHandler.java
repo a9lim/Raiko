@@ -46,22 +46,22 @@ public class AloneInVoiceHandler {
 
     private void check() {
         Set<Long> toRemove = new HashSet<>();
-        for (Map.Entry<Long, Instant> entrySet : aloneSince.entrySet()) {
-            if (entrySet.getValue().getEpochSecond() > Instant.now().getEpochSecond() - aloneTimeUntilStop)
-                continue;
+        aloneSince.forEach((key, value) -> {
+            if (value.getEpochSecond() > Instant.now().getEpochSecond() - aloneTimeUntilStop)
+                return;
 
-            Guild guild = bot.getJDA().getGuildById(entrySet.getKey());
+            Guild guild = bot.getJDA().getGuildById(key);
 
             if (guild == null) {
-                toRemove.add(entrySet.getKey());
-                continue;
+                toRemove.add(key);
+                return;
             }
 
             ((AudioHandler) guild.getAudioManager().getSendingHandler()).stopAndClear();
             guild.getAudioManager().closeAudioConnection();
 
-            toRemove.add(entrySet.getKey());
-        }
+            toRemove.add(key);
+        });
         toRemove.forEach(aloneSince::remove);
     }
 

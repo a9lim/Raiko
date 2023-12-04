@@ -83,12 +83,10 @@ public class CommandClientImpl implements CommandClient, EventListener {
         if (inownerId < 0)
             LOG.warn(String.format("The provided Owner ID (%s) was found unsafe! Make sure ID is a non-negative long!", inownerId));
 
-        if (incoOwnerIds != null) {
-            for (long coOwnerId : incoOwnerIds) {
+        if (incoOwnerIds != null)
+            for (long coOwnerId : incoOwnerIds)
                 if (coOwnerId < 0)
                     LOG.warn(String.format("The provided CoOwner ID (%s) was found unsafe! Make sure ID is a non-negative long!", coOwnerId));
-            }
-        }
 
         start = OffsetDateTime.now();
 
@@ -196,10 +194,9 @@ public class CommandClientImpl implements CommandClient, EventListener {
             if (commandIndex.containsKey(name))
                 throw new IllegalArgumentException("Command added has a name or alias that has already been indexed: \"" + name + "\"!");
             command.loadAliases();
-            for (String alias : command.getAliases()) {
+            for (String alias : command.getAliases())
                 if (commandIndex.containsKey(alias.toLowerCase()))
                     throw new IllegalArgumentException("Command added has a name or alias that has already been indexed: \"" + alias + "\"!");
-            }
             //add
             commandIndex.put(name, command);
             commandSet.add(command);

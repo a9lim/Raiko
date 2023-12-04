@@ -50,8 +50,7 @@ public class DebugCmd extends OwnerCommand {
                 //.append("\n  Version = ").append(OtherUtil.getCurrentVersion())
                 .append("\n  Owner = ").append(c.getOwnerId())
                 .append("Prefix = ");
-        for (String s : c.getPrefixes())
-                sb.append(s).append(", ");
+        c.getPrefixes().forEach(s -> sb.append(s).append(", "));
         sb.append("\n  MaxSeconds = ").append(c.getMaxSeconds())
                 .append("\n  NPImages = ").append(c.useNPImages())
                 .append("\n  SongInStatus = ").append(c.getSongInStatus())

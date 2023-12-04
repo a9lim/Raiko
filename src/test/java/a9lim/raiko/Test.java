@@ -1,5 +1,4 @@
 // Copyright 2023 Aidan Lim (a9lim) <aidanlim192@gmail.com>
-// Copyright 2016-2018 John Grosh (jagrosh) <john.a.grosh@gmail.com> & Kaidan Gustave (TheMonitorLizard).
 //
 // This file is part of Raiko.
 //
@@ -15,6 +14,7 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with Raiko. If not, see <http://www.gnu.org/licenses/>.
+
 
 package a9lim.raiko;
 

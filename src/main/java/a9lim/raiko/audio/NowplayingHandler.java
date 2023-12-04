@@ -58,31 +58,31 @@ public class NowplayingHandler {
     
     private void updateAll() {
         Set<Long> toRemove = new HashSet<>();
-        for(Map.Entry<Long, Pair<Long, Long>> entry : lastNP.entrySet()) {
-            long guildId = entry.getKey();
+        lastNP.forEach((key, pair) -> {
+            long guildId = key;
             Guild guild = bot.getJDA().getGuildById(guildId);
-            if(guild==null) {
+            if (guild == null) {
                 toRemove.add(guildId);
-                continue;
+                return;
             }
-            Pair<Long,Long> pair = entry.getValue();
             TextChannel tc = guild.getTextChannelById(pair.key());
-            if(tc==null) {
+            if (tc == null) {
                 toRemove.add(guildId);
-                continue;
+                return;
             }
-            AudioHandler handler = (AudioHandler)guild.getAudioManager().getSendingHandler();
+            AudioHandler handler = (AudioHandler) guild.getAudioManager().getSendingHandler();
             MessageCreateData msg = handler.getNowPlaying(bot.getJDA());
-            if(msg==null) {
+            if (msg == null) {
                 msg = handler.getNoMusicPlaying(bot.getJDA());
                 toRemove.add(guildId);
             }
             try {
-                tc.editMessageById(pair.value(), MessageEditData.fromCreateData(msg)).queue(m->{}, t -> lastNP.remove(guildId));
-            } catch(Exception e) {
+                tc.editMessageById(pair.value(), MessageEditData.fromCreateData(msg)).queue(m -> {
+                }, t -> lastNP.remove(guildId));
+            } catch (Exception e) {
                 toRemove.add(guildId);
             }
-        }
+        });
         toRemove.forEach(lastNP::remove);
     }
 

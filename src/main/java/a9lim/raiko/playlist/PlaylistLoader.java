@@ -18,19 +18,18 @@
 
 package a9lim.raiko.playlist;
 
+import a9lim.raiko.BotConfig;
+import a9lim.raiko.utils.OtherUtil;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import a9lim.raiko.BotConfig;
-import a9lim.raiko.utils.OtherUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -80,22 +79,24 @@ public class PlaylistLoader {
             return null;
         try {
             if (folderExists()) {
-                AtomicBoolean shuffle = new AtomicBoolean(false);
+                boolean shuffle = false;
                 List<String> list = new ArrayList<>();
-                Files.readAllLines(OtherUtil.getPath(config.getPlaylistsFolder() + File.separator + name + ".txt")).forEach(str -> {
-                    String s = str.trim();
+                for(String s : Files.readAllLines(OtherUtil.getPath(config.getPlaylistsFolder() + File.separator + name + ".txt"))) {
+                    s = s.trim();
                     if (s.isEmpty())
-                        return;
+                        break;
+                    // todo
+                    // what
                     if (s.charAt(0) == '#' || s.startsWith("//")) {
                         s = COMPILE.matcher(s).replaceAll("");
                         if ("#shuffle".equalsIgnoreCase(s) || "//shuffle".equalsIgnoreCase(s))
-                            shuffle.set(true);
+                            shuffle = true;
                     } else
                         list.add(s);
-                });
-                if (shuffle.get())
+                }
+                if (shuffle)
                     Collections.shuffle(list);
-                return new Playlist(name, list, shuffle.get());
+                return new Playlist(name, list, shuffle);
             }
             createFolder();
         } catch (IOException ignored) {}
