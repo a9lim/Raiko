@@ -60,17 +60,16 @@ public class FixNicoAudioSourceManager implements AudioSourceManager, HttpConfig
     private static final String TRACK_URL_REGEX = "^(?:http://|https://|)(?:www\\.|)nicovideo\\.jp/watch/(sm[0-9]+)(?:\\?.*|)$";
 
     private static final Pattern trackUrlPattern = Pattern.compile(TRACK_URL_REGEX);
-
-    private final String email;
-    private final String password;
     private final HttpInterfaceManager httpInterfaceManager;
     private final AtomicBoolean loggedIn;
 
     public FixNicoAudioSourceManager(String email, String password) {
-        this.email = email;
-        this.password = password;
         httpInterfaceManager = HttpClientTools.createDefaultThreadLocalManager();
         loggedIn = new AtomicBoolean();
+        if (!DataFormatTools.isNullOrEmpty(email) && !DataFormatTools.isNullOrEmpty(password)) {
+            // log in
+            logIn(email,password);
+        }
     }
 
     @Override
@@ -90,7 +89,6 @@ public class FixNicoAudioSourceManager implements AudioSourceManager, HttpConfig
     }
 
     private AudioTrack loadTrack(String videoId) {
-        checkLoggedIn();
 
         try (HttpInterface httpInterface = getHttpInterface()) {
             try (CloseableHttpResponse response = httpInterface.execute(new HttpGet("https://ext.nicovideo.jp/api/getthumbinfo/" + videoId))) {
@@ -158,7 +156,7 @@ public class FixNicoAudioSourceManager implements AudioSourceManager, HttpConfig
         httpInterfaceManager.configureBuilder(configurator);
     }
 
-    void checkLoggedIn() {
+    void logIn(String email, String password) {
         synchronized (loggedIn) {
             if (loggedIn.get()) {
                 return;
