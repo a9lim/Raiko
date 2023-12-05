@@ -49,7 +49,6 @@ public class PlayerManager extends DefaultAudioPlayerManager {
         yt.setPlaylistPageCount(10);
         registerSourceManager(yt);
         registerSourceManager(new FixNicoAudioSourceManager(config.getNNDEmail(),config.getNNDPW()));
-//        registerSourceManager(new NicoAudioSourceManager(config.getNNDEmail(),config.getNNDPW()));
         registerSourceManager(new YandexMusicAudioSourceManager(true));
         registerSourceManager(SoundCloudAudioSourceManager.createDefault());
         registerSourceManager(new BandcampAudioSourceManager());
