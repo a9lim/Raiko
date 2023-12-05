@@ -60,7 +60,7 @@ public class ChatBot {
     // Function to chat
     public String chat(String s, long l) {
         // Append and json-ize new prompt to previous reply, escaping forbidden characters (\n and ")
-        temp += "{\"role\": \"user\", \"content\": \"" + s.replace("\n","\\n").replace("\"", "\\\"") + "\"}";
+        temp += "{\"role\":\"user\",\"content\":" + JSONObject.quote(s) + "}";
 
         // If chat history is full, clear out space
         if(chathist.size() == capacity)
@@ -69,25 +69,26 @@ public class ChatBot {
         // Add new prompt to chat history
         chathist.add(new QueuedChat(temp,l));
         try {
-            // Send full request to openai, and process and save result as reply
-            String reply = (new JSONObject(client.newCall(new Request.Builder()
+            JSONObject o = new JSONObject(client.newCall(new Request.Builder()
                             .url("https://api.openai.com/v1/chat/completions")
                             .post(RequestBody.create(head + chathist + "]}",mediaType))
                             .addHeader("Authorization", "Bearer " + apiKey)
                             .addHeader("Content-Type", "application/json")
                             .build())
-                    .execute().body().string())
-                    .getJSONArray("choices").getJSONObject(0)
-                    .getJSONObject("message").getString("content"));
+                    .execute().body().string());
+            System.out.println(o);
+            // Send full request to openai, and process and save result as reply
+            String reply = (String) o.query("/choices/0/message/content");
+            System.out.println(reply);
 
             // Save and json-ize new reply, escaping forbidden characters (\n and ")
-            temp = ", {\"role\": \"assistant\", \"content\": \"" + reply.replace("\n","\\n").replace("\"", "\\\"") + "\"}, ";
+            temp = ", {\"role\":\"assistant\",\"content\":" + JSONObject.quote(reply) + "},";
 
             // Return reply
             return reply;
         } catch (Exception e){
             // If something goes wrong, clear chat history in case some message was causing the issue and return error
-            System.out.println(e);
+            e.printStackTrace();
             clear();
             return "Huh?";
         }
@@ -113,6 +114,6 @@ public class ChatBot {
     }
 
     public void clearHead(){
-        head = "{\"model\": \"" + getModel() + "\", \"messages\": [{\"role\": \"system\", \"content\": \"" + preprompt + "\"}, ";
+        head = "{\"model\":\"" + getModel() + "\",\"messages\":[{\"role\":\"system\",\"content\":\"" + preprompt + "\"},";
     }
 }
