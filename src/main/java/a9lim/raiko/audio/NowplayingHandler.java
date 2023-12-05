@@ -18,9 +18,9 @@
 
 package a9lim.raiko.audio;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import a9lim.raiko.Bot;
 import a9lim.raiko.entities.Pair;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -30,7 +30,6 @@ import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 

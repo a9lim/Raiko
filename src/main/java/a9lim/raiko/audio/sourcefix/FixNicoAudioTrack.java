@@ -20,7 +20,6 @@ package a9lim.raiko.audio.sourcefix;
 
 import com.sedmelluq.discord.lavaplayer.container.mpeg.MpegAudioTrack;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.tools.JsonBrowser;
 import com.sedmelluq.discord.lavaplayer.tools.io.HttpInterface;
 import com.sedmelluq.discord.lavaplayer.tools.io.PersistentHttpStream;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -28,7 +27,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import com.sedmelluq.discord.lavaplayer.track.DelegatedAudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
@@ -89,12 +87,11 @@ public class FixNicoAudioTrack extends DelegatedAudioTrack {
         p.addHeader("Connection","keep-alive");
         p.addHeader("Content-Type","application/json");
         p.addHeader("Origin","https://www.nicovideo.jp");
-        p.setEntity(new StringEntity(buildJSON(new JSONObject(
+        p.setEntity(new StringEntity(buildJSON((JSONObject) new JSONObject(
                 Jsoup.parse(httpInterface.execute(new HttpGet(trackInfo.uri)).getEntity().getContent(), StandardCharsets.UTF_8.name(), "", Parser.htmlParser())
-                        .getElementById("js-initial-watch-data").attributes().get("data-api-data"))
-                .getJSONObject("media").getJSONObject("delivery").getJSONObject("movie").getJSONObject("session")).toString()));
+                        .getElementById("js-initial-watch-data").attributes().get("data-api-data")).query("/media/delivery/movie/session")).toString()));
         info = new JSONObject(new String(httpInterface.execute(p).getEntity().getContent().readAllBytes())).getJSONObject("data");
-        id = info.getJSONObject("session").getString("id");
+        id = (String) info.query("/session/id");
         log.info("NicoNico Video ID: {}", id);
         return info.getJSONObject("session").getString("content_uri");
     }
@@ -110,25 +107,25 @@ public class FixNicoAudioTrack extends DelegatedAudioTrack {
     }
 
     public int getHeartBeat(){
-        return info.getJSONObject("session").getJSONObject("keep_method").getJSONObject("heartbeat").getInt("lifetime");
+        return (int) info.query("/session/keep_method/heartbeat/lifetime");
     }
 
-    private static JSONObject buildJSON(JSONObject jason){
+    private static JSONObject buildJSON(JSONObject input){
         return new JSONObject().put("session",new JSONObject()
                 .put("content_type","movie")
                 .put("keep_method",new JSONObject()
                         .put("heartbeat",new JSONObject()
-                                .put("lifetime",jason.getInt("heartbeatLifetime"))))
+                                .put("lifetime",input.getInt("heartbeatLifetime"))))
                 .put("timing_constraint","unlimited")
                 .put("content_src_id_sets", new JSONArray()
                         .put(new JSONObject()
                                 .put("content_src_ids",new JSONArray()
                                         .put(new JSONObject()
                                                 .put("src_id_to_mux",new JSONObject()
-                                                        .put("video_src_ids",jason.getJSONArray("videos"))
-                                                        .put("audio_src_ids",jason.getJSONArray("audios")))))))
-                .put("recipe_id",jason.getString("recipeId"))
-                .put("priority",jason.getInt("priority"))
+                                                        .put("video_src_ids",input.getJSONArray("videos"))
+                                                        .put("audio_src_ids",input.getJSONArray("audios")))))))
+                .put("recipe_id",input.getString("recipeId"))
+                .put("priority",input.getInt("priority"))
                 .put("protocol",new JSONObject()
                         .put("name","http")
                         .put("parameters",new JSONObject()
@@ -136,25 +133,25 @@ public class FixNicoAudioTrack extends DelegatedAudioTrack {
                                         .put("parameters",new JSONObject()
                                                 .put("http_output_download_parameters",new JSONObject()
                                                         .put("use_well_known_port",
-                                                                jason.getJSONArray("urls").getJSONObject(0).getBoolean("isWellKnownPort")
+                                                                (boolean) input.query("/urls/0/isWellKnownPort")
                                                                         ? "yes" : "no")
                                                         .put("use_ssl",
-                                                                jason.getJSONArray("urls").getJSONObject(0).getBoolean("isSsl")
+                                                                (boolean) input.query("/urls/0/isSsl")
                                                                         ? "yes" : "no")
                                                         .put("transfer_preset",""))))))
                 .put("content_uri","")
                 .put("session_operation_auth",new JSONObject()
                         .put("session_operation_auth_by_signature", new JSONObject()
-                                .put("token",jason.getString("token"))
-                                .put("signature",jason.getString("signature"))))
-                .put("content_id",jason.getString("contentId"))
+                                .put("token",input.getString("token"))
+                                .put("signature",input.getString("signature"))))
+                .put("content_id",input.getString("contentId"))
                 .put("content_auth",new JSONObject()
-                        .put("auth_type",jason.getJSONObject("authTypes").get("http"))
-                        .put("content_key_timeout",jason.getInt("contentKeyTimeout"))
+                        .put("auth_type",input.query("/authTypes/http"))
+                        .put("content_key_timeout",input.getInt("contentKeyTimeout"))
                         .put("service_id","nicovideo")
-                        .put("service_user_id",jason.getString("serviceUserId")))
+                        .put("service_user_id",input.getString("serviceUserId")))
                 .put("client_info",new JSONObject()
-                        .put("player_id",jason.getString("playerId"))));
+                        .put("player_id",input.getString("playerId"))));
     }
 
     @Override

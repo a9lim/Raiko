@@ -3,6 +3,7 @@
 /Playlists/
 /out/
 /.idea/
+src/test/java/a9lim/raiko/JSONS.java
 *.json
 *.txt
 nb*.xml

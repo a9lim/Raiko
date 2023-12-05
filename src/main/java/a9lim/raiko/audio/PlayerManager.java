@@ -18,6 +18,7 @@
 
 package a9lim.raiko.audio;
 
+import a9lim.raiko.Bot;
 import a9lim.raiko.BotConfig;
 import a9lim.raiko.audio.sourcefix.FixNicoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.container.MediaContainerRegistry;
@@ -28,13 +29,11 @@ import com.sedmelluq.discord.lavaplayer.source.beam.BeamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.getyarn.GetyarnAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.nico.NicoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.yamusic.YandexMusicAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
-import a9lim.raiko.Bot;
 import net.dv8tion.jda.api.entities.Guild;
 public class PlayerManager extends DefaultAudioPlayerManager {
     private final Bot bot;
