@@ -20,12 +20,15 @@ package a9lim.raiko.audio.sourcefix;
 
 import com.sedmelluq.discord.lavaplayer.container.mpeg.MpegAudioTrack;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.tools.io.HttpClientTools;
 import com.sedmelluq.discord.lavaplayer.tools.io.HttpInterface;
 import com.sedmelluq.discord.lavaplayer.tools.io.PersistentHttpStream;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import com.sedmelluq.discord.lavaplayer.track.DelegatedAudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -37,7 +40,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Timer;
@@ -46,72 +48,94 @@ import java.util.TimerTask;
 public class FixNicoAudioTrack extends DelegatedAudioTrack {
     private static final Logger log = LoggerFactory.getLogger(FixNicoAudioTrack.class);
     private final FixNicoAudioSourceManager sourceManager;
-    private String id;
+    private String heartbeatURL;
     private JSONObject info;
-    private MpegAudioTrack track;
 
     public FixNicoAudioTrack(AudioTrackInfo trackInfo, FixNicoAudioSourceManager sourceManager) {
         super(trackInfo);
+
         this.sourceManager = sourceManager;
     }
 
     @Override
     public void process(LocalAudioTrackExecutor localExecutor) throws Exception {
+
         try (HttpInterface httpInterface = sourceManager.getHttpInterface()) {
             String playbackUrl = loadPlaybackUrl(httpInterface);
-            log.info("Starting NicoNico track from URL: {}", playbackUrl);
+
+            log.debug("Starting NicoNico track from URL: {}", playbackUrl);
+
             try (PersistentHttpStream stream = new PersistentHttpStream(httpInterface, new URI(playbackUrl), null)) {
-                track = new MpegAudioTrack(trackInfo, stream);
-                int heartbeat = heartBeatDuration() - 1000;
+                int heartbeat = (int) info.query("/session/keep_method/heartbeat/lifetime") - 1000;
                 Timer t = new Timer();
                 t.schedule(new TimerTask() {
                     public void run() {
                         try {
-                            refreshPlayback(httpInterface);
+                            sendHeartbeat(httpInterface);
                         } catch (Exception ex) {
-                            ex.printStackTrace();
+                            log.error("Heartbeat error!",ex);
                         }
                     }
                 },heartbeat,heartbeat);
-                processDelegate(track, localExecutor);
+                processDelegate(new MpegAudioTrack(trackInfo, stream), localExecutor);
                 t.cancel();
             }
         }
     }
 
+    private JSONObject loadVideoMainPage(HttpInterface httpInterface) throws IOException {
+        HttpGet request = new HttpGet(trackInfo.uri);
+
+        try (CloseableHttpResponse response = httpInterface.execute(request)) {
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (!HttpClientTools.isSuccessWithContent(statusCode)) {
+                throw new IOException("Unexpected status code from video main page: " + statusCode);
+            }
+
+            return (JSONObject) new JSONObject(
+                    Jsoup.parse(response.getEntity().getContent(), StandardCharsets.UTF_8.name(), "")
+                            .getElementById("js-initial-watch-data").attributes().get("data-api-data"))
+                    .query("/media/delivery/movie/session");
+        }
+    }
+
     private String loadPlaybackUrl(HttpInterface httpInterface) throws IOException {
-        HttpPost p = new HttpPost("https://api.dmc.nico/api/sessions?_format=json");
-        p.addHeader("Host", "api.dmc.nico");
-        p.addHeader("Connection","keep-alive");
-        p.addHeader("Content-Type","application/json");
-        p.addHeader("Origin","https://www.nicovideo.jp");
-        p.setEntity(new StringEntity(processJSON(processResponse(
-                httpInterface.execute(new HttpGet(trackInfo.uri)).getEntity().getContent())).toString()));
-        info = new JSONObject(new JSONTokener(httpInterface.execute(p).getEntity().getContent())).getJSONObject("data");
-        id = (String) info.query("/session/id");
-        log.info("NicoNico Video ID: {}", id);
-        return (String) info.query("/session/content_uri");
-    }
-    private void refreshPlayback(HttpInterface httpInterface) throws IOException {
-        HttpPost p = new HttpPost("https://api.dmc.nico/api/sessions/"+id+"?_format=json&_method=PUT");
-        p.addHeader("Host", "api.dmc.nico");
-        p.addHeader("Connection","keep-alive");
-        p.addHeader("Content-Type","application/json");
-        p.addHeader("Origin","https://www.nicovideo.jp");
-        p.setEntity(new StringEntity(info.toString()));
-        info = new JSONObject(new JSONTokener(httpInterface.execute(p).getEntity().getContent())).getJSONObject("data");
+        HttpPost request = new HttpPost("https://api.dmc.nico/api/sessions?_format=json");
+        request.addHeader("Host", "api.dmc.nico");
+        request.addHeader("Connection","keep-alive");
+        request.addHeader("Content-Type","application/json");
+        request.addHeader("Origin","https://www.nicovideo.jp");
+        request.setEntity(new StringEntity(processJSON(loadVideoMainPage(httpInterface)).toString()));
+
+        try (CloseableHttpResponse response = httpInterface.execute(request)) {
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode != HttpStatus.SC_CREATED) {
+                throw new IOException("Unexpected status code from playback parameters page: " + statusCode);
+            }
+
+            info = new JSONObject(new JSONTokener(response.getEntity().getContent())).getJSONObject("data");
+            heartbeatURL = "https://api.dmc.nico/api/sessions/" + info.query("/session/id") + "?_format=json&_method=PUT";
+            log.debug("NicoNico heartbeat URL: {}", heartbeatURL);
+            return (String) info.query("/session/content_uri");
+        }
     }
 
-    private static JSONObject processResponse(InputStream data) throws IOException {
-        return (JSONObject) new JSONObject(
-                Jsoup.parse(data, StandardCharsets.UTF_8.name(), "")
-                        .getElementById("js-initial-watch-data").attributes().get("data-api-data"))
-                .query("/media/delivery/movie/session");
-    }
+    private void sendHeartbeat(HttpInterface httpInterface) throws IOException {
+        HttpPost request = new HttpPost(heartbeatURL);
+        request.addHeader("Host", "api.dmc.nico");
+        request.addHeader("Connection","keep-alive");
+        request.addHeader("Content-Type","application/json");
+        request.addHeader("Origin","https://www.nicovideo.jp");
+        request.setEntity(new StringEntity(info.toString()));
 
-    // this should be 2 minutes
-    private int heartBeatDuration(){
-        return (int) info.query("/session/keep_method/heartbeat/lifetime");
+        try (CloseableHttpResponse response = httpInterface.execute(request)) {
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (!HttpClientTools.isSuccessWithContent(statusCode)) {
+                throw new IOException("Unexpected status code from heartbeat: " + statusCode);
+            }
+
+            info = new JSONObject(new JSONTokener(response.getEntity().getContent())).getJSONObject("data");
+        }
     }
 
     private static JSONObject processJSON(JSONObject input){
