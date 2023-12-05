@@ -24,6 +24,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.concurrent.TimeUnit;
 
@@ -69,17 +70,15 @@ public class ChatBot {
         // Add new prompt to chat history
         chathist.add(new QueuedChat(temp,l));
         try {
-            JSONObject o = new JSONObject(client.newCall(new Request.Builder()
+            JSONObject o = new JSONObject(new JSONTokener(client.newCall(new Request.Builder()
                             .url("https://api.openai.com/v1/chat/completions")
                             .post(RequestBody.create(head + chathist + "]}",mediaType))
                             .addHeader("Authorization", "Bearer " + apiKey)
                             .addHeader("Content-Type", "application/json")
                             .build())
-                    .execute().body().string());
-            System.out.println(o);
+                    .execute().body().byteStream()));
             // Send full request to openai, and process and save result as reply
             String reply = (String) o.query("/choices/0/message/content");
-            System.out.println(reply);
 
             // Save and json-ize new reply, escaping forbidden characters (\n and ")
             temp = ", {\"role\":\"assistant\",\"content\":" + JSONObject.quote(reply) + "},";
