@@ -89,9 +89,12 @@ public class FixNicoAudioSourceManager implements AudioSourceManager, HttpConfig
     }
 
     private AudioTrack loadTrack(String videoId) {
-
         try (HttpInterface httpInterface = getHttpInterface()) {
             try (CloseableHttpResponse response = httpInterface.execute(new HttpGet("https://ext.nicovideo.jp/api/getthumbinfo/" + videoId))) {
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (!HttpClientTools.isSuccessWithContent(statusCode)) {
+                    throw new IOException("Unexpected response code from video info: " + statusCode);
+                }
 
                 Document document = Jsoup.parse(response.getEntity().getContent(), StandardCharsets.UTF_8.name(), "", Parser.xmlParser());
                 return extractTrackFromXml(videoId, document);
@@ -162,7 +165,7 @@ public class FixNicoAudioSourceManager implements AudioSourceManager, HttpConfig
                 return;
             }
 
-            HttpPost loginRequest = new HttpPost("https://secure.nicovideo.jp/secure");
+            HttpPost loginRequest = new HttpPost("https://secure.nicovideo.jp/secure/login");
 
             loginRequest.setEntity(new UrlEncodedFormEntity(Arrays.asList(
                     new BasicNameValuePair("mail", email),
@@ -170,14 +173,21 @@ public class FixNicoAudioSourceManager implements AudioSourceManager, HttpConfig
             ), StandardCharsets.UTF_8));
 
             try (HttpInterface httpInterface = getHttpInterface()) {
-                CloseableHttpResponse response = httpInterface.execute(loginRequest);
+                try (CloseableHttpResponse response = httpInterface.execute(loginRequest)) {
+                    int statusCode = response.getStatusLine().getStatusCode();
 
-                Header location = response.getFirstHeader("Location");
-                if (location == null || location.getValue().contains("message="))
-                    throw new FriendlyException("Login details for NicoNico are invalid.", COMMON, null);
+                    if (statusCode != 302) {
+                        throw new IOException("Unexpected response code " + statusCode);
+                    }
 
-                loggedIn.set(true);
+                    Header location = response.getFirstHeader("Location");
 
+                    if (location == null || location.getValue().contains("message=")) {
+                        throw new FriendlyException("Login details for NicoNico are invalid.", COMMON, null);
+                    }
+
+                    loggedIn.set(true);
+                }
             } catch (IOException e) {
                 throw new FriendlyException("Exception when trying to log into NicoNico", SUSPICIOUS, e);
             }
