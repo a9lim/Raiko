@@ -1,5 +1,6 @@
 package a9lim.raiko;
 
+import com.sedmelluq.discord.lavaplayer.tools.JsonBrowser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -7,7 +8,8 @@ import java.io.IOException;
 
 public class JTest {
     public static void main(String[] args) throws IOException {
-
+        System.out.println(buildJSON(JSONS.A));
+        System.out.println(new JSONObject(processJSON(JSONS.B).text()));
 
     }
     public static JSONObject process(JSONObject jason) {
@@ -96,19 +98,103 @@ public class JTest {
                 .put("client_info",new JSONObject()
                         .put("player_id",input.getString("playerId"))));
     }
-    public static JSONObject t2(JSONObject o) {
-        return new JSONObject(
-        "{\"session\":{\"keep_method\":{\"heartbeat\":{\"lifetime\":" + o.getInt("heartbeatLifetime") +
-                "}},\"protocol\":{\"name\":\"http\",\"parameters\":{\"http_parameters\":{\"parameters\":{\"http_output_download_parameters\":{\"use_ssl\":" +
-                ((boolean) o.query("/urls/0/isSsl") ? "yes" : "no") + ",\"transfer_preset\":\"\",\"use_well_known_port\":" +
-                ((boolean) o.query("/urls/0/isWellKnownPort") ? "yes" : "no") +
-                "}}}}},\"content_auth\":{\"content_key_timeout\":" + o.getInt("contentKeyTimeout") + ",\"auth_type\":" +
-                o.query("/authTypes/http") + ",\"service_id\":\"nicovideo\",\"service_user_id\":" +
-                o.getString("serviceUserId") + "},\"client_info\":{\"player_id\":" + o.getString("playerId") + "},\"recipe_id\":" +
-                o.getString("recipeId") + ",\"content_type\":\"movie\",\"session_operation_auth\":{\"session_operation_auth_by_signature\":{\"signature\":" +
-                o.getString("signature") + ",\"token\":" + o.getString("token") + "}},\"content_uri\":\"\",\"content_id\":" + o.getString("contentId") +
-                ",\"content_src_id_sets\":[{\"content_src_ids\":[{\"src_id_to_mux\":{\"video_src_ids\":" + o.getJSONArray("videos") + ",\"audio_src_ids\":" +
-                o.getJSONArray("audios") + "}}]}],\"priority\":" + o.getInt("priority") + ",\"timing_constraint\":\"unlimited\"}}\n"
-        );
+    private static JsonBrowser processJSON(JsonBrowser input) throws IOException {
+        JsonBrowser session = JsonBrowser.newMap();
+        session.put("content_type","movie");
+        session.put("timing_constraint","unlimited");
+        session.put("recipe_id",input.get("recipeId"));
+        session.put("priority",input.get("priority"));
+        session.put("content_uri","");
+        session.put("content_id",input.get("contentId"));
+
+
+        JsonBrowser lifetime = JsonBrowser.newMap();
+        lifetime.put("lifetime",input.get("heartbeatLifetime"));
+
+        JsonBrowser heartbeat = JsonBrowser.newMap();
+        heartbeat.put("heartbeat",lifetime);
+
+        session.put("keep_method",heartbeat);
+
+
+        JsonBrowser srcids = JsonBrowser.newMap();
+        srcids.put("video_src_ids",input.get("videos"));
+        srcids.put("audio_src_ids",input.get("audios"));
+
+        JsonBrowser srcidtomux = JsonBrowser.newMap();
+        srcidtomux.put("src_id_to_mux",srcids);
+
+        JsonBrowser array = JsonBrowser.newList();
+        array.add(srcidtomux);
+
+        JsonBrowser contentsrcids = JsonBrowser.newMap();
+        contentsrcids.put("content_src_ids",array);
+
+        JsonBrowser contentsrcidsets = JsonBrowser.newList();
+        contentsrcidsets.add(contentsrcids);
+
+        session.put("content_src_id_sets", contentsrcidsets);
+
+
+        JsonBrowser http_download_parameters = JsonBrowser.newMap();
+
+        if(input.get("urls").index(0).get("isWellKnownPort").asBoolean(false))
+            http_download_parameters.put("use_well_known_port","yes");
+        else
+            http_download_parameters.put("use_well_known_port","no");
+
+        if(input.get("urls").index(0).get("isSsl").asBoolean(false))
+            http_download_parameters.put("use_ssl","yes");
+        else
+            http_download_parameters.put("use_ssl","no");
+
+        http_download_parameters.put("transfer_preset","");
+
+        JsonBrowser innerparameters = JsonBrowser.newMap();
+        innerparameters.put("http_output_download_parameters", http_download_parameters);
+
+        JsonBrowser httpparameters = JsonBrowser.newMap();
+        httpparameters.put("parameters", innerparameters);
+
+        JsonBrowser outerparameters = JsonBrowser.newMap();
+        outerparameters.put("http_parameters", httpparameters);
+
+        JsonBrowser protocol = JsonBrowser.newMap();
+        protocol.put("name","http");
+        protocol.put("parameters", outerparameters);
+
+        session.put("protocol",protocol);
+
+
+        JsonBrowser session_operation_auth_by_signature = JsonBrowser.newMap();
+        session_operation_auth_by_signature.put("token",input.get("token"));
+        session_operation_auth_by_signature.put("signature",input.get("signature"));
+
+        JsonBrowser session_operation_auth = JsonBrowser.newMap();
+        session_operation_auth.put("session_operation_auth_by_signature",session_operation_auth_by_signature);
+
+        session.put("session_operation_auth",session_operation_auth);
+
+
+        JsonBrowser contentauth = JsonBrowser.newMap();
+        contentauth.put("auth_type",input.get("authTypes").get("http"));
+        contentauth.put("content_key_timeout",input.get("contentKeyTimeout"));
+        contentauth.put("service_id","nicovideo");
+        contentauth.put("service_user_id",input.get("serviceUserId"));
+
+        session.put("content_auth", contentauth);
+
+
+        JsonBrowser clientinfo = JsonBrowser.newMap();
+        clientinfo.put("player_id",input.get("playerId"));
+
+        session.put("client_info",clientinfo);
+
+
+        JsonBrowser out = JsonBrowser.newMap();
+        out.put("session",session);
+
+        return out;
     }
+
 }

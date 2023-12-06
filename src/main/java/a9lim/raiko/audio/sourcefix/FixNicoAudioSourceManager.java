@@ -67,7 +67,6 @@ public class FixNicoAudioSourceManager implements AudioSourceManager, HttpConfig
         httpInterfaceManager = HttpClientTools.createDefaultThreadLocalManager();
         loggedIn = new AtomicBoolean();
         if (!DataFormatTools.isNullOrEmpty(email) && !DataFormatTools.isNullOrEmpty(password)) {
-            // log in
             logIn(email,password);
         }
     }
