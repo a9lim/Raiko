@@ -19,12 +19,12 @@ package a9lim.raiko.chat;
 
 import a9lim.raiko.BotConfig;
 import a9lim.raiko.queue.DoubleDealingQueue;
+import com.sedmelluq.discord.lavaplayer.tools.JsonBrowser;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.util.concurrent.TimeUnit;
 
@@ -70,15 +70,15 @@ public class ChatBot {
         // Add new prompt to chat history
         chathist.add(new QueuedChat(temp,l));
         try {
-            JSONObject o = new JSONObject(new JSONTokener(client.newCall(new Request.Builder()
+            JsonBrowser o = JsonBrowser.parse(client.newCall(new Request.Builder()
                             .url("https://api.openai.com/v1/chat/completions")
                             .post(RequestBody.create(head + chathist + "]}",mediaType))
                             .addHeader("Authorization", "Bearer " + apiKey)
                             .addHeader("Content-Type", "application/json")
                             .build())
-                    .execute().body().byteStream()));
+                    .execute().body().byteStream());
             // Send full request to openai, and process and save result as reply
-            String reply = (String) o.query("/choices/0/message/content");
+            String reply = o.get("choices").index(0).get("message").get("content").text();
 
             // Save and json-ize new reply, escaping forbidden characters (\n and ")
             temp = ", {\"role\":\"assistant\",\"content\":" + JSONObject.quote(reply) + "},";

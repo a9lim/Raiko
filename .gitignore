@@ -4,6 +4,8 @@
 /out/
 /.idea/
 src/test/java/a9lim/raiko/JSONS.java
+src/test/java/a9lim/raiko/HTML.txt
+src/test/resources/*
 *.json
 *.txt
 nb*.xml
