@@ -20,7 +20,6 @@ package a9lim.raiko.audio.sourcefix;
 
 import com.sedmelluq.discord.lavaplayer.container.mpeg.MpegAudioTrack;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.nico.NicoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.nico.NicoAudioTrack;
 import com.sedmelluq.discord.lavaplayer.tools.JsonBrowser;
 import com.sedmelluq.discord.lavaplayer.tools.io.HttpClientTools;
@@ -43,12 +42,15 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class FixNicoAudioTrack extends DelegatedAudioTrack {
     private static final Logger log = LoggerFactory.getLogger(NicoAudioTrack.class);
 
-    private static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+    private static final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
     private final FixNicoAudioSourceManager sourceManager;
 
@@ -75,7 +77,7 @@ public class FixNicoAudioTrack extends DelegatedAudioTrack {
             log.debug("Starting NicoNico track from URL: {}", playbackUrl);
 
             try (PersistentHttpStream stream = new PersistentHttpStream(httpInterface, new URI(playbackUrl), null)) {
-                long heartbeat = info.get("session").get("keep_method").get("heartbeat").get("lifetime").asLong(120000) - 60000;
+                long heartbeat = info.get("session").get("keep_method").get("heartbeat").get("lifetime").asLong(120000) - 1000;
                 ScheduledFuture<?> heartbeatFuture = executorService.scheduleAtFixedRate(() -> {
                     try {
                         sendHeartbeat(httpInterface);
@@ -100,7 +102,7 @@ public class FixNicoAudioTrack extends DelegatedAudioTrack {
             }
 
             Document mainPage = Jsoup.parse(response.getEntity().getContent(), StandardCharsets.UTF_8.name(), "");
-            String watchdata = mainPage.getElementById("js-initial-watch-data").attributes().get("data-api-data");
+            String watchdata = mainPage.getElementById("js-initial-watch-data").attr("data-api-data");
 
             return JsonBrowser.parse(watchdata).get("media").get("delivery").get("movie").get("session");
         }
@@ -108,6 +110,7 @@ public class FixNicoAudioTrack extends DelegatedAudioTrack {
 
     private String loadPlaybackUrl(HttpInterface httpInterface) throws IOException {
         JsonBrowser watchdata = processJSON(loadVideoMainPage(httpInterface));
+
         HttpPost request = new HttpPost("https://api.dmc.nico/api/sessions?_format=json");
         request.addHeader("Host", "api.dmc.nico");
         request.addHeader("Connection","keep-alive");

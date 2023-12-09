@@ -105,10 +105,10 @@ public class FixNicoAudioSourceManager implements AudioSourceManager, HttpConfig
 
     private AudioTrack extractTrackFromXml(String videoId, Document document) {
         for (Element element : document.select(":root > thumb")) {
-            String uploader = element.select("user_nickname").first().text();
-            String title = element.select("title").first().text();
-            String thumbnailUrl = element.select("thumbnail_url").first().text();
-            long duration = DataFormatTools.durationTextToMillis(element.select("length").first().text());
+            String uploader = element.selectFirst("user_nickname").text();
+            String title = element.selectFirst("title").text();
+            String thumbnailUrl = element.selectFirst("thumbnail_url").text();
+            long duration = DataFormatTools.durationTextToMillis(element.selectFirst("length").text());
 
             return new FixNicoAudioTrack(new AudioTrackInfo(title,
                     uploader,

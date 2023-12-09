@@ -20,6 +20,7 @@ package a9lim.raiko.audio;
 
 import a9lim.raiko.Bot;
 import a9lim.raiko.BotConfig;
+import a9lim.raiko.audio.sourcefix.BiliAudioSourceManager;
 import a9lim.raiko.audio.sourcefix.FixNicoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.container.MediaContainerRegistry;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -55,6 +56,7 @@ public class PlayerManager extends DefaultAudioPlayerManager {
         registerSourceManager(new TwitchStreamAudioSourceManager());
         registerSourceManager(new BeamAudioSourceManager());
         registerSourceManager(new GetyarnAudioSourceManager());
+        registerSourceManager(new BiliAudioSourceManager());
         registerSourceManager(new HttpAudioSourceManager(MediaContainerRegistry.DEFAULT_REGISTRY));
         registerSourceManager(new LocalAudioSourceManager(MediaContainerRegistry.DEFAULT_REGISTRY));
     }

@@ -8,8 +8,6 @@ import java.io.IOException;
 
 public class JTest {
     public static void main(String[] args) throws IOException {
-        System.out.println(buildJSON(JSONS.A));
-        System.out.println(new JSONObject(processJSON(JSONS.B).text()));
 
     }
     public static JSONObject process(JSONObject jason) {
