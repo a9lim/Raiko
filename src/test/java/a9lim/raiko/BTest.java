@@ -22,14 +22,26 @@ import java.nio.charset.StandardCharsets;
 
 public class BTest {
     public static void main(String[] args) throws IOException {
-        InputStream i = BTest.class.getResourceAsStream("/HTML.txt");
-        Document document = Jsoup.parse(i, StandardCharsets.UTF_8.name(), "");
-        // skip "window.__playinfo__="
-        String playInfo = document.selectFirst("script:containsData(window.__playinfo__)").data().substring(20);
-        JSONObject data = new JSONObject(playInfo).getJSONObject("data").getJSONObject("dash");
-        System.out.println(data.getJSONArray("video").getJSONObject(0).get("base_url"));
-        System.out.println(data.getJSONArray("audio").getJSONObject(0).get("base_url"));
 
+        HttpInterface httpInterface = HttpClientTools.createDefaultThreadLocalManager().getInterface();
+
+        String videoId = "BV1ne411X7vw";
+
+        HttpGet request = new HttpGet("https://api.bilibili.com/x/web-interface/view?bvid="+videoId);
+        CloseableHttpResponse response = httpInterface.execute(request);
+//        System.out.println(new String(response.getEntity().getContent().readAllBytes()));
+
+        String cid = JsonBrowser.parse(response.getEntity().getContent()).get("data").get("cid").text();
+
+        request = new HttpGet("https://api.bilibili.com/x/player/wbi/playurl?bvid="+videoId+"&"+"cid="+cid);
+        request.addHeader( "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.3");
+        request.addHeader("Origin", "https://www.bilibili.com");
+        request.addHeader("Referer", "https://www.bilibili.com");
+
+
+        response = httpInterface.execute(request);
+
+        JsonBrowser.parse(response.getEntity().getContent()).get("data").get("durl").index(0).get("url").text();
     }
 
 }
