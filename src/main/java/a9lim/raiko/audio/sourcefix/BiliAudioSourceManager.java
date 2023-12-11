@@ -61,7 +61,7 @@ public class BiliAudioSourceManager implements AudioSourceManager, HttpConfigura
 
     @Override
     public String getSourceName() {
-        return "niconico";
+        return "bilibili";
     }
 
     @Override
@@ -77,9 +77,13 @@ public class BiliAudioSourceManager implements AudioSourceManager, HttpConfigura
     }
 
     private AudioTrack loadTrack(String videoId) {
-        HttpGet request = new HttpGet("https://www.bilibili.com/video/" + videoId +"/");
-        request.addHeader("Host", "www.bilibili.com");
+        HttpGet request = new HttpGet("https://api.bilibili.com/x/web-interface/view?bvid="+videoId);
+
+        request.addHeader("Origin", "https://www.bilibili.com");
+        request.addHeader("Referer", "https://www.bilibili.com");
         request.addHeader("Connection","keep-alive");
+        request.addHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.3");
+
         try (HttpInterface httpInterface = getHttpInterface()) {
             try (CloseableHttpResponse response = httpInterface.execute(request)) {
                 int statusCode = response.getStatusLine().getStatusCode();
@@ -87,34 +91,26 @@ public class BiliAudioSourceManager implements AudioSourceManager, HttpConfigura
                     throw new IOException("Unexpected response code from video info: " + statusCode);
                 }
 
-                Element head = Jsoup.parse(response.getEntity().getContent(), StandardCharsets.UTF_8.name(), "").head();
-                return extractTrackFromHtml(videoId, head);
+                JsonBrowser data = JsonBrowser.parse(response.getEntity().getContent()).get("data");
+                long duration = DataFormatTools.durationTextToMillis(data.get("duration").text());
+                String uploader = data.get("owner").get("name").text();
+                String title = data.get("title").text();
+                String thumbnailUrl = data.get("pic").text();
+                long cid = data.get("cid").asLong(0);
+
+                return new BiliAudioTrack(new AudioTrackInfo(title,
+                        uploader,
+                        duration,
+                        videoId,
+                        false,
+                        getWatchUrl(videoId),
+                        thumbnailUrl,
+                        null
+                ), this, cid);
             }
         } catch (IOException e) {
             throw new FriendlyException("Error occurred when extracting video info.", SUSPICIOUS, e);
         }
-    }
-
-    private AudioTrack extractTrackFromHtml(String videoId, Element head) throws IOException {
-        String playInfo = head.selectFirst("script:containsData(window.__playinfo__)").data().substring(20);
-        JsonBrowser data = JsonBrowser.parse(playInfo).get("data").get("dash");
-        String playbackUrl = data.get("audio").index(0).get("baseUrl").text();
-
-        long duration = DataFormatTools.durationTextToMillis(data.get("duration").text());
-        String uploader = head.selectFirst("[itemprop=\"author\"]").attr("content");
-        String title = head.selectFirst("[itemprop=\"name\"]").attr("content");
-        String thumbnailUrl = "http:"+head.selectFirst("[itemprop=\"thumbnailUrl\"]").attr("content");
-
-        return new BiliAudioTrack(new AudioTrackInfo(title,
-                uploader,
-                duration,
-                videoId,
-                false,
-                getWatchUrl(videoId),
-                thumbnailUrl,
-                null
-        ), this, playbackUrl);
-
     }
 
     @Override

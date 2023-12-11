@@ -20,7 +20,8 @@ package a9lim.raiko.audio.sourcefix;
 
 import com.sedmelluq.discord.lavaplayer.container.mpeg.MpegAudioTrack;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.nico.NicoAudioTrack;
+import com.sedmelluq.discord.lavaplayer.tools.DataFormatTools;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.tools.JsonBrowser;
 import com.sedmelluq.discord.lavaplayer.tools.io.HttpClientTools;
 import com.sedmelluq.discord.lavaplayer.tools.io.HttpInterface;
@@ -29,11 +30,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import com.sedmelluq.discord.lavaplayer.track.DelegatedAudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
@@ -42,40 +40,38 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+
+import static com.sedmelluq.discord.lavaplayer.tools.FriendlyException.Severity.SUSPICIOUS;
 
 public class BiliAudioTrack extends DelegatedAudioTrack {
     private static final Logger log = LoggerFactory.getLogger(BiliAudioTrack.class);
 
     private final BiliAudioSourceManager sourceManager;
 
-    private final String playbackUrl;
+    private final long cid;
 
     /**
      * @param trackInfo     Track info
      * @param sourceManager Source manager which was used to find this track
      */
-    public BiliAudioTrack(AudioTrackInfo trackInfo, BiliAudioSourceManager sourceManager, String url) {
+    public BiliAudioTrack(AudioTrackInfo trackInfo, BiliAudioSourceManager sourceManager, long url) {
         super(trackInfo);
 
         this.sourceManager = sourceManager;
-        playbackUrl = url;
+        cid = url;
     }
 
     public BiliAudioTrack(AudioTrackInfo trackInfo, BiliAudioSourceManager sourceManager) {
         super(trackInfo);
-        String playbackUrl1;
+        long tempCID;
 
         this.sourceManager = sourceManager;
         try {
-            playbackUrl1 = loadPlaybackUrl(sourceManager.getHttpInterface());
+            tempCID = loadCID(sourceManager.getHttpInterface());
         } catch (IOException ex){
-            playbackUrl1 = null;
+            tempCID = 0L;
         }
-        playbackUrl = playbackUrl1;
+        cid = tempCID;
     }
 
     @Override
@@ -83,20 +79,23 @@ public class BiliAudioTrack extends DelegatedAudioTrack {
 
         try (HttpInterface httpInterface = sourceManager.getHttpInterface()) {
 
-            log.debug("Starting BiliBili track from URL: {}", playbackUrl);
+            String url = loadPlaybackUrl(httpInterface);
 
-            try (PersistentHttpStream stream = new PersistentHttpStream(httpInterface, new URI(playbackUrl), null)) {
+            log.debug("Starting BiliBili track from URL: {}", url);
 
-                // format is weird!!
+            try (PersistentHttpStream stream = new PersistentHttpStream(httpInterface, new URI(url), null)) {
+
                 processDelegate(new MpegAudioTrack(trackInfo, stream), localExecutor);
             }
         }
     }
 
     private String loadPlaybackUrl(HttpInterface httpInterface) throws IOException {
-        HttpGet request = new HttpGet(trackInfo.uri);
-        request.addHeader("Host", "www.bilibili.com");
+        HttpGet request = new HttpGet("https://api.bilibili.com/x/player/wbi/playurl?bvid="+trackInfo.identifier+"&"+"cid="+ cid);
+        request.addHeader("Origin", "https://www.bilibili.com");
+        request.addHeader("Referer", "https://www.bilibili.com");
         request.addHeader("Connection","keep-alive");
+        request.addHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.3");
 
         try (CloseableHttpResponse response = httpInterface.execute(request)) {
             int statusCode = response.getStatusLine().getStatusCode();
@@ -104,10 +103,28 @@ public class BiliAudioTrack extends DelegatedAudioTrack {
                 throw new IOException("Unexpected status code from video main page: " + statusCode);
             }
 
-            Document mainPage = Jsoup.parse(response.getEntity().getContent(), StandardCharsets.UTF_8.name(), "");
-            String playInfo = mainPage.selectFirst("script:containsData(window.__playinfo__)").data().substring(20);
+            JsonBrowser data = JsonBrowser.parse(response.getEntity().getContent());
 
-            return JsonBrowser.parse(playInfo).get("data").get("dash").get("audio").index(0).get("baseUrl").text();
+            return data.get("data").get("durl").index(0).get("url").text();
+        }
+    }
+
+    private long loadCID(HttpInterface httpInterface) throws IOException{
+        HttpGet request = new HttpGet("https://api.bilibili.com/x/web-interface/view?bvid="+trackInfo.identifier);
+
+        request.addHeader("Origin", "https://www.bilibili.com");
+        request.addHeader("Referer", "https://www.bilibili.com");
+        request.addHeader("Connection","keep-alive");
+        request.addHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.3");
+
+        try (CloseableHttpResponse response = httpInterface.execute(request)) {
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (!HttpClientTools.isSuccessWithContent(statusCode)) {
+                throw new IOException("Unexpected response code from video info: " + statusCode);
+            }
+
+            JsonBrowser data = JsonBrowser.parse(response.getEntity().getContent()).get("data");
+            return data.get("cid").asLong(0);
         }
     }
 
