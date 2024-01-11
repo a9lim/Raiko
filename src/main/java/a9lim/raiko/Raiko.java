@@ -27,10 +27,7 @@ import a9lim.raiko.commands.admin.PrefixCmd;
 import a9lim.raiko.commands.admin.SettcCmd;
 import a9lim.raiko.commands.admin.SetvcCmd;
 import a9lim.raiko.commands.chat.*;
-import a9lim.raiko.commands.general.AboutCmd;
-import a9lim.raiko.commands.general.EchoCmd;
-import a9lim.raiko.commands.general.PingCmd;
-import a9lim.raiko.commands.general.SettingsCmd;
+import a9lim.raiko.commands.general.*;
 import a9lim.raiko.commands.music.*;
 import a9lim.raiko.commands.owner.*;
 import a9lim.raiko.entities.Prompt;
@@ -99,6 +96,7 @@ public class Raiko {
                         new PingCmd(),
                         new SettingsCmd(),
                         new EchoCmd(),
+                        new RollCmd(),
 
                         new NowplayingCmd(),
                         new PlayCmd(),
@@ -163,8 +161,6 @@ public class Raiko {
             bot.setJDA( JDABuilder.create(config.getToken(), Arrays.asList(INTENTS))
                     .enableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE)
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.ONLINE_STATUS, CacheFlag.SCHEDULED_EVENTS)
-//                    .setActivity(config.getGame())
-//                    .setStatus(config.getStatus())
                     .addEventListeners(cb.build(), waiter, new Listener(bot))
                     .setBulkDeleteSplittingEnabled(true).build() );
         } catch (IllegalArgumentException ex) {
