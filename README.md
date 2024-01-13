@@ -8,7 +8,6 @@ Discord music + chatbot forked from [jagrosh's JMusicBot](https://github.com/jag
 ## Features
 * (Relatively) easy to use 
 * Supports all sources supported by [LavaPlayer](https://github.com/lavalink-devs/lavaplayer)
-* Support for NicoNico
 * Optional OpenAI chatbot with configurable prompt
 * Improved performance
 
@@ -22,7 +21,7 @@ Discord music + chatbot forked from [jagrosh's JMusicBot](https://github.com/jag
 
 ## Main Changes
 * Migrated to Java 21
-* Reworked to use [JDA 5.0.0](https://github.com/discord-jda/JDA), [LavaPlayer 2.0.3](https://github.com/lavalink-devs/lavaplayer), and several other updated libraries
+* Reworked to use [JDA 5.0.0](https://github.com/discord-jda/JDA), [LavaPlayer 2.1.0](https://github.com/lavalink-devs/lavaplayer), and several other updated libraries
 * [JDA-Utilities](https://github.com/JDA-Applications/JDA-Utilities) forked and directly incorporated into project
 * ChatGPT-powered chatbot integrated
 * Added support for NicoNico
