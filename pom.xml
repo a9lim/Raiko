@@ -26,7 +26,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>5.0.0-beta.19</version>
+            <version>5.0.0-beta.20</version>
         </dependency>
         <dependency>
             <groupId>dev.arbjerg</groupId>
@@ -36,17 +36,12 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20231013</version>
+            <version>20240205</version>
         </dependency>
-        <!--dependency>
-            <groupId>com.github.whya5448.lavaplayer-jda-nas</groupId>
-            <artifactId>jda-nas</artifactId>
-            <version>1.0.6.4</version>
-        </dependency-->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.4.12</version>
+            <version>1.5.1</version>
         </dependency>
         <dependency>
             <groupId>com.typesafe</groupId>
@@ -56,19 +51,18 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.17.1</version>
+            <version>1.17.2</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.16.0</version>
+            <version>1.16.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.7</version>
+            <version>2.0.12</version>
         </dependency>
-        <!--todo: move httpclient up-->
     </dependencies>
 
     <build>
@@ -76,7 +70,7 @@
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
-            <version>3.5.1</version>
+            <version>3.5.2</version>
             <executions>
                 <execution>
                     <phase>package</phase>
