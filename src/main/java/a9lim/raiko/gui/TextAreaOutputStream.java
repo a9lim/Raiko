@@ -18,6 +18,8 @@
 
 package a9lim.raiko.gui;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.OutputStream;
@@ -71,12 +73,12 @@ public class TextAreaOutputStream extends OutputStream {
     }
 
     @Override
-    public synchronized void write(byte[] ba) {
+    public synchronized void write(@NotNull byte[] ba) {
         write(ba, 0, ba.length);
     }
 
     @Override
-    public synchronized void write(byte[] ba, int str, int len) {
+    public synchronized void write(@NotNull byte[] ba, int str, int len) {
         if (appender != null)
             appender.append(bytesToString(ba, str, len));
     }

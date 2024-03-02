@@ -98,7 +98,7 @@ public abstract class Command implements Comparable<Command>{
         // availability check
         if (event.getChannelType() == ChannelType.TEXT) {
             // bot perms
-            for (Permission p : botPermissions) {
+            for (Permission p : botPermissions)
                 if (p.isChannel()) {
                     if (p.name().startsWith("VOICE")) {
                         GuildVoiceState gvc = event.getMember().getVoiceState();
@@ -118,10 +118,9 @@ public abstract class Command implements Comparable<Command>{
                     terminate(event, String.format(BOT_PERM, event.getClient().getError(), p.getName(), "Guild"));
                     return;
                 }
-            }
 
             //user perms
-            for (Permission p : userPermissions) {
+            for (Permission p : userPermissions)
                 if (p.isChannel()) {
                     if (!event.getMember().hasPermission(event.getTextChannel(), p)) {
                         terminate(event, String.format(USER_PERM, event.getClient().getError(), p.getName(), "Channel"));
@@ -131,7 +130,6 @@ public abstract class Command implements Comparable<Command>{
                     terminate(event, String.format(USER_PERM, event.getClient().getError(), p.getName(), "Guild"));
                     return;
                 }
-            }
         } else if (guildOnly) {
             terminate(event, event.getClient().getError() + " This command cannot be used in Direct messages");
             return;
@@ -247,12 +245,8 @@ public abstract class Command implements Comparable<Command>{
             case GUILD -> event.getGuild() != null ? cooldownScope.genKey(name, event.getGuild().getIdLong()) :
                     CooldownScope.CHANNEL.genKey(name, event.getChannel().getIdLong());
             case CHANNEL -> cooldownScope.genKey(name, event.getChannel().getIdLong());
-            case SHARD ->
-                    event.getJDA().getShardInfo() != null ? cooldownScope.genKey(name, event.getJDA().getShardInfo().getShardId()) :
-                            CooldownScope.GLOBAL.genKey(name, 0);
-            case USER_SHARD ->
-                    event.getJDA().getShardInfo() != null ? cooldownScope.genKey(name, event.getAuthor().getIdLong(), event.getJDA().getShardInfo().getShardId()) :
-                            CooldownScope.USER.genKey(name, event.getAuthor().getIdLong());
+            case SHARD -> cooldownScope.genKey(name, event.getJDA().getShardInfo().getShardId());
+            case USER_SHARD -> cooldownScope.genKey(name, event.getAuthor().getIdLong(), event.getJDA().getShardInfo().getShardId());
             case GLOBAL -> cooldownScope.genKey(name, 0);
         };
     }

@@ -36,6 +36,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayDeque;
@@ -88,6 +89,7 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
         return !guild(jda).getSelfMember().getVoiceState().inAudioChannel() || audioPlayer.getPlayingTrack() == null;
     }
 
+    @NotNull
     public AudioPlayer getPlayer() {
         return audioPlayer;
     }
@@ -208,28 +210,6 @@ public class AudioHandler extends AudioEventAdapter implements AudioSendHandler 
     public String getStatusEmoji() {
         return audioPlayer.isPaused() ? PAUSE_EMOJI : PLAY_EMOJI;
     }
-
-    // Audio Send Handler methods
-    /*@Override
-    public boolean canProvide() 
-    {
-        if (lastFrame == null)
-            lastFrame = audioPlayer.provide();
-
-        return lastFrame != null;
-    }
-
-    @Override
-    public byte[] provide20MsAudio() 
-    {
-        if (lastFrame == null) 
-            lastFrame = audioPlayer.provide();
-
-        byte[] data = lastFrame != null ? lastFrame.getData() : null;
-        lastFrame = null;
-
-        return data;
-    }*/
 
     @Override
     public boolean canProvide() {

@@ -361,7 +361,7 @@ public class CommandEvent {
     }
 
     public Member getSelfMember() {
-        return event.getGuild() == null ? null : event.getGuild().getSelfMember();
+        return event.getGuild().getSelfMember();
     }
 
     public boolean isOwner() {

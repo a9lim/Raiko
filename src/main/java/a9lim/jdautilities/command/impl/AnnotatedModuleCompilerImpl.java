@@ -83,15 +83,13 @@ public class AnnotatedModuleCompilerImpl implements AnnotatedModuleCompiler {
         // Category
         if (!properties.category().location().equals(JDACommand.Category.class)) {
             JDACommand.Category category = properties.category();
-            for (Field field : category.location().getDeclaredFields()) {
-                if (Modifier.isStatic(field.getModifiers()) && field.getType().equals(Command.Category.class) && category.name().equalsIgnoreCase(field.getName())){
+            for (Field field : category.location().getDeclaredFields())
+                if (Modifier.isStatic(field.getModifiers()) && field.getType().equals(Command.Category.class) && category.name().equalsIgnoreCase(field.getName()))
                     try {
                         builder.setCategory((Command.Category) field.get(null));
                     } catch (IllegalAccessException e) {
                         LOG.error("Encountered Exception ", e);
                     }
-                }
-            }
         }
 
         // Guild Only
@@ -134,7 +132,7 @@ public class AnnotatedModuleCompilerImpl implements AnnotatedModuleCompiler {
             });
         } else if (parameters[0] == CommandEvent.class) {
             // Single parameter CommandEvent
-            if (parameters.length == 1) {
+            if (parameters.length == 1)
                 return builder.build(event -> {
                     try {
                         method.invoke(o, event);
@@ -142,9 +140,8 @@ public class AnnotatedModuleCompilerImpl implements AnnotatedModuleCompiler {
                         LOG.error("Encountered Exception ", e);
                     }
                 });
-            }
             // Dual Parameter CommandEvent, Command
-            if (parameters[1] == Command.class) {
+            if (parameters[1] == Command.class)
                 return builder.build((command, event) -> {
                     try {
                         method.invoke(o, event, command);
@@ -152,7 +149,6 @@ public class AnnotatedModuleCompilerImpl implements AnnotatedModuleCompiler {
                         LOG.error("Encountered Exception ", e);
                     }
                 });
-            }
         }
 
         // If we reach this point there is a malformed method and we shouldn't finish the compilation.
