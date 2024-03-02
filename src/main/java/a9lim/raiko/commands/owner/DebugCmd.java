@@ -47,7 +47,6 @@ public class DebugCmd extends OwnerCommand {
         for (String key : PROPERTIES)
             sb.append("\n  ").append(key).append(" = ").append(System.getProperty(key));
         sb.append("\n\nRaiko Information:")
-                //.append("\n  Version = ").append(OtherUtil.getCurrentVersion())
                 .append("\n  Owner = ").append(c.getOwnerId())
                 .append("Prefix = ");
         c.getPrefixes().forEach(s -> sb.append(s).append(", "));
@@ -57,13 +56,11 @@ public class DebugCmd extends OwnerCommand {
                 .append("\n  StayInChannel = ").append(c.getStay());
         sb.append("\n\nDependency Information:")
                 .append("\n  JDA Version = ").append(JDAInfo.VERSION)
-//                .append("\n  JDA-Utilities Version = ").append(JDAUtilitiesInfo.VERSION)
                 .append("\n  Lavaplayer Version = ").append(PlayerLibrary.VERSION);
-        long total = Runtime.getRuntime().totalMemory() / 1024 / 1024;
-        long used = total - (Runtime.getRuntime().freeMemory() / 1024 / 1024);
+        long total = Runtime.getRuntime().totalMemory() >> 20;
         sb.append("\n\nRuntime Information:")
                 .append("\n  Total Memory = ").append(total)
-                .append("\n  Used Memory = ").append(used);
+                .append("\n  Used Memory = ").append(total - (Runtime.getRuntime().freeMemory() >> 20));
         sb.append("\n\nDiscord Information:")
                 .append("\n  ID = ").append(event.getJDA().getSelfUser().getId())
                 .append("\n  Guilds = ").append(event.getJDA().getGuildCache().size())

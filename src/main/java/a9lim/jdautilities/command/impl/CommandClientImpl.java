@@ -36,6 +36,7 @@ import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.slf4j.Logger;
@@ -303,7 +304,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
     }
 
     @Override
-    public void onEvent(GenericEvent event) {
+    public void onEvent(@NotNull GenericEvent event) {
         if (event instanceof MessageReceivedEvent e)
             onMessageReceived(e);
 
@@ -397,25 +398,22 @@ public class CommandClientImpl implements CommandClient, EventListener {
         if (carbonKey != null) {
             FormBody.Builder bodyBuilder = new FormBody.Builder()
                 .add("key", carbonKey)
-                .add("servercount", Integer.toString(jda.getGuilds().size()));
-
-            if (jda.getShardInfo() != null) {
-                bodyBuilder.add("shard_id", Integer.toString(jda.getShardInfo().getShardId()))
-                    .add("shard_count", Integer.toString(jda.getShardInfo().getShardTotal()));
-            }
+                .add("servercount", Integer.toString(jda.getGuilds().size()))
+                .add("shard_id", Integer.toString(jda.getShardInfo().getShardId()))
+                .add("shard_count", Integer.toString(jda.getShardInfo().getShardTotal()));
 
             client.newCall(new Request.Builder()
                     .post(bodyBuilder.build())
                     .url("https://www.carbonitex.net/discord/data/botdata.php")
                     .build()).enqueue(new Callback() {
                 @Override
-                public void onResponse(Call call, Response response) {
+                public void onResponse(@NotNull Call call, @NotNull Response response) {
                     LOG.info("Successfully send information to carbonitex.net");
                     response.close();
                 }
 
                 @Override
-                public void onFailure(Call call, IOException e) {
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     LOG.error("Failed to send information to carbonitex.net ", e);
                 }
             });
@@ -426,11 +424,9 @@ public class CommandClientImpl implements CommandClient, EventListener {
             return;
         }
 
-        JSONObject body = new JSONObject().put("guildCount", jda.getGuilds().size());
-        if (jda.getShardInfo() != null) {
-            body.put("shardId", jda.getShardInfo().getShardId())
+        JSONObject body = new JSONObject().put("guildCount", jda.getGuilds().size())
+                .put("shardId", jda.getShardInfo().getShardId())
                 .put("shardCount", jda.getShardInfo().getShardTotal());
-        }
 
         client.newCall(new Request.Builder()
                 .post(RequestBody.create(body.toString(),mediaType))
@@ -439,7 +435,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
                 .header("Content-Type", "application/json")
                 .build()).enqueue(new Callback() {
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 if (response.isSuccessful()) {
                     LOG.info("Successfully sent information to discord.bots.gg");
                     try (Reader reader = response.body().charStream()) {
@@ -453,7 +449,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
             }
 
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 LOG.error("Failed to send information to discord.bots.gg ", e);
             }});
     }
@@ -474,7 +470,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
     }
 
     private GuildSettingsProvider provideSettings(Guild guild) {
-        return getSettingsFor(guild) instanceof GuildSettingsProvider e ? e : null;
+        return getSettingsFor(guild);
     }
 
     private static String[] splitOnPrefixLength(String rawContent, int length) {
@@ -482,7 +478,7 @@ public class CommandClientImpl implements CommandClient, EventListener {
     }
 
     public void linkIds(long callId, Message message) {
-        if (usesLinkedDeletion()) {
+        if (usesLinkedDeletion())
             synchronized (linkMap) {
                 Set<Message> stored = linkMap.get(callId);
                 if (stored != null)
@@ -493,6 +489,5 @@ public class CommandClientImpl implements CommandClient, EventListener {
                     linkMap.add(callId, stored);
                 }
             }
-        }
     }
 }

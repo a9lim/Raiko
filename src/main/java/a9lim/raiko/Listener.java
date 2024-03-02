@@ -63,7 +63,7 @@ public class Listener extends ListenerAdapter {
     }
 
     @Override
-    public void onShutdown(ShutdownEvent event) {
+    public void onShutdown(@NotNull ShutdownEvent event) {
         bot.shutdown();
     }
 
