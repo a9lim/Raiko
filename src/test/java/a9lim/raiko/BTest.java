@@ -55,12 +55,6 @@ public class BTest {
 
             System.out.println(new String(response.getEntity().getContent().readAllBytes()));
 
-
-//            Header location = response.getFirstHeader("Location");
-//
-//            if (location == null || location.getValue().contains("message=")) {
-//                throw new FriendlyException("Login details for NicoNico are invalid.", COMMON, null);
-//            }
         }
 
     }

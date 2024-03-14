@@ -43,7 +43,7 @@ public class BotConfig implements AliasSource {
     private Path path;
     private String token, playlistsFolder,
             successEmoji, warningEmoji, errorEmoji, loadingEmoji, searchingEmoji,
-            cgpttoken, preprompt, ytemail, ytpw, nndemail, nndpw;
+            cgpttoken, preprompt, ytemail, ytpw;
     private List<String> prefixes;
     private boolean stayInChannel, songInGame, npImages,
             model, valid;
@@ -93,8 +93,6 @@ public class BotConfig implements AliasSource {
 
             ytemail = noneblank(config.getString("ytemail"));
             ytpw = noneblank(config.getString("ytpw"));
-            nndemail = noneblank(config.getString("nndemail"));
-            nndpw = noneblank(config.getString("nndpw"));
 
             // we may need to write a new config file
             boolean write = false;
@@ -300,11 +298,4 @@ public class BotConfig implements AliasSource {
         return ytpw;
     }
 
-    public String getNNDEmail() {
-        return nndemail;
-    }
-
-    public String getNNDPW() {
-        return nndpw;
-    }
 }
