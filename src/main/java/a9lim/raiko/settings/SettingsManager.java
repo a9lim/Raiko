@@ -27,15 +27,17 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.HashMap;
 
 public class SettingsManager implements GuildSettingsManager<Settings> {
+    private final static String SETTINGS_FILE = "serversettings.json";
     private final HashMap<Long, Settings> settings;
 
     public SettingsManager() {
         settings = new HashMap<>();
         try {
-            JSONObject loadedSettings = new JSONObject(new String(Files.readAllBytes(OtherUtil.getPath("serversettings.json"))));
+            JSONObject loadedSettings = new JSONObject(new String(Files.readAllBytes(OtherUtil.getPath(SETTINGS_FILE))));
             loadedSettings.keySet().forEach((id) -> {
                 JSONObject o = loadedSettings.getJSONObject(id);
 
@@ -52,9 +54,18 @@ public class SettingsManager implements GuildSettingsManager<Settings> {
                         o.has("repeat_mode") ? o.getEnum(RepeatMode.class, "repeat_mode") : RepeatMode.OFF,
                         o.has("prefix") ? o.getString("prefix") : null));
             });
+        } catch (NoSuchFileException e) {
+            // create an empty json file
+            try {
+                LoggerFactory.getLogger("Settings").info("serversettings.json will be created in " + OtherUtil.getPath("serversettings.json").toAbsolutePath());
+                Files.write(OtherUtil.getPath("serversettings.json"), new JSONObject().toString(4).getBytes());
+            } catch(IOException ex) {
+                LoggerFactory.getLogger("Settings").warn("Failed to create new settings file: "+ex);
+            }
         } catch (IOException | JSONException e) {
-            LoggerFactory.getLogger("Settings").warn("Failed to load server settings (this is normal if no settings have been set yet): " + e);
+            LoggerFactory.getLogger("Settings").warn("Failed to load server settings: "+e);
         }
+        LoggerFactory.getLogger("Settings").info("serversettings.json loaded from " + OtherUtil.getPath("serversettings.json").toAbsolutePath());
     }
 
     /**
@@ -95,7 +106,7 @@ public class SettingsManager implements GuildSettingsManager<Settings> {
             obj.put(Long.toString(key), o);
         });
         try {
-            Files.write(OtherUtil.getPath("serversettings.json"), obj.toString(4).getBytes());
+            Files.write(OtherUtil.getPath(SETTINGS_FILE), obj.toString(4).getBytes());
         } catch (IOException ex) {
             LoggerFactory.getLogger("Settings").warn("Failed to write to file: " + ex);
         }
