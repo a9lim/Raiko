@@ -72,6 +72,7 @@ public abstract class MusicCommand extends BotCommand {
             if (!event.getGuild().getSelfMember().getVoiceState().inAudioChannel()) {
                 try {
                     event.getGuild().getAudioManager().openAudioConnection(userState.getChannel());
+                    event.getGuild().getAudioManager().setSelfDeafened(true);
                 } catch (PermissionException ex) {
                     event.replyError(" I am unable to connect to " + userState.getChannel().getAsMention() + "!");
                     return;

@@ -18,6 +18,7 @@
 
 package a9lim.raiko;
 
+import a9lim.jdautilities.command.CommandClient;
 import a9lim.jdautilities.command.CommandClientBuilder;
 import a9lim.jdautilities.commons.waiter.EventWaiter;
 import a9lim.raiko.chat.ChatBot;
@@ -48,7 +49,7 @@ public class Raiko {
     public final static Logger LOG = LoggerFactory.getLogger(Raiko.class);
     public final static Permission[] RECOMMENDED_PERMS = {Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION,
             Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_ATTACH_FILES, Permission.MESSAGE_MANAGE, Permission.MESSAGE_EXT_EMOJI,
-            Permission.MANAGE_CHANNEL, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.NICKNAME_CHANGE};
+            Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.NICKNAME_CHANGE};
     public final static GatewayIntent[] INTENTS = {GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS,
             GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_EMOJIS_AND_STICKERS};
 
@@ -75,10 +76,41 @@ public class Raiko {
         EventWaiter waiter = new EventWaiter();
         SettingsManager settings = new SettingsManager();
         Bot bot = new Bot(waiter, config, settings);
+        CommandClient client = createCommandClient(config, settings, bot);
 
+        if (!prompt.isNoGUI()) {
+            try {
+                GUI gui = new GUI(bot);
+                bot.setGUI(gui);
+                gui.init();
+            } catch (Exception e) {
+                LOG.error("Could not start GUI. If you are "
+                        + "running on a server or in a location where you cannot display a "
+                        + "window, please run in nogui mode using the -Dnogui=true flag.");
+            }
+        }
+
+        // attempt to log in and start
+        try {
+            bot.setJDA(JDABuilder.create(config.getToken(), Arrays.asList(INTENTS))
+                    .enableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE)
+                    .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.ONLINE_STATUS, CacheFlag.SCHEDULED_EVENTS)
+                    .addEventListeners(client, waiter, new Listener(bot))
+                    .setBulkDeleteSplittingEnabled(true).build());
+        } catch (IllegalArgumentException ex) {
+            prompt.alert(Prompt.Level.ERROR, "Raiko", "Some aspect of the configuration is "
+                    + "invalid: " + ex + "\nConfig Location: " + config.getConfigLocation());
+            System.exit(1);
+        } catch (ErrorResponseException ex) {
+            prompt.alert(Prompt.Level.ERROR, "Raiko", ex + "\nInvalid reponse returned when "
+                    + "attempting to connect, please make sure you're connected to the internet");
+            System.exit(1);
+        }
+    }
+    private static CommandClient createCommandClient(BotConfig config, SettingsManager settings, Bot bot){
         AboutCmd aboutCmd = new AboutCmd(Color.BLUE.brighter(),
-                "raiko gaming",
-                new String[]{"high-quality (touhou) music playback", "DoubleDealingQueue™ Technology", "(somewhat) easy to host yourself"},
+                "Touhou-themed Music Bot",
+                new String[]{"High-quality (Touhou) music playback", "DoubleDealingQueue™ Technology (Literally just a deque)", "(Somewhat) Easy to host yourself"},
                 RECOMMENDED_PERMS);
         aboutCmd.setIsAuthor(false);
         aboutCmd.setReplacementCharacter("\uD83C\uDFB6"); // 🎶
@@ -130,7 +162,7 @@ public class Raiko {
                         new SetstatusCmd(),
                         new ShutdownCmd());
 
-        if(config.getCgpttoken() != null) {
+        if (config.getCgpttoken() != null) {
             ChatCommand.setChatBot(new ChatBot(config));
             cb.addCommands(
                     new ChatCmd(),
@@ -143,34 +175,6 @@ public class Raiko {
 
         cb.setStatus(config.getStatus());
         cb.setActivity(config.getGame());
-
-        if (!prompt.isNoGUI()) {
-            try {
-                GUI gui = new GUI(bot);
-                bot.setGUI(gui);
-                gui.init();
-            } catch (Exception e) {
-                LOG.error("Could not start GUI. If you are "
-                        + "running on a server or in a location where you cannot display a "
-                        + "window, please run in nogui mode using the -Dnogui=true flag.");
-            }
-        }
-
-        // attempt to log in and start
-        try {
-            bot.setJDA( JDABuilder.create(config.getToken(), Arrays.asList(INTENTS))
-                    .enableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE)
-                    .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.ONLINE_STATUS, CacheFlag.SCHEDULED_EVENTS)
-                    .addEventListeners(cb.build(), waiter, new Listener(bot))
-                    .setBulkDeleteSplittingEnabled(true).build() );
-        } catch (IllegalArgumentException ex) {
-            prompt.alert(Prompt.Level.ERROR, "Raiko", "Some aspect of the configuration is "
-                    + "invalid: " + ex + "\nConfig Location: " + config.getConfigLocation());
-            System.exit(1);
-        } catch (ErrorResponseException ex) {
-            prompt.alert(Prompt.Level.ERROR, "Raiko", ex + "\nInvalid reponse returned when "
-                    + "attempting to connect, please make sure you're connected to the internet");
-            System.exit(1);
-        }
+        return cb.build();
     }
 }
