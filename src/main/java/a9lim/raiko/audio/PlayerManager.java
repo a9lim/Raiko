@@ -34,7 +34,7 @@ import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceM
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.yamusic.YandexMusicAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import net.dv8tion.jda.api.entities.Guild;
 public class PlayerManager extends DefaultAudioPlayerManager {
     private final Bot bot;
@@ -45,10 +45,10 @@ public class PlayerManager extends DefaultAudioPlayerManager {
 
     public void init(BotConfig config) {
         // custom sources
-        YoutubeAudioSourceManager yt = new YoutubeAudioSourceManager(true,config.getYTEmail(),config.getYTPW());
+        YoutubeAudioSourceManager yt = new YoutubeAudioSourceManager(true);
         yt.setPlaylistPageCount(10);
         registerSourceManager(yt);
-        registerSourceManager(new NicoAudioSourceManager(null,null));
+        registerSourceManager(new NicoAudioSourceManager());
         registerSourceManager(new YandexMusicAudioSourceManager(true));
         registerSourceManager(SoundCloudAudioSourceManager.createDefault());
         registerSourceManager(new BandcampAudioSourceManager());

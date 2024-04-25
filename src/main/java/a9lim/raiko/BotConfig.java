@@ -91,9 +91,6 @@ public class BotConfig implements AliasSource {
             model = config.getBoolean("cheapmodel");
             preprompt = config.getString("preprompt");
 
-            ytemail = noneblank(config.getString("ytemail"));
-            ytpw = noneblank(config.getString("ytpw"));
-
             // we may need to write a new config file
             boolean write = false;
 
@@ -288,14 +285,6 @@ public class BotConfig implements AliasSource {
 
     public String getPreprompt() {
         return preprompt;
-    }
-
-    public String getYTEmail() {
-        return ytemail;
-    }
-
-    public String getYTPW() {
-        return ytpw;
     }
 
 }
