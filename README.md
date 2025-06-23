@@ -1,5 +1,7 @@
 # Raiko
 
+! This is archived as I no longer have the motivation to work on it anymore !
+
 [![Release](https://img.shields.io/github/release/a9lim/raiko.svg)](https://github.com/a9lim/raiko/releases/latest)
 [![License](https://img.shields.io/github/license/a9lim/raiko.svg)](https://github.com/a9lim/raiko/blob/master/LICENSE)
 
